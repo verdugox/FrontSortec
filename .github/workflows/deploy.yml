@@ -3,7 +3,7 @@ name: Deploy to Azure Web App
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
   build:
@@ -13,15 +13,20 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
+      - name: Change to project directory
+        run: cd sortec  # Se asegurará de que está en la carpeta correcta
+
       - name: Install Dependencies
         run: npm install
+        working-directory: sortec  # 👈 IMPORTANTE: Corre npm install en sortec/
 
       - name: Build Project
         run: npm run build
+        working-directory: sortec  # 👈 IMPORTANTE: Corre npm run build en sortec/
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: "sortsortech"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
+          package: sortec  # 👈 IMPORTANTE: Se asegura de subir la carpeta sortec
