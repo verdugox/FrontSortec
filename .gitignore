@@ -1,0 +1,23 @@
+# Excluir node_modules (para evitar subir dependencias)
+node_modules/
+
+# Excluir carpetas de compilación de Next.js
+.next/
+out/
+
+# Excluir dependencias y archivos de logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Excluir configuración del entorno
+.env
+.env.local
+.env.development.local
+.env.production.local
+
+# Excluir archivos del editor
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
