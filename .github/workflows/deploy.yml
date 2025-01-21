@@ -20,8 +20,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: sortec/package-lock.json
 
-      - name: Install Dependencies (without node_modules cache)
-        run: npm ci
+      - name: Install Dependencies
+        run: npm install --force
         working-directory: sortec
 
       - name: Build Project
