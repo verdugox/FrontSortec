@@ -33,9 +33,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set Startup Command in Azure Web App
+      - name: Set Environment Variables in Azure Web App
         run: |
-          az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings STARTUP_COMMAND="npm ci && npm run build && npm start"
+          az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
+          WEBSITE_RUN_FROM_PACKAGE=1 \
+          SCM_DO_BUILD_DURING_DEPLOYMENT=true \
+          STARTUP_COMMAND="npm start"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2

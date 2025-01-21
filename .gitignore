@@ -5,19 +5,61 @@ node_modules/
 .next/
 out/
 
+# Asegurar que se suban archivos clave para el despliegue
+!.next
+!package.json
+!package-lock.json
+
 # Excluir dependencias y archivos de logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Excluir configuración del entorno
+# Excluir configuración del entorno y secretos
 .env
 .env.local
 .env.development.local
 .env.production.local
+.env.test.local
 
-# Excluir archivos del editor
+# Excluir configuraciones específicas del editor de código
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
+
+# Excluir archivos del sistema operativo
 .DS_Store
 Thumbs.db
+
+# Excluir archivos de compilación y caché de TypeScript
+*.tsbuildinfo
+*.swp
+
+# Excluir archivos de test y coverage
+coverage/
+*.lcov
+*.nyc_output
+
+# Excluir caché de npm y yarn
+.npm/
+.pnpm/
+.yarn/
+.yarn-cache/
+.yarnrc.yml
+
+# Excluir archivos de configuración innecesarios
+.nvmrc
+.prettierignore
+.prettiercache
+.stylelintignore
+.eslintcache
+.eslintignore
+
+# Excluir artefactos generados por el build en CI/CD
+dist/
+build/
+temp/
+tmp/
