@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 import { FaReddit, FaTrash, FaEye } from "react-icons/fa";
 import Image from "next/image";
 
