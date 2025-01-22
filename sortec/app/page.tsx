@@ -4,9 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-import $ from "jquery";
-import "datatables.net-bs5";
-import "datatables.net-responsive-bs5";
 import { FaReddit, FaTrash, FaEye } from "react-icons/fa";
 import Image from "next/image";
 
@@ -47,7 +44,7 @@ export default function Home() {
   const tableRef = useRef<HTMLTableElement>(null);
 
   // Manejar cambios en el formulario
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -77,6 +74,7 @@ export default function Home() {
         referenciaPago: "",
       });
       setError("");
+      fetchClientes();
     } catch (error) {
       console.error("Error al registrar cliente:", error);
       setError("Error al registrar cliente. Inténtalo nuevamente.");
@@ -95,30 +93,38 @@ export default function Home() {
     }
   };
 
-  // Inicializar DataTables cuando se cargan los clientes
+  // Cargar jQuery y DataTables dinámicamente en el cliente
   useEffect(() => {
-    if (showClientes && tableRef.current) {
-      $(tableRef.current).DataTable({
-        responsive: true,
-        paging: true,
-        pageLength: 5,
-        searching: true,
-        ordering: true,
-        destroy: true,
-        language: {
-          lengthMenu: "Mostrar _MENU_ registros por página",
-          zeroRecords: "No hay clientes registrados",
-          info: "Mostrando _START_ a _END_ de _TOTAL_ clientes",
-          infoEmpty: "No hay clientes disponibles",
-          infoFiltered: "(filtrado de _MAX_ registros totales)",
-          search: "Buscar:",
-          paginate: {
-            first: "Primero",
-            last: "Último",
-            next: "Siguiente",
-            previous: "Anterior",
-          },
-        },
+    if (typeof window !== "undefined") {
+      import("jquery").then(($) => {
+        import("datatables.net-bs5").then(() => {
+          import("datatables.net-responsive-bs5").then(() => {
+            if (tableRef.current) {
+              $(tableRef.current).DataTable({
+                responsive: true,
+                paging: true,
+                pageLength: 5,
+                searching: true,
+                ordering: true,
+                destroy: true,
+                language: {
+                  lengthMenu: "Mostrar _MENU_ registros por página",
+                  zeroRecords: "No hay clientes registrados",
+                  info: "Mostrando _START_ a _END_ de _TOTAL_ clientes",
+                  infoEmpty: "No hay clientes disponibles",
+                  infoFiltered: "(filtrado de _MAX_ registros totales)",
+                  search: "Buscar:",
+                  paginate: {
+                    first: "Primero",
+                    last: "Último",
+                    next: "Siguiente",
+                    previous: "Anterior",
+                  },
+                },
+              });
+            }
+          });
+        });
       });
     }
   }, [showClientes]);
@@ -126,31 +132,35 @@ export default function Home() {
   return (
     <div className="container mt-4">
       {/* Banner y Logo */}
-      <div className="header-container position-relative text-center">
-        <div className="banner rounded-pill overflow-hidden shadow">
-          <Image src="/images/bannerSORTECOriginal.png" alt="Banner" width={1200} height={300} className="img-fluid" priority />
-        </div>
-
-        <div className="logo-container position-absolute top-100 start-50 translate-middle">
+      <div className="banner-container">
+        <Image src="/images/bannerSORTECOriginal.png" alt="Banner" width={1200} height={180} priority />
+        <div className="logo-container">
           <Image src="/images/logoSORTECOriginal.png" alt="SorTect Logo" width={120} height={120} className="rounded-circle border border-white shadow" priority />
         </div>
       </div>
 
-      <h1 className="fw-bold text-center mt-5">Registro de Clientes - SorTect</h1>
+      {/* Título animado */}
+      <h1 className="animated-title">REGISTRO DE GANADORES - SORTEC</h1>
 
       {error && <p className="alert alert-danger">{error}</p>}
 
       {/* Formulario de Registro */}
       <form onSubmit={handleSubmit} className="card p-4 shadow-lg">
         <h4>Datos Personales</h4>
-        <input type="text" name="dni" placeholder="DNI" className="form-control mb-2" required onChange={handleChange} />
-        <input type="text" name="nombres" placeholder="Nombres" className="form-control mb-2" required onChange={handleChange} />
-        <input type="text" name="apellidos" placeholder="Apellidos" className="form-control mb-2" required onChange={handleChange} />
-        <input type="text" name="direccion" placeholder="Dirección" className="form-control mb-2" required onChange={handleChange} />
-        <input type="text" name="provincia" placeholder="Provincia" className="form-control mb-2" required onChange={handleChange} />
-        <input type="text" name="distrito" placeholder="Distrito" className="form-control mb-2" required onChange={handleChange} />
-        <input type="email" name="correo" placeholder="Correo" className="form-control mb-2" required onChange={handleChange} />
-        <input type="text" name="telefono" placeholder="Teléfono" className="form-control mb-2" required onChange={handleChange} />
+        <div className="row">
+          <div className="col-md-6">
+            <input type="text" name="dni" placeholder="DNI" className="form-control mb-2" required onChange={handleChange} />
+            <input type="text" name="nombres" placeholder="Nombres" className="form-control mb-2" required onChange={handleChange} />
+            <input type="text" name="apellidos" placeholder="Apellidos" className="form-control mb-2" required onChange={handleChange} />
+            <input type="text" name="direccion" placeholder="Dirección" className="form-control mb-2" required onChange={handleChange} />
+          </div>
+          <div className="col-md-6">
+            <input type="text" name="provincia" placeholder="Provincia" className="form-control mb-2" required onChange={handleChange} />
+            <input type="text" name="distrito" placeholder="Distrito" className="form-control mb-2" required onChange={handleChange} />
+            <input type="email" name="correo" placeholder="Correo" className="form-control mb-2" required onChange={handleChange} />
+            <input type="text" name="telefono" placeholder="Teléfono" className="form-control mb-2" required onChange={handleChange} />
+          </div>
+        </div>
 
         <h4>Información de Pago</h4>
         <input type="text" name="referenciaPago" placeholder="Referencia de Pago" className="form-control mb-2" required onChange={handleChange} />

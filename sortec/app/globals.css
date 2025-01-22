@@ -24,3 +24,98 @@ button {
 button:hover {
   background-color: #005bb5;
 }
+
+/* Contenedor del banner */
+.banner {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Estilo para el logo */
+.logo-container img {
+  border-radius: 50%;
+  border: 3px solid black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Animación del título */
+.animated-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #0070f3;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  margin-top: 20px;
+  animation: fadeIn 2s ease-in-out infinite alternate;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* Estilos para el banner */
+.banner-container {
+  position: relative;
+  width: 100%;
+  height: 180px; /* Reducido para que no sea tan alto */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px; /* Ligeramente redondeado en las esquinas */
+  overflow: hidden;
+}
+
+.banner-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Para evitar distorsión */
+}
+
+/* Logo superpuesto */
+.logo-container {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* Estilos para el título animado en 3D */
+.animated-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #0070f3;
+  text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  margin-top: 20px;
+  animation: floating 2s infinite alternate ease-in-out;
+}
+
+/* Animación del título */
+@keyframes floating {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(10px);
+  }
+}
+
+/* Asegurar responsividad */
+@media (max-width: 768px) {
+  .banner-container {
+    height: 140px;
+  }
+  
+  .animated-title {
+    font-size: 28px;
+    margin-top: 20px;
+  }
+}
