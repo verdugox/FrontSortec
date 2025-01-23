@@ -95,7 +95,8 @@ export default function Home() {
   // Cargar jQuery y DataTables dinámicamente en el cliente
   useEffect(() => {
     if (typeof window !== "undefined") {
-      import("jquery").then(($) => {
+      import("jquery").then((module) => {
+        const $ = module.default;
         import("datatables.net-bs5").then(() => {
           import("datatables.net-responsive-bs5").then(() => {
             if (tableRef.current) {
