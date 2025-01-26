@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 interface Cliente {
   id?: string;
@@ -16,6 +18,7 @@ interface Cliente {
   telefono: string;
   voucherUrl: string;
   referenciaPago: string;
+  estado?: string;
 }
 
 export default function ListaClientes() {
@@ -25,6 +28,8 @@ export default function ListaClientes() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [error, setError] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
 
   useEffect(() => {
     fetchClientes();
@@ -77,14 +82,47 @@ export default function ListaClientes() {
     try {
       const response = await fetch(`/api/clients/${id}`, { method: "DELETE" });
       if (!response.ok) {
-        throw new Error("Error al eliminar cliente.");
+        const errorData = await response.json();
+        throw new Error(`Error al eliminar cliente: ${errorData.error}`);
       }
       alert("Cliente eliminado correctamente.");
       fetchClientes();
     } catch (error) {
       console.error("❌ Error al eliminar cliente:", error);
-      alert("No se pudo eliminar el cliente.");
+      if (error instanceof Error) {
+        alert(`No se pudo eliminar el cliente. ${error.message}`);
+      } else {
+        alert("No se pudo eliminar el cliente. Error desconocido.");
+      }
     }
+  };
+
+  const handleEdit = async (cliente: Cliente) => {
+    try {
+      const response = await fetch(`/api/clients/${cliente.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cliente),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error al actualizar cliente: ${errorData.error}`);
+      }
+      alert("Cliente actualizado correctamente.");
+      fetchClientes();
+    } catch (error) {
+      console.error("❌ Error al actualizar cliente:", error);
+      if (error instanceof Error) {
+        alert(`No se pudo actualizar el cliente. ${error.message}`);
+      } else {
+        alert("No se pudo actualizar el cliente. Error desconocido.");
+      }
+    }
+  };
+
+  const handleView = (cliente: Cliente) => {
+    setSelectedCliente(cliente);
+    setShowModal(true);
   };
 
   const totalPages = Math.ceil(clientes.length / rowsPerPage);
@@ -147,13 +185,16 @@ export default function ListaClientes() {
                   {/* Botón de Ver */}
                   <button
                     className="btn btn-info btn-sm me-2"
-                    onClick={() => window.open(cliente.voucherUrl, "_blank")}
+                    onClick={() => handleView(cliente)}
                   >
                     👁 Ver
                   </button>
 
-                  {/* Botón de Editar (Futuro) */}
-                  <button className="btn btn-warning btn-sm me-2" disabled>
+                  {/* Botón de Editar */}
+                  <button
+                    className="btn btn-warning btn-sm me-2"
+                    onClick={() => handleEdit(cliente)}
+                  >
                     ✏ Editar
                   </button>
 
@@ -203,6 +244,36 @@ export default function ListaClientes() {
           </li>
         </ul>
       </nav>
+
+      {/* Modal para ver cliente */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Detalles del Cliente</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedCliente && (
+            <div>
+              <p><strong>DNI:</strong> {selectedCliente.dni}</p>
+              <p><strong>Nombres:</strong> {selectedCliente.nombres}</p>
+              <p><strong>Apellidos:</strong> {selectedCliente.apellidos}</p>
+              <p><strong>Dirección:</strong> {selectedCliente.direccion}</p>
+              <p><strong>Pais:</strong> {selectedCliente.pais}</p>
+              <p><strong>Provincia:</strong> {selectedCliente.provincia}</p>
+              <p><strong>Distrito:</strong> {selectedCliente.distrito}</p>
+              <p><strong>Correo:</strong> {selectedCliente.correo}</p>
+              <p><strong>Teléfono:</strong> {selectedCliente.telefono}</p>
+              <p><strong>Referencia Pago:</strong> {selectedCliente.referenciaPago}</p>
+              <p><strong>Comprobante de Pago:</strong></p>
+              <img src={selectedCliente.voucherUrl} alt="Comprobante de Pago" className="img-fluid" />
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
