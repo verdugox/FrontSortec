@@ -30,7 +30,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Dependencies (Usando Cache si es posible)
-        run: npm ci --prefer-offline --no-audit
+        run: npm install --production --prefer-offline --no-audit
         working-directory: sortec
 
       # Inyectar variables en Next.js durante la compilación
@@ -54,7 +54,8 @@ jobs:
           az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
           PORT=3000 \
           WEBSITE_RUN_FROM_PACKAGE=0 \
-          SCM_DO_BUILD_DURING_DEPLOYMENT=true \
+          SCM_DO_BUILD_DURING_DEPLOYMENT=false \
+          httpsOnly=true \
           STARTUP_COMMAND="cd /home/site/wwwroot/sortec && npm start" \
           CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
           CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} \
@@ -67,7 +68,7 @@ jobs:
         run: |
           az webapp config appsettings list --resource-group SorTectGroup --name sortsortech
 
-      # Empaquetado optimizado: Excluir archivos innecesarios
+      # Empaquetado optimizado: Excluir archivos innecesarios y asegurar estructura correcta
       - name: Build and Package Application
         run: |
           zip -r app.zip sortec/* -x "sortec/node_modules/*" ".git/*" ".github/*"
