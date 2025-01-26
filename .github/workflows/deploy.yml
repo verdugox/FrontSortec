@@ -59,9 +59,8 @@ jobs:
           az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
           PORT=3000 \
           WEBSITE_RUN_FROM_PACKAGE=0 \
-          SCM_DO_BUILD_DURING_DEPLOYMENT=false \
           httpsOnly=true \
-          STARTUP_COMMAND="cd /home/site/wwwroot/sortec && npm start" \
+          STARTUP_COMMAND="cd /home/site/wwwroot && npm start" \
           CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
           CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} \
           CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} \
@@ -73,17 +72,18 @@ jobs:
         run: |
           az webapp config appsettings list --resource-group SorTectGroup --name sortsortech
 
-      # Asegurar que package.json está presente en el ZIP
+      # Verificar que package.json está presente antes de empaquetar
       - name: Verify Package.json Before Packaging
         run: |
           if [ ! -f sortec/package.json ]; then
             echo "Error: package.json no encontrado en el proyecto" && exit 1
           fi
 
-      # Empaquetado optimizado: Excluir archivos innecesarios y asegurar estructura correcta
+      # Empaquetado optimizado: Asegurar que los archivos estén en la raíz del ZIP
       - name: Build and Package Application
         run: |
-          zip -r app.zip sortec/* -x "sortec/node_modules/*" ".git/*" ".github/*"
+          cd sortec
+          zip -r ../app.zip . -x "node_modules/*" ".git/*" ".github/*"
 
       # Verificar contenido del ZIP antes de despliegue
       - name: Verify ZIP Content
@@ -96,3 +96,8 @@ jobs:
           app-name: "sortsortech"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: app.zip
+
+      # Verificar que package.json existe en wwwroot después del despliegue
+      - name: Verify Package.json in wwwroot
+        run: |
+          az webapp ssh --resource-group SorTectGroup --name sortsortech --command "ls -lah /home/site/wwwroot/"
