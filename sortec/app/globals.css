@@ -155,3 +155,15 @@ button:hover {
   margin-top: 20px;
   animation: floating 2s infinite alternate ease-in-out;
 }
+
+
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px; /* Bordes ligeramente ovalados */
+}
+
+.table-responsive {
+  overflow-x: auto;
+}

@@ -23,6 +23,7 @@ export default function ListaClientes() {
   const [filteredClientes, setFilteredClientes] = useState<Cliente[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function ListaClientes() {
 
   useEffect(() => {
     filterClientes();
-  }, [searchTerm, clientes, rowsPerPage]);
+  }, [searchTerm, clientes, rowsPerPage, currentPage]);
 
   const fetchClientes = async () => {
     try {
@@ -55,16 +56,18 @@ export default function ListaClientes() {
           String(value).toLowerCase().includes(searchTerm.toLowerCase())
         )
       )
-      .slice(0, rowsPerPage);
+      .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
     setFilteredClientes(filtered);
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page on search
   };
 
   const handleRowsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page on rows per page change
   };
 
   const handleDelete = async (id?: string) => {
@@ -81,6 +84,14 @@ export default function ListaClientes() {
     } catch (error) {
       console.error("❌ Error al eliminar cliente:", error);
       alert("No se pudo eliminar el cliente.");
+    }
+  };
+
+  const totalPages = Math.ceil(clientes.length / rowsPerPage);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
     }
   };
 
@@ -110,53 +121,88 @@ export default function ListaClientes() {
       </div>
 
       {/* Tabla de clientes */}
-      <table className="table table-hover table-striped table-bordered">
-        <thead className="table-dark text-center">
-          <tr>
-            <th>#</th>
-            <th>DNI</th>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Dirección</th>
-            <th>Referencia Pago</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredClientes.map((cliente, index) => (
-            <tr key={cliente.id}>
-              <td>{index + 1}</td>
-              <td>{cliente.dni}</td>
-              <td>{cliente.nombres}</td>
-              <td>{cliente.apellidos}</td>
-              <td>{cliente.direccion}</td>
-              <td>{cliente.referenciaPago}</td>
-              <td className="text-center">
-                {/* Botón de Ver */}
-                <button
-                  className="btn btn-info btn-sm me-2"
-                  onClick={() => window.open(cliente.voucherUrl, "_blank")}
-                >
-                  👁 Ver
-                </button>
-
-                {/* Botón de Editar (Futuro) */}
-                <button className="btn btn-warning btn-sm me-2" disabled>
-                  ✏ Editar
-                </button>
-
-                {/* Botón de Eliminar */}
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleDelete(cliente.id)}
-                >
-                  🗑 Eliminar
-                </button>
-              </td>
+      <div className="table-responsive">
+        <table className="table table-hover table-striped table-bordered">
+          <thead className="table-dark text-center">
+            <tr>
+              <th>#</th>
+              <th>DNI</th>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>Dirección</th>
+              <th>Referencia Pago</th>
+              <th>Acciones</th>
             </tr>
+          </thead>
+          <tbody>
+            {filteredClientes.map((cliente, index) => (
+              <tr key={cliente.id}>
+                <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                <td>{cliente.dni}</td>
+                <td>{cliente.nombres}</td>
+                <td>{cliente.apellidos}</td>
+                <td>{cliente.direccion}</td>
+                <td>{cliente.referenciaPago}</td>
+                <td className="text-center">
+                  {/* Botón de Ver */}
+                  <button
+                    className="btn btn-info btn-sm me-2"
+                    onClick={() => window.open(cliente.voucherUrl, "_blank")}
+                  >
+                    👁 Ver
+                  </button>
+
+                  {/* Botón de Editar (Futuro) */}
+                  <button className="btn btn-warning btn-sm me-2" disabled>
+                    ✏ Editar
+                  </button>
+
+                  {/* Botón de Eliminar */}
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDelete(cliente.id)}
+                  >
+                    🗑 Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Paginación */}
+      <nav aria-label="Page navigation">
+        <ul className="pagination justify-content-center">
+          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+            <button className="page-link" onClick={() => handlePageChange(1)}>
+              Primero
+            </button>
+          </li>
+          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+            <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+              Anterior
+            </button>
+          </li>
+          {[...Array(totalPages)].map((_, index) => (
+            <li key={index} className={`page-item ${currentPage === index + 1 ? "active" : ""}`}>
+              <button className="page-link" onClick={() => handlePageChange(index + 1)}>
+                {index + 1}
+              </button>
+            </li>
           ))}
-        </tbody>
-      </table>
+          <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+            <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+              Siguiente
+            </button>
+          </li>
+          <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+            <button className="page-link" onClick={() => handlePageChange(totalPages)}>
+              Último
+            </button>
+          </li>
+        </ul>
+      </nav>
     </div>
   );
 }
