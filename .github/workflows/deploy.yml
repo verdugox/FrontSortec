@@ -50,11 +50,7 @@ jobs:
         run: az webapp restart --resource-group SorTectGroup --name sortsortech
 
       - name: Build and Package Application
-        run: |
-          cd sortec
-          npm run build
-          zip -r ../app.zip .
-        working-directory: sortec
+        run: zip -r app.zip .  # Empaquetar todo el código
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
