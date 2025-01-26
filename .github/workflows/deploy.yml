@@ -35,7 +35,8 @@ jobs:
 
       # Verificar que TailwindCSS está instalado antes de compilar
       - name: Check TailwindCSS Installation
-        run: npm list tailwindcss || echo "Warning: TailwindCSS no instalado"
+        run: |
+          npm list tailwindcss || echo "Warning: TailwindCSS no instalado"
         working-directory: sortec
 
       # Inyectar variables en Next.js durante la compilación
