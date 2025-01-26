@@ -20,15 +20,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: sortec/package-lock.json
 
-      # Habilitar Cache de Dependencias para acelerar la instalación
-      - name: Cache Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install Dependencies (Incluyendo DevDependencies)
         run: npm ci --prefer-offline --no-audit
         working-directory: sortec
@@ -39,7 +30,7 @@ jobs:
           npm list tailwindcss || echo "Warning: TailwindCSS no instalado"
         working-directory: sortec
 
-      # Inyectar variables en Next.js durante la compilación
+      # Construcción del Proyecto con Variables de Entorno
       - name: Build Project
         run: |
           export NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
@@ -55,11 +46,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Configuración de Variables en Azure Web App
       - name: Set Environment Variables in Azure Web App
         run: |
           az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
-          PORT=3000 \
           WEBSITE_RUN_FROM_PACKAGE=0 \
+          SCM_DO_BUILD_DURING_DEPLOYMENT=false \
           httpsOnly=true \
           STARTUP_COMMAND="cd /home/site/wwwroot && npm start" \
           CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
@@ -101,4 +93,4 @@ jobs:
       # Verificar que package.json existe en wwwroot después del despliegue
       - name: Verify Package.json in wwwroot
         run: |
-          az webapp config appsettings list --resource-group SorTectGroup --name sortsortech --query "[?name=='WEBSITE_RUN_FROM_PACKAGE']"
+          az webapp ssh --resource-group SorTectGroup --name sortsortech --command "ls -lah /home/site/wwwroot/"
