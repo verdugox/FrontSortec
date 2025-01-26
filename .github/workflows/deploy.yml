@@ -36,13 +36,29 @@ jobs:
       - name: Set Environment Variables in Azure Web App
         run: |
           az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
+          PORT=3000 \
           WEBSITE_RUN_FROM_PACKAGE=1 \
           SCM_DO_BUILD_DURING_DEPLOYMENT=true \
-          STARTUP_COMMAND="npm start"
+          STARTUP_COMMAND="npm start" \
+          CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
+          CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} \
+          CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} \
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }} \
+          NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
+
+      - name: Restart Azure Web App
+        run: az webapp restart --resource-group SorTectGroup --name sortsortech
+
+      - name: Build and Package Application
+        run: |
+          cd sortec
+          npm run build
+          zip -r ../app.zip .
+        working-directory: sortec
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: "sortsortech"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: sortec
+          package: app.zip
