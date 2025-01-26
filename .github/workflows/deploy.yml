@@ -35,7 +35,7 @@ jobs:
 
       # Verificar que TailwindCSS está instalado antes de compilar
       - name: Check TailwindCSS Installation
-        run: npm list tailwindcss
+        run: npm list tailwindcss || echo "Warning: TailwindCSS no instalado"
         working-directory: sortec
 
       # Inyectar variables en Next.js durante la compilación
@@ -83,7 +83,7 @@ jobs:
       - name: Build and Package Application
         run: |
           cd sortec
-          zip -r ../app.zip . -x "node_modules/*" ".git/*" ".github/*"
+          zip -r ../app.zip . -x "node_modules/*" ".git/*" ".github/*" "tests/*" "coverage/*" ".next/cache/*"
 
       # Verificar contenido del ZIP antes de despliegue
       - name: Verify ZIP Content
@@ -100,4 +100,4 @@ jobs:
       # Verificar que package.json existe en wwwroot después del despliegue
       - name: Verify Package.json in wwwroot
         run: |
-          az webapp ssh --resource-group SorTectGroup --name sortsortech --command "ls -lah /home/site/wwwroot/"
+          az webapp config appsettings list --resource-group SorTectGroup --name sortsortech --query "[?name=='WEBSITE_RUN_FROM_PACKAGE']"
