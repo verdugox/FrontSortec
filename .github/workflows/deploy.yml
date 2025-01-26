@@ -30,7 +30,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Dependencies (Usando Cache si es posible)
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit
         working-directory: sortec
 
       - name: Build Project
@@ -48,19 +48,22 @@ jobs:
           PORT=3000 \
           WEBSITE_RUN_FROM_PACKAGE=1 \
           SCM_DO_BUILD_DURING_DEPLOYMENT=true \
-          STARTUP_COMMAND="npm start" \
+          STARTUP_COMMAND="cd /home/site/wwwroot/sortec && npm start" \
           CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
           CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} \
           CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} \
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }} \
           NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
 
-      - name: Restart Azure Web App
-        run: az webapp restart --resource-group SorTectGroup --name sortsortech
-
       # Empaquetado optimizado: Excluir archivos innecesarios
       - name: Build and Package Application
-        run: zip -r app.zip . -x "node_modules/*" ".git/*" ".github/*"
+        run: |
+          zip -r app.zip sortec/* -x "sortec/node_modules/*" ".git/*" ".github/*"
+
+      # Verificar contenido del ZIP antes de despliegue
+      - name: Verify ZIP Content
+        run: |
+          unzip -l app.zip | grep package.json || (echo "Error: package.json no encontrado en el ZIP" && exit 1)
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
