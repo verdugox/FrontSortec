@@ -33,8 +33,15 @@ jobs:
         run: npm ci --prefer-offline --no-audit
         working-directory: sortec
 
+      # Inyectar variables en Next.js durante la compilación
       - name: Build Project
-        run: npm run build
+        run: |
+          export NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+          export NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
+          export CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          export CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+          export CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+          npm run build
         working-directory: sortec
 
       - name: Login to Azure
@@ -46,7 +53,7 @@ jobs:
         run: |
           az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
           PORT=3000 \
-          WEBSITE_RUN_FROM_PACKAGE=1 \
+          WEBSITE_RUN_FROM_PACKAGE=0 \
           SCM_DO_BUILD_DURING_DEPLOYMENT=true \
           STARTUP_COMMAND="cd /home/site/wwwroot/sortec && npm start" \
           CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
@@ -54,6 +61,11 @@ jobs:
           CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} \
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }} \
           NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
+
+      # Verificar que las variables de entorno están bien configuradas en Azure antes del despliegue
+      - name: Verify Environment Variables in Azure
+        run: |
+          az webapp config appsettings list --resource-group SorTectGroup --name sortsortech
 
       # Empaquetado optimizado: Excluir archivos innecesarios
       - name: Build and Package Application
