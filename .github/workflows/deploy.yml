@@ -5,7 +5,6 @@ on:
     branches:
       - develop  # Se ejecuta cuando hay cambios en develop
 
-      
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,7 +20,16 @@ jobs:
           cache: 'npm'
           cache-dependency-path: sortec/package-lock.json
 
-      - name: Install Dependencies
+      # Habilitar Cache de Dependencias para acelerar la instalación
+      - name: Cache Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies (Usando Cache si es posible)
         run: npm ci
         working-directory: sortec
 
@@ -50,8 +58,9 @@ jobs:
       - name: Restart Azure Web App
         run: az webapp restart --resource-group SorTectGroup --name sortsortech
 
+      # Empaquetado optimizado: Excluir archivos innecesarios
       - name: Build and Package Application
-        run: zip -r app.zip .  # Empaquetar todo el código
+        run: zip -r app.zip . -x "node_modules/*" ".git/*" ".github/*"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
