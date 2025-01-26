@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 interface Cliente {
@@ -27,6 +28,7 @@ export default function RegistroClientes() {
   const { register, handleSubmit, setValue, reset } = useForm<Cliente>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   const onSubmit: SubmitHandler<Cliente> = async (data) => {
     if (!data.voucher || data.voucher.length === 0) {
@@ -48,8 +50,9 @@ export default function RegistroClientes() {
 
       const uploadedImageData = await uploadResponse.json();
 
-      if (!uploadedImageData.secure_url) {
-        throw new Error("Error al subir la imagen.");
+      if (!uploadResponse.ok) {
+        console.error("Cloudinary response:", uploadedImageData);
+        throw new Error(`Error al subir la imagen: ${uploadedImageData.error?.message || 'Unknown error'}`);
       }
 
       const imageUrl = uploadedImageData.secure_url;
@@ -75,14 +78,19 @@ export default function RegistroClientes() {
       });
 
       if (!response.ok) {
-        throw new Error("Error al registrar cliente.");
+        const errorData = await response.json();
+        throw new Error(`Error al registrar cliente: ${errorData.error}`);
       }
 
-      alert("🎉 Cliente registrado con éxito!");
+      setSuccessMessage("🎉 Registro realizado correctamente. Ahora se ha enviado un correo al administrador para validar tu pago y en unos momentos te llegará la confirmación del registro con el detalle del sorteo. ¡Muchas gracias por participar!");
       reset();
     } catch (error) {
       console.error("❌ Error:", error);
-      setError("Error en el proceso. Inténtalo nuevamente.");
+      if (error instanceof Error) {
+        setError(`Error en el proceso. Inténtalo nuevamente. ${error.message}`);
+      } else {
+        setError("Error en el proceso. Inténtalo nuevamente.");
+      }
     } finally {
       setLoading(false);
     }
@@ -92,6 +100,7 @@ export default function RegistroClientes() {
     <div className="container mt-4">
       <h2>Registro de Cliente</h2>
       {error && <p className="alert alert-danger">{error}</p>}
+      {successMessage && <p className="alert alert-success">{successMessage}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)} className="card p-4 shadow-lg">
         <div className="row">
@@ -100,6 +109,7 @@ export default function RegistroClientes() {
             <input {...register("nombres")} type="text" placeholder="Nombres" className="form-control mb-2" required />
             <input {...register("apellidos")} type="text" placeholder="Apellidos" className="form-control mb-2" required />
             <input {...register("direccion")} type="text" placeholder="Dirección" className="form-control mb-2" required />
+            <input {...register("pais")} type="text" placeholder="Pais" className="form-control mb-2" required />
           </div>
           <div className="col-md-6">
             <input {...register("provincia")} type="text" placeholder="Provincia" className="form-control mb-2" required />
@@ -110,6 +120,16 @@ export default function RegistroClientes() {
         </div>
 
         <h4>Información de Pago</h4>
+        <p>Realice el pago al número 977559149 - Luis Acuña</p>
+        <div className="text-center mb-3">
+          <Image src="/images/QRYapeLuis.png" alt="QR Yape" width={300} height={300} className="img-fluid" />
+        </div>
+        <p>Puede realizar el pago usando Yape o Plin. Asegúrese de agregar el número de operación en el campo Nro de operación!.</p>
+        <div className="text-center mb-3">
+          <Image src="/images/PagoOperacion.png" alt="Ejemplo de Nro de operación" width={300} height={300} className="img-fluid" />
+        </div>
+
+        <input {...register("referenciaPago")} type="text" placeholder="Nro de operación: Ejemplo - 07258982" className="form-control mb-2" required />
         <input {...register("voucher")} type="file" className="form-control mb-3" accept="image/png, image/jpeg" required />
 
         <button type="submit" className="btn btn-success" disabled={loading}>

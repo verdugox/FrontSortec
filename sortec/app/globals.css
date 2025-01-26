@@ -119,3 +119,39 @@ button:hover {
     margin-top: 20px;
   }
 }
+
+
+/* Animación del título */
+@keyframes floating {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(10px);
+  }
+}
+
+/* Asegurar responsividad */
+@media (max-width: 768px) {
+  .banner-container {
+    height: 140px;
+  }
+  
+  .animated-title {
+    font-size: 28px;
+    margin-top: 20px;
+  }
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px; /* Bordes ligeramente ovalados */
+}
+
+.text-shadow {
+  text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  margin-top: 20px;
+  animation: floating 2s infinite alternate ease-in-out;
+}
