@@ -29,8 +29,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Install Dependencies (Usando Cache si es posible)
-        run: npm install --production --prefer-offline --no-audit
+      - name: Install Dependencies (Incluyendo DevDependencies)
+        run: npm ci --prefer-offline --no-audit
+        working-directory: sortec
+
+      # Verificar que TailwindCSS está instalado antes de compilar
+      - name: Check TailwindCSS Installation
+        run: npm list tailwindcss
         working-directory: sortec
 
       # Inyectar variables en Next.js durante la compilación
@@ -67,6 +72,13 @@ jobs:
       - name: Verify Environment Variables in Azure
         run: |
           az webapp config appsettings list --resource-group SorTectGroup --name sortsortech
+
+      # Asegurar que package.json está presente en el ZIP
+      - name: Verify Package.json Before Packaging
+        run: |
+          if [ ! -f sortec/package.json ]; then
+            echo "Error: package.json no encontrado en el proyecto" && exit 1
+          fi
 
       # Empaquetado optimizado: Excluir archivos innecesarios y asegurar estructura correcta
       - name: Build and Package Application
