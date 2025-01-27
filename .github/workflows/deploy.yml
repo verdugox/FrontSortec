@@ -20,17 +20,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: sortec/package-lock.json
 
-      - name: Install Dependencies (Incluyendo DevDependencies)
-        run: npm ci --prefer-offline --no-audit
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
         working-directory: sortec
 
-      # Verificar que TailwindCSS está instalado antes de compilar
-      - name: Check TailwindCSS Installation
+      - name: Ensure Next.js is Installed
         run: |
-          npm list tailwindcss || echo "Warning: TailwindCSS no instalado"
+          if [ ! -d "node_modules/next" ]; then
+            echo "Error: Next.js no está instalado" && exit 1
+          fi
         working-directory: sortec
 
-      # Construcción del Proyecto con Variables de Entorno
       - name: Build Project
         run: |
           export NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
@@ -46,38 +46,33 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Configuración de Variables en Azure Web App
       - name: Set Environment Variables in Azure Web App
         run: |
           az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
           WEBSITE_RUN_FROM_PACKAGE=0 \
           httpsOnly=true \
-          STARTUP_COMMAND="cd /home/site/wwwroot/sortec && npm start" \
+          STARTUP_COMMAND="cd /home/site/wwwroot && npm install && npm start" \
           CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
           CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} \
           CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} \
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }} \
           NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
 
-      # Verificar que las variables de entorno están bien configuradas en Azure antes del despliegue
       - name: Verify Environment Variables in Azure
         run: |
           az webapp config appsettings list --resource-group SorTectGroup --name sortsortech
 
-      # Verificar que package.json está presente antes de empaquetar
       - name: Verify Package.json Before Packaging
         run: |
           if [ ! -f sortec/package.json ]; then
             echo "Error: package.json no encontrado en el proyecto" && exit 1
           fi
 
-      # Empaquetado optimizado: Asegurar que los archivos estén en la raíz del ZIP
       - name: Build and Package Application
         run: |
           cd sortec
           zip -r ../app.zip . -x "node_modules/*" ".git/*" ".github/*" "tests/*" "coverage/*" ".next/cache/*"
 
-      # Verificar contenido del ZIP antes de despliegue
       - name: Verify ZIP Content
         run: |
           unzip -l app.zip | grep package.json || (echo "Error: package.json no encontrado en el ZIP" && exit 1)
