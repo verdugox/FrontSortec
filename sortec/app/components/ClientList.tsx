@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 interface Cliente {
   id?: string;
@@ -52,10 +54,21 @@ export default function ListaClientes() {
       setFilteredClientes(data.slice(0, rowsPerPage));
     } catch (error) {
       console.error("❌ Error al obtener clientes:", error);
-      setError("No se pudo obtener la lista de clientes.");
+      setError("No se pudo obtener la lista de participantes.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(clientes);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Clientes");
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const excelFile = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+    saveAs(excelFile, "Lista_Participantes_2025.xlsx");
   };
 
   const filterClientes = () => {
@@ -81,7 +94,7 @@ export default function ListaClientes() {
 
   const handleDelete = async (id?: string) => {
     if (!id) return;
-    if (!confirm("¿Estás seguro de eliminar este cliente?")) return;
+    if (!confirm("¿Estás seguro de eliminar este participante?")) return;
 
     try {
       const response = await fetch(`/api/clients/${id}`, { method: "DELETE" });
@@ -89,14 +102,14 @@ export default function ListaClientes() {
         const errorData = await response.json();
         throw new Error(`Error al eliminar cliente: ${errorData.error}`);
       }
-      alert("Cliente eliminado correctamente.");
+      alert("Participante eliminado correctamente.");
       fetchClientes();
     } catch (error) {
-      console.error("❌ Error al eliminar cliente:", error);
+      console.error("❌ Error al eliminar participante:", error);
       if (error instanceof Error) {
-        alert(`No se pudo eliminar el cliente. ${error.message}`);
+        alert(`No se pudo eliminar el participante. ${error.message}`);
       } else {
-        alert("No se pudo eliminar el cliente. Error desconocido.");
+        alert("No se pudo eliminar el participante. Error desconocido.");
       }
     }
   };
@@ -110,9 +123,9 @@ export default function ListaClientes() {
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Error al actualizar cliente: ${errorData.error}`);
+        throw new Error(`Error al actualizar participante: ${errorData.error}`);
       }
-      alert("Cliente actualizado correctamente.");
+      alert("Participante actualizado correctamente.");
       fetchClientes();
     } catch (error) {
       console.error("❌ Error al actualizar cliente:", error);
@@ -158,7 +171,7 @@ export default function ListaClientes() {
           <input
             type="text"
             className="form-control"
-            placeholder="🔍 Buscar cliente..."
+            placeholder="🔍 Buscar participante..."
             value={searchTerm}
             onChange={handleSearch}
           />
@@ -169,6 +182,14 @@ export default function ListaClientes() {
             <option value={10}>Mostrar 10</option>
             <option value={20}>Mostrar 20</option>
           </select>
+        </div>
+        <div className="col-md-3">
+          {/* Botón de Exportar a Excel */}
+          <div className="text-end mb-3">
+            <button className="btn btn-success" onClick={exportToExcel}>
+              📥 Exportar a Excel
+            </button>
+          </div>
         </div>
       </div>
 
@@ -259,7 +280,7 @@ export default function ListaClientes() {
         </ul>
       </nav>
 
-      {/* Modal para ver cliente */}
+      {/* Modal para ver participante */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Detalles del Cliente</Modal.Title>
