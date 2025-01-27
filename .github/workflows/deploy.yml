@@ -20,25 +20,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: sortec/package-lock.json
 
-      - name: Install Dependencies (Incluyendo DevDependencies)
-        run: npm ci --prefer-offline --no-audit
+      - name: Install Dependencies
+        run: npm ci
         working-directory: sortec
 
-      # Verificar que TailwindCSS está instalado antes de compilar
-      - name: Check TailwindCSS Installation
-        run: |
-          npm list tailwindcss || echo "Warning: TailwindCSS no instalado"
-        working-directory: sortec
-
-      # Construcción del Proyecto con Variables de Entorno
       - name: Build Project
-        run: |
-          export NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
-          export NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
-          export CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          export CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
-          export CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
-          npm run build
+        run: npm run build
         working-directory: sortec
 
       - name: Login to Azure
@@ -46,51 +33,16 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Configuración de Variables en Azure Web App
       - name: Set Environment Variables in Azure Web App
         run: |
           az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
-          WEBSITE_RUN_FROM_PACKAGE=0 \
-          SCM_DO_BUILD_DURING_DEPLOYMENT=false \
-          httpsOnly=true \
-          STARTUP_COMMAND="cd /home/site/wwwroot && npm start" \
-          CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
-          CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} \
-          CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} \
-          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }} \
-          NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
-
-      # Verificar que las variables de entorno están bien configuradas en Azure antes del despliegue
-      - name: Verify Environment Variables in Azure
-        run: |
-          az webapp config appsettings list --resource-group SorTectGroup --name sortsortech
-
-      # Verificar que package.json está presente antes de empaquetar
-      - name: Verify Package.json Before Packaging
-        run: |
-          if [ ! -f sortec/package.json ]; then
-            echo "Error: package.json no encontrado en el proyecto" && exit 1
-          fi
-
-      # Empaquetado optimizado: Asegurar que los archivos estén en la raíz del ZIP
-      - name: Build and Package Application
-        run: |
-          cd sortec
-          zip -r ../app.zip . -x "node_modules/*" ".git/*" ".github/*" "tests/*" "coverage/*" ".next/cache/*"
-
-      # Verificar contenido del ZIP antes de despliegue
-      - name: Verify ZIP Content
-        run: |
-          unzip -l app.zip | grep package.json || (echo "Error: package.json no encontrado en el ZIP" && exit 1)
+          WEBSITE_RUN_FROM_PACKAGE=1 \
+          SCM_DO_BUILD_DURING_DEPLOYMENT=true \
+          STARTUP_COMMAND="npm start"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: "sortsortech"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: app.zip
-
-      # Verificar que package.json existe en wwwroot después del despliegue
-      - name: Verify Package.json in wwwroot
-        run: |
-          az webapp ssh --resource-group SorTectGroup --name sortsortech --command "ls -lah /home/site/wwwroot/"
+          package: sortec
