@@ -13,77 +13,41 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Use Node.js 18 (Cached)
+      - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: sortec/package-lock.json
 
-      - name: Install Dependencies (Optimized)
-        run: npm ci --prefer-offline --no-audit
+      - name: Install Dependencies
+        run: npm ci
         working-directory: sortec
 
-      - name: Verify Next.js Installation
-        run: |
-          if [ ! -d "node_modules/next" ]; then
-            echo "Error: Next.js no está instalado" && exit 1
-          fi
-        working-directory: sortec
-
-      - name: Build Application
+      - name: Build Project
         run: npm run build
         working-directory: sortec
-
-      - name: Verify Build Output
-        run: ls -la sortec/.next
 
       - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Ensure Azure Web App Uses Node.js 18
-        run: |
-          az webapp config set --resource-group SorTectGroup --name sortsortech --linux-fx-version "NODE|18-lts"
-          az webapp restart --name sortsortech --resource-group SorTectGroup
-
       - name: Set Environment Variables in Azure Web App
         run: |
           az webapp config appsettings set --resource-group SorTectGroup --name sortsortech --settings \
-          WEBSITE_RUN_FROM_PACKAGE=0 \
-          httpsOnly=true \
-          STARTUP_COMMAND="cd /home/site/wwwroot && npm ci --prefer-offline --no-audit && npm start" \
+          WEBSITE_RUN_FROM_PACKAGE=1 \
+          SCM_DO_BUILD_DURING_DEPLOYMENT=true \
+          STARTUP_COMMAND="npm start" \
           CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
           CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} \
           CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} \
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }} \
           NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
 
-      - name: Verify Package.json Before Packaging
-        run: |
-          if [ ! -f sortec/package.json ]; then
-            echo "Error: package.json no encontrado en el proyecto" && exit 1
-          fi
-
-      - name: Build and Package Application (Optimized)
-        run: |
-          cd sortec
-          zip -r ../app.zip . -x "node_modules/*" ".git/*" ".github/*" "tests/*" "coverage/*" ".next/cache/*"
-
-      - name: Verify ZIP Content
-        run: |
-          unzip -l app.zip | grep package.json || (echo "Error: package.json no encontrado en el ZIP" && exit 1)
-          unzip -l app.zip | grep .next || (echo "Error: .next/ no encontrado en el ZIP, el build falló" && exit 1)
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: "sortsortech"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: app.zip
-
-      - name: Fetch Logs in Case of Failure
-        if: failure()
-        run: |
-          az webapp log tail --name sortsortech --resource-group SorTectGroup
+          package: sortec
