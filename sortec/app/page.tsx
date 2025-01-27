@@ -20,7 +20,7 @@ export default function Home() {
       </div>
 
       {/* Título animado */}
-      <h1 className="animated-title">REGISTRO DE GANADORES - SORTEC</h1>
+      <h1 className="animated-title">FORMULARIO DE REGISTRO PARA EL GRAN SORTEO EN - SORTEC</h1>
 
       {/* Mantiene el formulario de registro */}
       <ClientForm />
@@ -31,7 +31,7 @@ export default function Home() {
           className="btn btn-primary" 
           onClick={() => setShowClients(true)}
         >
-          Cargar Clientes
+          Cargar Participantes
         </button>
       </div>
 

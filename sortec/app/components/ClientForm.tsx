@@ -98,9 +98,17 @@ export default function RegistroClientes() {
 
   return (
     <div className="container mt-4">
-      <h2>Registro de Cliente</h2>
+      <h2>Registro del Participante</h2>
       {error && <p className="alert alert-danger">{error}</p>}
       {successMessage && <p className="alert alert-success">{successMessage}</p>}
+
+      {/* 🔹 Spinner de carga */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+          <p>Registrando participante...</p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="card p-4 shadow-lg">
         <div className="row">
@@ -133,7 +141,7 @@ export default function RegistroClientes() {
         <input {...register("voucher")} type="file" className="form-control mb-3" accept="image/png, image/jpeg" required />
 
         <button type="submit" className="btn btn-success" disabled={loading}>
-          {loading ? "Registrando..." : "Registrar Cliente"}
+          {loading ? "Registrando..." : "Registrar Participante"}
         </button>
       </form>
     </div>

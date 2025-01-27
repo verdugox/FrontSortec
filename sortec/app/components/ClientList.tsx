@@ -30,6 +30,8 @@ export default function ListaClientes() {
   const [error, setError] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); // 🔹 Estado de carga
+
 
   useEffect(() => {
     fetchClientes();
@@ -51,6 +53,8 @@ export default function ListaClientes() {
     } catch (error) {
       console.error("❌ Error al obtener clientes:", error);
       setError("No se pudo obtener la lista de clientes.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,7 +139,17 @@ export default function ListaClientes() {
 
   return (
     <div className="container mt-4">
-      <h2>Lista de Clientes Registrados</h2>
+      <h2>Lista de Participantes Registrados</h2>
+
+      {loading ? (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+          <p>Cargando participantes...</p>
+        </div>
+      ) : (
+        <div>{/* Renderizar la tabla de clientes aquí */}</div>
+      )}
+
       {error && <p className="alert alert-danger">{error}</p>}
 
       {/* Filtros y configuración de tabla */}
