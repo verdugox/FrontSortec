@@ -31,14 +31,12 @@ jobs:
           fi
         working-directory: sortec
 
-      - name: Build Project
-        run: |
-          export NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
-          export NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
-          export CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          export CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
-          export CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
-          npm run build
+      - name: Build Application
+        run: npm run build
+        working-directory: sortec
+
+      - name: Verify Build Output
+        run: ls -la .next
         working-directory: sortec
 
       - name: Login to Azure
@@ -71,11 +69,12 @@ jobs:
       - name: Build and Package Application
         run: |
           cd sortec
-          zip -r ../app.zip . -x "node_modules/*" ".git/*" ".github/*" "tests/*" "coverage/*" ".next/cache/*"
+          zip -r ../app.zip . -x ".git/*" ".github/*" "tests/*" "coverage/*"
 
       - name: Verify ZIP Content
         run: |
           unzip -l app.zip | grep package.json || (echo "Error: package.json no encontrado en el ZIP" && exit 1)
+          unzip -l app.zip | grep .next || (echo "Error: .next/ no encontrado en el ZIP, el build falló" && exit 1)
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
@@ -83,3 +82,8 @@ jobs:
           app-name: "sortsortech"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: app.zip
+
+      - name: Fetch Logs in Case of Failure
+        if: failure()
+        run: |
+          az webapp log tail --name sortsortech --resource-group SorTectGroup
