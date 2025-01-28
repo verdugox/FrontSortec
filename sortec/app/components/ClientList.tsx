@@ -23,7 +23,11 @@ interface Cliente {
   estado?: string;
 }
 
-export default function ListaClientes() {
+interface ClientListProps {
+  reloadTrigger: number; // 🔹 Agregar esta propiedad para evitar el error
+}
+
+export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [filteredClientes, setFilteredClientes] = useState<Cliente[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -41,7 +45,7 @@ export default function ListaClientes() {
 
   useEffect(() => {
     filterClientes();
-  }, [searchTerm, clientes, rowsPerPage, currentPage]);
+  }, [searchTerm, clientes, rowsPerPage, currentPage, reloadTrigger]);
 
   const fetchClientes = async () => {
     try {

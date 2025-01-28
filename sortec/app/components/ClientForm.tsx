@@ -25,7 +25,7 @@ const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESE
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 export default function RegistroClientes() {
-  const { register, handleSubmit, setValue, reset } = useForm<Cliente>();
+  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<Cliente>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
@@ -96,11 +96,17 @@ export default function RegistroClientes() {
     }
   };
 
+  const handleInputValidation = (event: React.KeyboardEvent<HTMLInputElement>, pattern: RegExp) => {
+    if (!pattern.test(event.key)) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <div className="container mt-4">
       <h2>Registro del Participante</h2>
-      {error && <p className="alert alert-danger">{error}</p>}
-      {successMessage && <p className="alert alert-success">{successMessage}</p>}
+      {error && <div className="alert alert-danger">{error}</div>}
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
       {/* 🔹 Spinner de carga */}
       {loading && (
@@ -113,17 +119,26 @@ export default function RegistroClientes() {
       <form onSubmit={handleSubmit(onSubmit)} className="card p-4 shadow-lg">
         <div className="row">
           <div className="col-md-6">
-            <input {...register("dni")} type="text" placeholder="DNI" className="form-control mb-2" required />
-            <input {...register("nombres")} type="text" placeholder="Nombres" className="form-control mb-2" required />
-            <input {...register("apellidos")} type="text" placeholder="Apellidos" className="form-control mb-2" required />
-            <input {...register("direccion")} type="text" placeholder="Dirección" className="form-control mb-2" required />
-            <input {...register("pais")} type="text" placeholder="Pais" className="form-control mb-2" required />
+            <input {...register("dni")} type="text" placeholder="DNI" className="form-control mb-2" required maxLength={8} pattern="\d{8}" title="El DNI debe tener exactamente 8 dígitos y solo contener números" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
+            {errors.dni && <div className="alert alert-danger">{errors.dni.message}</div>}
+            <input {...register("nombres")} type="text" placeholder="Nombres" className="form-control mb-2" required maxLength={250} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+            {errors.nombres && <div className="alert alert-danger">{errors.nombres.message}</div>}
+            <input {...register("apellidos")} type="text" placeholder="Apellidos" className="form-control mb-2" required maxLength={250} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+            {errors.apellidos && <div className="alert alert-danger">{errors.apellidos.message}</div>}
+            <input {...register("direccion")} type="text" placeholder="Dirección" className="form-control mb-2" required maxLength={250} title="Máximo 250 caracteres" />
+            {errors.direccion && <div className="alert alert-danger">{errors.direccion.message}</div>}
+            <input {...register("pais")} type="text" placeholder="Pais" className="form-control mb-2" required maxLength={50} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+            {errors.pais && <div className="alert alert-danger">{errors.pais.message}</div>}
           </div>
           <div className="col-md-6">
-            <input {...register("provincia")} type="text" placeholder="Provincia" className="form-control mb-2" required />
-            <input {...register("distrito")} type="text" placeholder="Distrito" className="form-control mb-2" required />
-            <input {...register("correo")} type="email" placeholder="Correo" className="form-control mb-2" required />
-            <input {...register("telefono")} type="text" placeholder="Teléfono" className="form-control mb-2" required />
+            <input {...register("provincia")} type="text" placeholder="Provincia" className="form-control mb-2" required maxLength={80} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+            {errors.provincia && <div className="alert alert-danger">{errors.provincia.message}</div>}
+            <input {...register("distrito")} type="text" placeholder="Distrito" className="form-control mb-2" required maxLength={80} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+            {errors.distrito && <div className="alert alert-danger">{errors.distrito.message}</div>}
+            <input {...register("correo")} type="email" placeholder="Correo" className="form-control mb-2" required maxLength={250} title="Formato de correo inválido" />
+            {errors.correo && <div className="alert alert-danger">{errors.correo.message}</div>}
+            <input {...register("telefono")} type="text" placeholder="Teléfono" className="form-control mb-2" required maxLength={9} pattern="\d{9}" title="El teléfono debe tener exactamente 9 dígitos y solo contener números" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
+            {errors.telefono && <div className="alert alert-danger">{errors.telefono.message}</div>}
           </div>
         </div>
 
@@ -132,12 +147,13 @@ export default function RegistroClientes() {
         <div className="text-center mb-3">
           <Image src="/images/QRYapeLuis.png" alt="QR Yape" width={300} height={300} className="img-fluid" />
         </div>
-        <p>Puede realizar el pago usando Yape o Plin. Asegúrese de agregar el número de operación en el campo Nro de operación!.</p>
+        <p>Puede realizar el pago usando Yape o Plin. Asegúrese de agregar el número de operación en el campo Nro de operación! y de adjuntar el voucher de pago en la opción Elegir archivo.</p>
         <div className="text-center mb-3">
           <Image src="/images/PagoOperacion.png" alt="Ejemplo de Nro de operación" width={300} height={300} className="img-fluid" />
         </div>
 
-        <input {...register("referenciaPago")} type="text" placeholder="Nro de operación: Ejemplo - 07258982" className="form-control mb-2" required />
+        <input {...register("referenciaPago")} type="text" placeholder="Nro de operación: Ejemplo - 07258982" className="form-control mb-2" required minLength={8} maxLength={9} pattern="\d{8,9}" title="La referencia de pago debe tener entre 8 y 9 dígitos y solo contener números" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
+        {errors.referenciaPago && <div className="alert alert-danger">{errors.referenciaPago.message}</div>}
         <input {...register("voucher")} type="file" className="form-control mb-3" accept="image/png, image/jpeg" required />
 
         <button type="submit" className="btn btn-success" disabled={loading}>
