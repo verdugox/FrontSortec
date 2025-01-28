@@ -9,6 +9,7 @@ import { saveAs } from "file-saver";
 
 interface Cliente {
   id?: string;
+  codigoSortec: string;
   dni: string;
   nombres: string;
   apellidos: string;
@@ -37,7 +38,6 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // 🔹 Estado de carga
-
 
   useEffect(() => {
     fetchClientes();
@@ -78,6 +78,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const filterClientes = () => {
     const filtered = clientes
       .filter((cliente) =>
+        cliente.estado === "aprobado" &&
         Object.values(cliente).some((value) =>
           String(value).toLowerCase().includes(searchTerm.toLowerCase())
         )
@@ -101,7 +102,10 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
     if (!confirm("¿Estás seguro de eliminar este participante?")) return;
 
     try {
-      const response = await fetch(`/api/clients/${id}`, { method: "DELETE" });
+      const response = await fetch(`/api/clients/${id}`, { 
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Error al eliminar cliente: ${errorData.error}`);
@@ -146,7 +150,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
     setShowModal(true);
   };
 
-  const totalPages = Math.ceil(clientes.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredClientes.length / rowsPerPage);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -189,7 +193,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
         </div>
         <div className="col-md-3">
           {/* Botón de Exportar a Excel */}
-          <div className="text-end mb-3">
+          <div className="text-end mb-3" style={{ display: "none" }}>
             <button className="btn btn-success" onClick={exportToExcel}>
               📥 Exportar a Excel
             </button>
@@ -203,24 +207,25 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
           <thead className="table-dark text-center">
             <tr>
               <th>#</th>
-              <th>DNI</th>
-              <th>Nombres</th>
-              <th>Apellidos</th>
-              <th>Dirección</th>
-              <th>Referencia Pago</th>
-              <th>Acciones</th>
+              <th>Codigo</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>País</th>
+              <th>Estado</th>
             </tr>
           </thead>
           <tbody>
             {filteredClientes.map((cliente, index) => (
               <tr key={cliente.id}>
                 <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
-                <td>{cliente.dni}</td>
-                <td>{cliente.nombres}</td>
-                <td>{cliente.apellidos}</td>
-                <td>{cliente.direccion}</td>
-                <td>{cliente.referenciaPago}</td>
-                <td className="text-center">
+                <td>{cliente.codigoSortec}</td>
+                <td>{cliente.nombres.split(" ")[0]}</td>
+                <td>{cliente.apellidos.split(" ")[0]}</td>
+                <td>{cliente.pais}</td>
+                <td style={{ color: cliente.estado === "aprobado" ? "green" : "inherit" }}>
+                  {cliente.estado ? cliente.estado.charAt(0).toUpperCase() + cliente.estado.slice(1) : ""}
+                </td>
+                <td className="text-center" style={{ display: "none" }}>
                   {/* Botón de Ver */}
                   <button
                     className="btn btn-info btn-sm me-2"

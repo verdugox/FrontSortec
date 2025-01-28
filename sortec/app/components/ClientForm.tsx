@@ -143,7 +143,12 @@ export default function RegistroClientes() {
         </div>
 
         <h4>Información de Pago</h4>
-        <p>Realice el pago al número 977559149 - Luis Acuña</p>
+        <p>
+          Realice el pago al número 977559149 - Luis Acuña, abonando solo&nbsp;&nbsp;
+          <span style={{ fontSize: "1.5em", color: "#8e44ad", fontWeight: "bold" }}>
+            S/8 soles
+          </span>
+        </p>
         <div className="text-center mb-3">
           <Image src="/images/QRYapeLuis.png" alt="QR Yape" width={300} height={300} className="img-fluid" />
         </div>
