@@ -41,11 +41,11 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
 
   useEffect(() => {
     fetchClientes();
-  }, []);
+  }, [reloadTrigger]); // 🔹 Agregar reloadTrigger como dependencia
 
   useEffect(() => {
     filterClientes();
-  }, [searchTerm, clientes, rowsPerPage, currentPage, reloadTrigger]);
+  }, [searchTerm, clientes, rowsPerPage, currentPage]);
 
   const fetchClientes = async () => {
     try {

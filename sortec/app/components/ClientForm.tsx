@@ -119,25 +119,32 @@ export default function RegistroClientes() {
       <form onSubmit={handleSubmit(onSubmit)} className="card p-4 shadow-lg">
         <div className="row">
           <div className="col-md-6">
-            <input {...register("dni")} type="text" placeholder="DNI" className="form-control mb-2" required maxLength={8} pattern="\d{8}" title="El DNI debe tener exactamente 8 dígitos y solo contener números" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
+            <input {...register("dni", { required: "El DNI es obligatorio", pattern: { value: /^\d{8}$/, message: "El DNI debe tener exactamente 8 dígitos y solo contener números" }, maxLength: 8 })} type="text" placeholder="DNI" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
             {errors.dni && <div className="alert alert-danger">{errors.dni.message}</div>}
-            <input {...register("nombres")} type="text" placeholder="Nombres" className="form-control mb-2" required maxLength={250} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+
+            <input {...register("nombres", { required: "Los nombres son obligatorios", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, minLength: 3, maxLength: 150 })} type="text" placeholder="Nombres" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
             {errors.nombres && <div className="alert alert-danger">{errors.nombres.message}</div>}
-            <input {...register("apellidos")} type="text" placeholder="Apellidos" className="form-control mb-2" required maxLength={250} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+
+            <input {...register("apellidos", { required: "Los apellidos son obligatorios", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, minLength: 3, maxLength: 150 })} type="text" placeholder="Apellidos" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
             {errors.apellidos && <div className="alert alert-danger">{errors.apellidos.message}</div>}
-            <input {...register("direccion")} type="text" placeholder="Dirección" className="form-control mb-2" required maxLength={250} title="Máximo 250 caracteres" />
+
+            <input {...register("direccion", { required: "La dirección es obligatoria", minLength: 10, maxLength: 250 })} type="text" placeholder="Dirección" className="form-control mb-2" />
             {errors.direccion && <div className="alert alert-danger">{errors.direccion.message}</div>}
-            <input {...register("pais")} type="text" placeholder="Pais" className="form-control mb-2" required maxLength={50} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+
+            <input {...register("pais", { required: "El país es obligatorio", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, maxLength: 100 })} type="text" placeholder="Pais" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
             {errors.pais && <div className="alert alert-danger">{errors.pais.message}</div>}
           </div>
           <div className="col-md-6">
-            <input {...register("provincia")} type="text" placeholder="Provincia" className="form-control mb-2" required maxLength={80} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+            <input {...register("provincia", { required: "La provincia es obligatoria", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, maxLength: 100 })} type="text" placeholder="Provincia" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
             {errors.provincia && <div className="alert alert-danger">{errors.provincia.message}</div>}
-            <input {...register("distrito")} type="text" placeholder="Distrito" className="form-control mb-2" required maxLength={80} pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$" title="Solo caracteres alfabéticos" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
+
+            <input {...register("distrito", { required: "El distrito es obligatorio", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, maxLength: 100 })} type="text" placeholder="Distrito" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
             {errors.distrito && <div className="alert alert-danger">{errors.distrito.message}</div>}
-            <input {...register("correo")} type="email" placeholder="Correo" className="form-control mb-2" required maxLength={250} title="Formato de correo inválido" />
+
+            <input {...register("correo", { required: "El correo es obligatorio", pattern: { value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, message: "Formato de correo inválido" }, maxLength: 100 })} type="email" placeholder="Correo" className="form-control mb-2" />
             {errors.correo && <div className="alert alert-danger">{errors.correo.message}</div>}
-            <input {...register("telefono")} type="text" placeholder="Teléfono" className="form-control mb-2" required maxLength={9} pattern="\d{9}" title="El teléfono debe tener exactamente 9 dígitos y solo contener números" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
+
+            <input {...register("telefono", { required: "El teléfono es obligatorio", pattern: { value: /^\d{9}$/, message: "El teléfono debe tener exactamente 9 dígitos y solo contener números" }, maxLength: 9 })} type="text" placeholder="Teléfono" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
             {errors.telefono && <div className="alert alert-danger">{errors.telefono.message}</div>}
           </div>
         </div>
@@ -157,9 +164,11 @@ export default function RegistroClientes() {
           <Image src="/images/PagoOperacion.png" alt="Ejemplo de Nro de operación" width={300} height={300} className="img-fluid" />
         </div>
 
-        <input {...register("referenciaPago")} type="text" placeholder="Nro de operación: Ejemplo - 07258982" className="form-control mb-2" required minLength={8} maxLength={9} pattern="\d{8,9}" title="La referencia de pago debe tener entre 8 y 9 dígitos y solo contener números" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
+        <input {...register("referenciaPago", { required: "La referencia de pago es obligatoria", pattern: { value: /^\d{8,9}$/, message: "La referencia de pago debe tener entre 8 y 9 dígitos y solo contener números" }, maxLength: 9 })} type="text" placeholder="Nro de operación: Ejemplo - 07258982" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
         {errors.referenciaPago && <div className="alert alert-danger">{errors.referenciaPago.message}</div>}
-        <input {...register("voucher")} type="file" className="form-control mb-3" accept="image/png, image/jpeg" required />
+
+        <input {...register("voucher", { required: "El comprobante de pago es obligatorio" })} type="file" className="form-control mb-3" accept="image/png, image/jpeg" />
+        {errors.voucher && <div className="alert alert-danger">{errors.voucher.message}</div>}
 
         <button type="submit" className="btn btn-success" disabled={loading}>
           {loading ? "Registrando..." : "Registrar Participante"}
