@@ -25,7 +25,10 @@ const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESE
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 export default function RegistroClientes() {
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<Cliente>();
+  const { register, handleSubmit, setValue, reset, formState: { errors }, trigger } = useForm<Cliente>({
+    mode: "onChange" // Permite validaciones en tiempo real
+  });
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
@@ -51,30 +54,16 @@ export default function RegistroClientes() {
       const uploadedImageData = await uploadResponse.json();
 
       if (!uploadResponse.ok) {
-        console.error("Cloudinary response:", uploadedImageData);
-        throw new Error(`Error al subir la imagen: ${uploadedImageData.error?.message || 'Unknown error'}`);
+        throw new Error(`Error al subir la imagen: ${uploadedImageData.error?.message || 'Desconocido'}`);
       }
 
       const imageUrl = uploadedImageData.secure_url;
       setValue("voucherUrl", imageUrl);
 
-      // 📤 Enviar los datos al backend a través de la API local `/api/clients`
       const response = await fetch("/api/clients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dni: data.dni,
-          nombres: data.nombres,
-          apellidos: data.apellidos,
-          direccion: data.direccion,
-          pais: data.pais,
-          provincia: data.provincia,
-          distrito: data.distrito,
-          correo: data.correo,
-          telefono: data.telefono,
-          referenciaPago: data.referenciaPago,
-          voucherUrl: imageUrl,
-        }),
+        body: JSON.stringify({ ...data, voucherUrl: imageUrl }),
       });
 
       if (!response.ok) {
@@ -85,12 +74,7 @@ export default function RegistroClientes() {
       setSuccessMessage("🎉 Registro realizado correctamente. Ahora se ha enviado un correo al administrador para validar tu pago y en unos momentos te llegará la confirmación del registro con el detalle del sorteo. ¡Muchas gracias por participar!");
       reset();
     } catch (error) {
-      console.error("❌ Error:", error);
-      if (error instanceof Error) {
-        setError(`Error en el proceso. Inténtalo nuevamente. ${error.message}`);
-      } else {
-        setError("Error en el proceso. Inténtalo nuevamente.");
-      }
+      setError(`Error en el proceso. ${error instanceof Error ? error.message : ""}`);
     } finally {
       setLoading(false);
     }
@@ -104,14 +88,13 @@ export default function RegistroClientes() {
 
   return (
     <div className="container mt-4">
-      <h2>Registro del Participante</h2>
+      <h2 className="text-center">Registro del Participante</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
-      {/* 🔹 Spinner de carga */}
       {loading && (
         <div className="loading-overlay">
-          <div className="spinner"></div>
+          <div className="spinner-border text-primary"></div>
           <p>Registrando participante...</p>
         </div>
       )}
@@ -119,33 +102,113 @@ export default function RegistroClientes() {
       <form onSubmit={handleSubmit(onSubmit)} className="card p-4 shadow-lg">
         <div className="row">
           <div className="col-md-6">
-            <input {...register("dni", { required: "El DNI es obligatorio", pattern: { value: /^\d{8}$/, message: "El DNI debe tener exactamente 8 dígitos y solo contener números" }, maxLength: 8 })} type="text" placeholder="DNI" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
-            {errors.dni && <div className="alert alert-danger">{errors.dni.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("dni", { required: "El DNI es obligatorio", pattern: { value: /^\d{8}$/, message: "Debe tener 8 dígitos" } })}
+                type="text"
+                placeholder="DNI"
+                className={`form-control mb-2 ${errors.dni ? "is-invalid" : ""}`}
+                onBlur={() => trigger("dni")}
+                onKeyPress={(e) => handleInputValidation(e, /\d/)}
+              />
+              {errors.dni && <div className="invalid-feedback">{errors.dni.message}</div>}
+            </div>
 
-            <input {...register("nombres", { required: "Los nombres son obligatorios", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, minLength: 3, maxLength: 150 })} type="text" placeholder="Nombres" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
-            {errors.nombres && <div className="alert alert-danger">{errors.nombres.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("nombres", { required: "Los nombres son obligatorios", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo letras permitidas" }, minLength: 3, maxLength: 150 })}
+                type="text"
+                placeholder="Nombres"
+                className={`form-control mb-2 ${errors.nombres ? "is-invalid" : ""}`}
+                onBlur={() => trigger("nombres")}
+                onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)}
+              />
+              {errors.nombres && <div className="invalid-feedback">{errors.nombres.message}</div>}
+            </div>
 
-            <input {...register("apellidos", { required: "Los apellidos son obligatorios", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, minLength: 3, maxLength: 150 })} type="text" placeholder="Apellidos" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
-            {errors.apellidos && <div className="alert alert-danger">{errors.apellidos.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("apellidos", { required: "Los apellidos son obligatorios", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo letras permitidas" }, minLength: 3, maxLength: 150 })}
+                type="text"
+                placeholder="Apellidos"
+                className={`form-control mb-2 ${errors.apellidos ? "is-invalid" : ""}`}
+                onBlur={() => trigger("apellidos")}
+                onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)}
+              />
+              {errors.apellidos && <div className="invalid-feedback">{errors.apellidos.message}</div>}
+            </div>
 
-            <input {...register("direccion", { required: "La dirección es obligatoria", minLength: 10, maxLength: 250 })} type="text" placeholder="Dirección" className="form-control mb-2" />
-            {errors.direccion && <div className="alert alert-danger">{errors.direccion.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("direccion", { required: "La dirección es obligatoria", minLength: 10, maxLength: 250 })}
+                type="text"
+                placeholder="Dirección"
+                className={`form-control mb-2 ${errors.direccion ? "is-invalid" : ""}`}
+                onBlur={() => trigger("direccion")}
+              />
+              {errors.direccion && <div className="invalid-feedback">{errors.direccion.message}</div>}
+            </div>
 
-            <input {...register("pais", { required: "El país es obligatorio", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, maxLength: 100 })} type="text" placeholder="Pais" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
-            {errors.pais && <div className="alert alert-danger">{errors.pais.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("pais", { required: "El país es obligatorio", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo letras permitidas" }, maxLength: 100 })}
+                type="text"
+                placeholder="Pais"
+                className={`form-control mb-2 ${errors.pais ? "is-invalid" : ""}`}
+                onBlur={() => trigger("pais")}
+                onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)}
+              />
+              {errors.pais && <div className="invalid-feedback">{errors.pais.message}</div>}
+            </div>
           </div>
+
           <div className="col-md-6">
-            <input {...register("provincia", { required: "La provincia es obligatoria", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, maxLength: 100 })} type="text" placeholder="Provincia" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
-            {errors.provincia && <div className="alert alert-danger">{errors.provincia.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("provincia", { required: "La provincia es obligatoria", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo letras permitidas" }, maxLength: 100 })}
+                type="text"
+                placeholder="Provincia"
+                className={`form-control mb-2 ${errors.provincia ? "is-invalid" : ""}`}
+                onBlur={() => trigger("provincia")}
+                onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)}
+              />
+              {errors.provincia && <div className="invalid-feedback">{errors.provincia.message}</div>}
+            </div>
 
-            <input {...register("distrito", { required: "El distrito es obligatorio", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo caracteres alfabéticos" }, maxLength: 100 })} type="text" placeholder="Distrito" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)} />
-            {errors.distrito && <div className="alert alert-danger">{errors.distrito.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("distrito", { required: "El distrito es obligatorio", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo letras permitidas" }, maxLength: 100 })}
+                type="text"
+                placeholder="Distrito"
+                className={`form-control mb-2 ${errors.distrito ? "is-invalid" : ""}`}
+                onBlur={() => trigger("distrito")}
+                onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)}
+              />
+              {errors.distrito && <div className="invalid-feedback">{errors.distrito.message}</div>}
+            </div>
 
-            <input {...register("correo", { required: "El correo es obligatorio", pattern: { value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, message: "Formato de correo inválido" }, maxLength: 100 })} type="email" placeholder="Correo" className="form-control mb-2" />
-            {errors.correo && <div className="alert alert-danger">{errors.correo.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("correo", { required: "El correo es obligatorio", pattern: { value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, message: "Correo inválido" }, maxLength: 100 })}
+                type="email"
+                placeholder="Correo"
+                className={`form-control mb-2 ${errors.correo ? "is-invalid" : ""}`}
+                onBlur={() => trigger("correo")}
+              />
+              {errors.correo && <div className="invalid-feedback">{errors.correo.message}</div>}
+            </div>
 
-            <input {...register("telefono", { required: "El teléfono es obligatorio", pattern: { value: /^\d{9}$/, message: "El teléfono debe tener exactamente 9 dígitos y solo contener números" }, maxLength: 9 })} type="text" placeholder="Teléfono" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
-            {errors.telefono && <div className="alert alert-danger">{errors.telefono.message}</div>}
+            <div className="form-group">
+              <input
+                {...register("telefono", { required: "El teléfono es obligatorio", pattern: { value: /^\d{9}$/, message: "Debe tener 9 dígitos" }, maxLength: 9 })}
+                type="text"
+                placeholder="Teléfono"
+                className={`form-control mb-2 ${errors.telefono ? "is-invalid" : ""}`}
+                onBlur={() => trigger("telefono")}
+                onKeyPress={(e) => handleInputValidation(e, /\d/)}
+              />
+              {errors.telefono && <div className="invalid-feedback">{errors.telefono.message}</div>}
+            </div>
           </div>
         </div>
 
@@ -164,13 +227,30 @@ export default function RegistroClientes() {
           <Image src="/images/PagoOperacion.png" alt="Ejemplo de Nro de operación" width={300} height={300} className="img-fluid" />
         </div>
 
-        <input {...register("referenciaPago", { required: "La referencia de pago es obligatoria", pattern: { value: /^\d{8,9}$/, message: "La referencia de pago debe tener entre 8 y 9 dígitos y solo contener números" }, maxLength: 9 })} type="text" placeholder="Nro de operación: Ejemplo - 07258982" className="form-control mb-2" onKeyPress={(e) => handleInputValidation(e, /\d/)} />
-        {errors.referenciaPago && <div className="alert alert-danger">{errors.referenciaPago.message}</div>}
+        <div className="form-group">
+          <input
+            {...register("referenciaPago", { required: "La referencia de pago es obligatoria", pattern: { value: /^\d{8,9}$/, message: "Debe tener entre 8 y 9 dígitos" }, maxLength: 9 })}
+            type="text"
+            placeholder="Nro de operación: Ejemplo - 07258982"
+            className={`form-control mb-2 ${errors.referenciaPago ? "is-invalid" : ""}`}
+            onBlur={() => trigger("referenciaPago")}
+            onKeyPress={(e) => handleInputValidation(e, /\d/)}
+          />
+          {errors.referenciaPago && <div className="invalid-feedback">{errors.referenciaPago.message}</div>}
+        </div>
 
-        <input {...register("voucher", { required: "El comprobante de pago es obligatorio" })} type="file" className="form-control mb-3" accept="image/png, image/jpeg" />
-        {errors.voucher && <div className="alert alert-danger">{errors.voucher.message}</div>}
+        <div className="form-group">
+          <input
+            {...register("voucher", { required: "El comprobante de pago es obligatorio" })}
+            type="file"
+            className={`form-control mb-3 ${errors.voucher ? "is-invalid" : ""}`}
+            accept="image/png, image/jpeg"
+            onBlur={() => trigger("voucher")}
+          />
+          {errors.voucher && <div className="invalid-feedback">{errors.voucher.message}</div>}
+        </div>
 
-        <button type="submit" className="btn btn-success" disabled={loading}>
+        <button type="submit" className="btn btn-success w-100" disabled={loading}>
           {loading ? "Registrando..." : "Registrar Participante"}
         </button>
       </form>
