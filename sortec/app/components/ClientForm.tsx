@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 interface Cliente {
   dni: string;
@@ -32,6 +34,7 @@ export default function RegistroClientes() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<Cliente> = async (data) => {
     if (!data.voucher || data.voucher.length === 0) {
@@ -72,6 +75,7 @@ export default function RegistroClientes() {
       }
 
       setSuccessMessage("🎉 Registro realizado correctamente. Ahora se ha enviado un correo al administrador para validar tu pago y en unos momentos te llegará la confirmación del registro con el detalle del sorteo. ¡Muchas gracias por participar!");
+      setShowModal(true); // Mostrar el modal
       reset();
     } catch (error) {
       setError(`Error en el proceso. ${error instanceof Error ? error.message : ""}`);
@@ -84,6 +88,12 @@ export default function RegistroClientes() {
     if (!pattern.test(event.key)) {
       event.preventDefault();
     }
+  };
+
+  const handleCloseModal = () => {
+    setLoading(true);
+    setShowModal(false);
+    window.location.reload(); // Refrescar la página
   };
 
   return (
@@ -254,6 +264,26 @@ export default function RegistroClientes() {
           {loading ? "Registrando..." : "Registrar Participante"}
         </button>
       </form>
+
+      {/* Modal de éxito */}
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton style={{ backgroundColor: "#d4edda" }}>
+          <Modal.Title style={{ color: "#007bff" }}>Registro Exitoso</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: "#d4edda" }}>
+          <div className="text-center">
+            <i className="fas fa-check-circle" style={{ fontSize: "2em", color: "#28a745" }}></i>
+            <p className="mt-3">
+              🎉 Registro realizado correctamente. Ahora se ha enviado un correo al administrador para validar tu pago y en unos momentos te llegará la confirmación del registro con el detalle del sorteo. ¡Muchas gracias por participar!
+            </p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer style={{ backgroundColor: "#d4edda" }}>
+          <Button variant="primary" onClick={handleCloseModal}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

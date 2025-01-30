@@ -197,3 +197,48 @@ button:hover {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+
+/* Estilos para el contenedor del chat */
+.chat-container {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-container h3 {
+  margin-top: 0;
+  color: #0070f3;
+}
+
+.chat-container p {
+  margin: 5px 0;
+}
+
+.chat-container canvas {
+  margin-top: 10px;
+}
+
+/* Estilos para el mensaje destacado */
+.highlight-message {
+  color: red;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.highlight-message i {
+  margin-right: 10px;
+}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ClientForm from "./components/ClientForm";
 import ClientList from "./components/ClientList";
+import Chat from "./components/Chat";
 import Image from "next/image";
 
 export default function Home() {
@@ -44,6 +45,17 @@ export default function Home() {
 
       {/* Se muestra la lista de clientes solo después de hacer clic en el botón */}
       {showClients && <ClientList reloadTrigger={reloadTrigger} />}
+
+      {/* Componente de chat para mostrar el conteo de participantes aprobados */}
+      {showClients && <Chat />}
+
+      {/* Mensaje destacado */}
+      <div className="highlight-message">
+        <i className="fas fa-gift"></i>
+        
+        FECHA DEL PRIMER SORTEO DE SORTEC SE REALIZARA EL DIA 13 DE FEBRERO.
+        <i className="fas fa-gift"></i>
+      </div>
     </div>
   );
 }

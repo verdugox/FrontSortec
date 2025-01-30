@@ -40,7 +40,9 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const [loading, setLoading] = useState<boolean>(true); // 🔹 Estado de carga
 
   useEffect(() => {
-    fetchClientes();
+    if (reloadTrigger > 0) {
+      fetchClientes();
+    }
   }, [reloadTrigger]); // 🔹 Agregar reloadTrigger como dependencia
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   }, [searchTerm, clientes, rowsPerPage, currentPage]);
 
   const fetchClientes = async () => {
+    setLoading(true);
     try {
       const response = await fetch("/api/clients");
       if (!response.ok) {
