@@ -153,7 +153,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
     setShowModal(true);
   };
 
-  const totalPages = Math.ceil(filteredClientes.length / rowsPerPage);
+  const totalPages = Math.ceil(clientes.length / rowsPerPage); // Corregir el cálculo de totalPages
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
