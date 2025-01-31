@@ -32,7 +32,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [filteredClientes, setFilteredClientes] = useState<Cliente[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(30);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [error, setError] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -189,9 +189,9 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
         </div>
         <div className="col-md-3">
           <select className="form-control" value={rowsPerPage} onChange={handleRowsChange}>
-            <option value={5}>Mostrar 5</option>
-            <option value={10}>Mostrar 10</option>
-            <option value={20}>Mostrar 20</option>
+            <option value={30}>Mostrar 30</option>
+            <option value={50}>Mostrar 50</option>
+            <option value={70}>Mostrar 70</option>
           </select>
         </div>
         <div className="col-md-3">
