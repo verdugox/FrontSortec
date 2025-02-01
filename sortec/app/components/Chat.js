@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from "chart.js";
+import { DateTime } from "luxon";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
@@ -90,7 +91,9 @@ export default function Chat() {
     return () => clearInterval(interval);
   }, []);
 
-  const daysUntilDraw = Math.max(0, Math.ceil((new Date("2025-02-13") - new Date()) / (1000 * 60 * 60 * 24)));
+  const now = DateTime.now().setZone("America/Lima");
+  const drawDate = DateTime.fromISO("2025-02-13T00:00:00", { zone: "America/Lima" });
+  const daysUntilDraw = Math.max(0, Math.ceil(drawDate.diff(now, "days").days));
 
   return (
     <div className="chat-container">
