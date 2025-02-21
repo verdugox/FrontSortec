@@ -1,5 +1,7 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://48.216.202.189/api";
+
 const config = {
-    apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "http://48.216.202.189/api",
+    apiBaseUrl: API_URL,
     //apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8086/api",
     cloudinary: {
       cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dizkdk1te",
@@ -9,3 +11,6 @@ const config = {
   };
   
   export default config;
+
+
+  
