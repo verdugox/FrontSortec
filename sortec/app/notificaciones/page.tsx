@@ -6,7 +6,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Container, Dropdown, Modal, Button, Spinner } from "react-bootstrap";
 import { FaUserCircle, FaSignOutAlt, FaTachometerAlt, FaUsers, FaShoppingCart, FaCog, FaChartLine, FaBars } from "react-icons/fa";
 import TipTapEditor from "./TipTapEditor"; // Importa el editor correctamente
-import config from "../../config"; // Importa el archivo de configuración
 
 interface Perfil {
   codigoSortec: string;
@@ -64,7 +63,7 @@ export default function Notificacion() {
       return;
     }
     
-    fetch(`${config.apiBaseUrl}/clients/perfil`, {
+    fetch(`/api/clients/perfil`, {
       method: "GET",
       headers: {
         "Authorization": token,
@@ -155,7 +154,7 @@ export default function Notificacion() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${config.apiBaseUrl}/clients/send-dynamic-mass-email`, {
+      const response = await fetch(`/api/clients/send-dynamic-mass-email`, {
         method: "POST",
         headers: {
           "Authorization": token,
@@ -198,7 +197,7 @@ export default function Notificacion() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${config.apiBaseUrl}/clients/send-winner-notification`, {
+      const response = await fetch(`/api/clients/send-winner-notification`, {
         method: "POST",
         headers: {
           "Authorization": token,
@@ -238,7 +237,7 @@ export default function Notificacion() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${config.apiBaseUrl}/clients/send-manual-subscription-reminder`, {
+      const response = await fetch(`/api/clients/send-manual-subscription-reminder`, {
         method: "POST",
         headers: {
           "Authorization": token,

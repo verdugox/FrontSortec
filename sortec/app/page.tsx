@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import Login from "./components/Login";
 import ClientForm from "./components/ClientForm"; // Adjust the path as necessary
 import { motion } from "framer-motion"; // Importamos Framer Motion
-import config from "../config";
 
 interface Perfil {
   id: string;
@@ -130,7 +129,7 @@ export default function HomePage() {
           return;
         }
   
-        const response = await fetch(`${config.apiBaseUrl}/payments/all`, {
+        const response = await fetch(`/api/payments/all`, {
           method: "GET",
           headers: {
             "Authorization": token,
@@ -187,7 +186,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchGanadores = async () => {
       try {
-        const response = await fetch(`${config.apiBaseUrl}/ganadores`, {
+        const response = await fetch(`/api/ganadores`, {
           method: "GET",
           headers: { "Content-Type": "application/json" }
         });
@@ -225,7 +224,7 @@ useEffect(() => {
     const fetchSorteos = async () => {
         setLoadingSorteos(true);
         try {
-            const response = await fetch(`${config.apiBaseUrl}/sorteos`, {
+            const response = await fetch(`/api/sorteos`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"

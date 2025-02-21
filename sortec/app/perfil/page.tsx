@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { Container, Nav, Navbar, Dropdown, Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/navigation";
-import config from "../../config";
 
 interface Perfil {
     id: string;
@@ -65,7 +64,7 @@ export default function PerfilPage() {
               const token = localStorage.getItem("token");
               const updatedClient = { ...client, sexo: genero }; // ✅ Incluir género en los datos
   
-              const response = await fetch(`${config.apiBaseUrl}/clients/${client.id}`, {
+              const response = await fetch(`/api/clients/${client.id}`, {
                   method: "PUT",
                   headers: {
                       "Content-Type": "application/json",

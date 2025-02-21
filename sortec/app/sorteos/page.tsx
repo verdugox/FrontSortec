@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Container, Dropdown, Modal, Button, Table, Form, Spinner, Pagination  } from "react-bootstrap";
 import { FaUserCircle, FaSignOutAlt, FaTachometerAlt, FaUsers, FaShoppingCart, FaCog, FaChartLine, FaBars, FaEdit, FaTrash, FaEye} from "react-icons/fa";
-import config from "../../config";
 
-const API_URL = `${config.apiBaseUrl}/sorteos`;
+
+const API_URL = `/api/sorteos`;
 
 interface Perfil {
   dni: string;
@@ -76,7 +76,7 @@ export default function Sorteos() {
       return;
     }
 
-    fetch(`${config.apiBaseUrl}/clients/perfil`, {
+    fetch(`/api/clients/perfil`, {
       method: "GET",
       headers: { 
         "Authorization": token,

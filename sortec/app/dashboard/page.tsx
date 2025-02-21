@@ -7,7 +7,6 @@ import ClientList from "../components/ClientList";
 import Chat from "../components/Chat";
 import { Navbar, Nav, Container, Dropdown } from "react-bootstrap";
 import { FaUserCircle, FaSignOutAlt, FaTachometerAlt, FaUsers, FaShoppingCart, FaCog, FaChartLine, FaBars } from "react-icons/fa";
-import config from "../../config";
 
 interface Perfil {
   dni: string;
@@ -37,7 +36,7 @@ export default function Dashboard() {
       return;
     }
 
-    fetch(`${config.apiBaseUrl}/clients/perfil`, {
+    fetch(`/api/clients/perfil`, {
       method: "GET",
       headers: { 
         "Authorization": token,

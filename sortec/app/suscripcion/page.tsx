@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import { FaDownload } from "react-icons/fa";
 import generateInvoicePDF from "../components/GenerateInvoice"; // Ajusta la ruta según tu proyecto
-import config from "../../config";
 
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dizkdk1te";
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "Sortecfiles";
@@ -82,7 +81,7 @@ export default function PerfilPage() {
       const fetchPayments = async () => {
           try {
               const token = localStorage.getItem("token");
-              const response = await fetch(`${config.apiBaseUrl}/payments/all`, {
+              const response = await fetch(`/api/payments/all`, {
                   method: "GET",
                   headers: {
                       "Content-Type": "application/json",
@@ -147,7 +146,7 @@ export default function PerfilPage() {
 
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${config.apiBaseUrl}/clients/${client?.id}`, {
+        const response = await fetch(`/api/clients/${client?.id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": token || "",
@@ -193,7 +192,7 @@ export default function PerfilPage() {
 
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${config.apiBaseUrl}/api/payments/register-payment`, {
+        const response = await fetch(`/api/payments/register-payment`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

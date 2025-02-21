@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ClientForm from "./ClientForm";
-import config from "../../config";
 
 // Definir la interfaz Client
 interface Perfil {
@@ -43,7 +42,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     setError("");
 
     try {
-      const response = await fetch(`${config.apiBaseUrl}/auth/login`, {
+      const response = await fetch(`/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +66,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
       localStorage.setItem("token", `Bearer ${data.token}`);
 
-      const perfilResponse = await fetch(`${config.apiBaseUrl}/clients/perfil`, {
+      const perfilResponse = await fetch(`/api/clients/perfil`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${data.token}`,

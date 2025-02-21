@@ -1,10 +1,18 @@
 module.exports = {
-    env: {
-      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
-      CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
-      CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
-      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-      NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
-    }
-  };
-
+  env: {
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+  },
+  
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*", 
+        destination: "http://48.216.202.189/api/:path*"  // Redirige todas las llamadas a /api al microservicio en AKS
+      }
+    ];
+  }
+};
