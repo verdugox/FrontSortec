@@ -11,7 +11,7 @@ module.exports = {
     return [
       {
         source: "/api/:path*", 
-        destination: "http://48.216.202.189/api/:path*"  // Redirige todas las llamadas a /api al microservicio en AKS
+        destination: "https://api.sortsortech.com/api/:path*"  // ✅ Ahora redirige a HTTPS con Ingress
       }
     ];
   }
