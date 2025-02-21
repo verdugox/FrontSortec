@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
@@ -196,7 +195,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
         </div>
         <div className="col-md-3">
           {/* Botón de Exportar a Excel */}
-          <div className="text-end mb-3" style={{ display: "none" }}>
+          <div className="text-end mb-3">
             <button className="btn btn-success" onClick={exportToExcel}>
               📥 Exportar a Excel
             </button>
@@ -316,9 +315,9 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cerrar
-          </Button>
+            <button className="btn btn-primary" onClick={() => setShowModal(false)}>
+            OK
+            </button>
         </Modal.Footer>
       </Modal>
     </div>

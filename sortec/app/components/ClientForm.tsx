@@ -5,14 +5,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 
 interface Cliente {
   dni: string;
   nombres: string;
   apellidos: string;
   direccion: string;
-  pais: string;
+  pais?: string;
   provincia: string;
   distrito: string;
   correo: string;
@@ -158,18 +157,6 @@ export default function RegistroClientes() {
               />
               {errors.direccion && <div className="invalid-feedback">{errors.direccion.message}</div>}
             </div>
-
-            <div className="form-group">
-              <input
-                {...register("pais", { required: "El país es obligatorio", pattern: { value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/, message: "Solo letras permitidas" }, maxLength: 100 })}
-                type="text"
-                placeholder="Pais"
-                className={`form-control mb-2 ${errors.pais ? "is-invalid" : ""}`}
-                onBlur={() => trigger("pais")}
-                onKeyPress={(e) => handleInputValidation(e, /^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/)}
-              />
-              {errors.pais && <div className="invalid-feedback">{errors.pais.message}</div>}
-            </div>
           </div>
 
           <div className="col-md-6">
@@ -232,22 +219,7 @@ export default function RegistroClientes() {
         <div className="text-center mb-3">
           <Image src="/images/QRYapeLuis.png" alt="QR Yape" width={300} height={300} className="img-fluid" />
         </div>
-        <p>Puede realizar el pago usando Yape o Plin. Asegúrese de agregar el número de operación en el campo Nro de operación! y de adjuntar el voucher de pago en la opción Elegir archivo.</p>
-        <div className="text-center mb-3">
-          <Image src="/images/PagoOperacion.png" alt="Ejemplo de Nro de operación" width={300} height={300} className="img-fluid" />
-        </div>
-
-        <div className="form-group">
-          <input
-            {...register("referenciaPago", { required: "La referencia de pago es obligatoria", pattern: { value: /^\d{8,9}$/, message: "Debe tener entre 8 y 9 dígitos" }, maxLength: 9 })}
-            type="text"
-            placeholder="Nro de operación: Ejemplo - 07258982"
-            className={`form-control mb-2 ${errors.referenciaPago ? "is-invalid" : ""}`}
-            onBlur={() => trigger("referenciaPago")}
-            onKeyPress={(e) => handleInputValidation(e, /\d/)}
-          />
-          {errors.referenciaPago && <div className="invalid-feedback">{errors.referenciaPago.message}</div>}
-        </div>
+        <p>Puede realizar el pago usando Yape o Plin. Asegúrese de adjuntar el voucher de pago en la opción Elegir archivo.</p>
 
         <div className="form-group">
           <input
@@ -279,9 +251,9 @@ export default function RegistroClientes() {
           </div>
         </Modal.Body>
         <Modal.Footer style={{ backgroundColor: "#d4edda" }}>
-          <Button variant="primary" onClick={handleCloseModal}>
-            OK
-          </Button>
+            <button className="btn btn-primary" onClick={handleCloseModal}>
+              OK
+            </button>
         </Modal.Footer>
       </Modal>
     </div>

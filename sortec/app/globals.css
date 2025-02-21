@@ -6,7 +6,7 @@
   border-radius: 8px;
 }
 
-input, button {
+.input, .button {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
@@ -14,14 +14,14 @@ input, button {
   border-radius: 4px;
 }
 
-button {
+.button {
   background-color: #0070f3;
   color: white;
   border: none;
   cursor: pointer;
 }
 
-button:hover {
+.button:hover {
   background-color: #005bb5;
 }
 
@@ -241,4 +241,265 @@ button:hover {
 
 .highlight-message i {
   margin-right: 10px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.nav {
+  background-color: #007bff;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.nav-link {
+  color: white;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.card {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: #1e1e2d;
+  color: white;
+  position: fixed;
+  padding: 15px;
+  transition: all 0.3s;
+}
+
+.sidebar .nav-item {
+  padding: 10px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar .nav-item:hover {
+  transform: scale(1.05);
+}
+
+.sidebar .nav-link {
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+/* Navbar */
+.navbar-custom {
+  background: #222533;
+  color: white;
+  padding: 15px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-custom .nav-link {
+  color: white;
+}
+
+/* Estadísticas */
+.stat-card {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Gráficos */
+.chart-container {
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar con efecto de apertura */
+.sidebar {
+  width: 250px;
+  background: #1e1e2d;
+  color: white;
+  position: fixed;
+  height: 100vh;
+  padding: 15px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-closed {
+  transform: translateX(-100%);
+}
+
+.sidebar-open {
+  transform: translateX(0);
+}
+
+/* Navbar fijo */
+.navbar-custom {
+  background: #222533;
+  color: white;
+  padding: 15px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Efecto en elementos del menú */
+.sidebar .nav-item:hover {
+  transform: scale(1.05);
+}
+
+/* Ajuste para gráficos */
+.chart-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Botones cuadrados */
+.btn-square {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar-custom .container-fluid {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .navbar-custom .d-flex.align-items-center {
+    justify-content: flex-start;
+  }
+
+  .navbar-custom .d-flex.align-items-center .navbar-brand {
+    margin: 0 auto;
+  }
+
+  .navbar-custom .d-flex.d-lg-none.align-items-center {
+    order: 1;
+    justify-content: flex-end;
+  }
+
+  .navbar-custom .d-none.d-lg-flex.align-items-center {
+    order: 2;
+    width: auto;
+    justify-content: flex-end;
+  }
+
+  .profile-menu-mobile {
+    display: block;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    left: 0;
+    z-index: 1001;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0 15px;
+  }
+
+  .card {
+    margin-bottom: 15px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .overlay-menu {
+    position: fixed;
+    top: 60px; /* Debajo del encabezado */
+    left: 0;
+    width: 50%; /* Ocupa la mitad de la pantalla */
+    height: 100%;
+    overflow-y: auto;
+    z-index: 1050;
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  .overlay-profile {
+    position: fixed;
+    top: 60px; /* Debajo del encabezado */
+    right: 0;
+    width: 50%; /* Ocupa la mitad de la pantalla */
+    height: 100%;
+    overflow-y: auto;
+    z-index: 1050;
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .flex-grow-1 {
+    padding: 15px;
+  }
+
+  /* Forzar color azul en el título del calendario */
+  #calendar-section .fc-toolbar .fc-toolbar-title,
+  #historial .fc-toolbar-title,
+  div.fc-toolbar-chunk > h2#fc-dom-1.fc-toolbar-title,
+  h2#fc-dom-1.fc-toolbar-title,
+  h2[class*="fc-toolbar-title"] {
+    color: #007bff !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    background: transparent !important;
+    opacity: 1 !important;
+    mix-blend-mode: normal !important; 
+    filter: none !important;
+    text-shadow: none !important;
+    -webkit-text-fill-color: #007bff !important;  /* Esto fuerza el color en navegadores WebKit */
+    -webkit-text-stroke: 0px !important;          /* Asegura que no haya borde blanco sobre el texto */
+  }
+  
+  .fc-toolbar-chunk{
+    color: #007bff !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+  }
+
+  .fc-header-toolbar .fc-toolbar .fc-toolbar-ltr
+  {
+    color: #007bff !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+  }
+
+  .fc .fc-media-screen .fc-direction-ltr .fc-theme-standard
+  {
+    color: #007bff !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+  }
+
+  
+  
+
 }

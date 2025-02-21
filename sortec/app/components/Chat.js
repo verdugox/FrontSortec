@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
-export default function Chat() {
+export default function Chat({ tipo, setStats }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [barChartData, setBarChartData] = useState({ labels: [], datasets: [] });
@@ -21,17 +21,28 @@ export default function Chat() {
           throw new Error("Error al obtener la cantidad de participantes registrados.");
         }
         const data = await response.json();
-        // Procesa los datos para obtener la cantidad de participantes aprobados por día
+
         const countsByDate = [];
-        const approvedParticipants = data.filter(participant => participant.estado === "aprobado");
-        approvedParticipants.forEach(participant => {
-          //if (participant.fechaRegistro) {
-            const date = participant.fechaRegistro.split(" ")[0]; // Extrae solo la fecha
-            //countsByDate[date] = (countsByDate[date] || 0) + 1;
-            countsByDate.push(date);
-          //}
+        let approved = 0, pending = 0, denied = 0;
+
+        data.forEach(participant => {
+          const date = participant.fechaRegistro.split(" ")[0];
+
+          if (participant.estado === "aprobado") {
+            approved++;
+          } else if (participant.estado === "pendiente") {
+            pending++;
+          } else if (participant.estado === "denegado") {
+            denied++;
+          }
+
+          countsByDate.push(date);
         });
-        // Genera las etiquetas y los datos del gráfico de barras
+
+        if (setStats) {
+          setStats({ approved, pending, denied });
+        }
+
         const labels = [];
         const counts = [];
         const startDate = new Date("2025-01-29");
@@ -42,37 +53,31 @@ export default function Chat() {
             month: "2-digit",
             day: "2-digit"
           }).format(d);
-          var contador = 0;
-            for(let i = 0; i < countsByDate.length; i++) {
-                if(countsByDate[i] === dateStr) {
-                    contador = contador + 1;
-                }
-            }
-            labels.push(dateStr);
-            counts.push(contador);
+          let contador = countsByDate.filter(date => date === dateStr).length;
+          labels.push(dateStr);
+          counts.push(contador);
         }
-        //29/01/2025 20:34:50" 
+
         setBarChartData({
           labels,
           datasets: [
             {
               label: "Participantes Aprobados",
               data: counts,
-              backgroundColor: "rgba(39, 39, 212, 0.6)", // Azul oscuro 3D
+              backgroundColor: "rgba(39, 39, 212, 0.6)",
               borderColor: "rgba(0, 0, 139, 1)",
               borderWidth: 1,
             },
           ],
         });
 
-        // Genera los datos del gráfico circular
         setDoughnutChartData({
-          labels: ["Total Participantes Aprobados"],
+          labels: ["Aprobados", "Pendientes", "Denegados"],
           datasets: [
             {
-              data: [approvedParticipants.length],
-              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
-              borderColor: ["rgba(75, 192, 192, 1)"],
+              data: [approved, pending, denied],
+              backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
+              borderColor: ["#388E3C", "#FF9800", "#D32F2F"],
               borderWidth: 1,
             },
           ],
@@ -86,8 +91,7 @@ export default function Chat() {
     };
 
     fetchParticipantData();
-
-    const interval = setInterval(fetchParticipantData, 1200000); // Actualiza cada 2 minuto
+    const interval = setInterval(fetchParticipantData, 1200000);
     return () => clearInterval(interval);
   }, []);
 
@@ -96,34 +100,29 @@ export default function Chat() {
   const daysUntilDraw = Math.max(0, Math.ceil(drawDate.diff(now, "days").days));
 
   return (
-    <div className="chat-container">
-      <h3 style={{ color: "#007bff" }}>Participantes Registrados</h3>
+    <div className="chart-container">
       {loading ? (
         <p>Cargando...</p>
       ) : error ? (
         <p className="alert alert-danger">{error}</p>
       ) : (
         <>
-          <Bar 
-            data={barChartData} 
-            options={{ 
-              responsive: true, 
-              plugins: { 
-                legend: { display: false } 
-              }, 
-              scales: { 
-                x: { 
-                  beginAtZero: true, 
-                  ticks: { stepSize: 1 } 
-                }, 
-                y: { 
-                  beginAtZero: true, 
-                  ticks: { stepSize: 5, max: 100 } 
+          {tipo === "barras" && (
+            <Bar 
+              data={barChartData} 
+              options={{ 
+                responsive: true, 
+                plugins: { legend: { display: false } },
+                scales: { 
+                  x: { ticks: { stepSize: 1 } }, 
+                  y: { ticks: { stepSize: 5, max: 100 } } 
                 } 
-              } 
-            }} 
-          />
-          <Doughnut data={doughnutChartData} options={{ responsive: true, plugins: { legend: { display: true } } }} />
+              }} 
+            />
+          )}
+          {tipo === "dona" && (
+            <Doughnut data={doughnutChartData} options={{ responsive: true, plugins: { legend: { display: true } } }} />
+          )}
         </>
       )}
       <p>Faltan <strong>{daysUntilDraw}</strong> días para el sorteo.</p>
