@@ -363,20 +363,30 @@ useEffect(() => {
 
       {!client ? (
         <section id="carousel" className="my-4 position-relative">
-          <Carousel>
-            {["/images/banner1.jpeg", "/images/banner2.png", "/images/SORTEC.jpg"].map((src, index) => (
-              <Carousel.Item key={index} style={{ maxHeight: "800px" }}>
-                <img className="d-block w-100" src={src} alt={`Slide ${index + 1}`} style={{ opacity: 5.0 }} />
-                <div className="overlay"></div>
-              </Carousel.Item>
-            ))}
-          </Carousel>
-          <div className="carousel-caption">
-            <h1 className="animated-title">¡Obtén tus beneficios aquí!</h1>
-            <button className="btn btn-primary btn-lg" onClick={() => setShowRegister(true)}>¡Quiero ser suscriptor!</button>
-          </div>
-          <img className="man-pointing" src="/images/hombre01.png" alt="Man Pointing" />
-          <img className="woman-pointing" src="/images/mujer01.png" alt="Woman Pointing" />
+         <Carousel>
+          {["/images/banner1.jpeg", "/images/banner2.png", "/images/SORTEC.jpg"].map((src, index) => (
+            <Carousel.Item key={index} style={{ maxHeight: "800px" }}>
+              <img className="d-block w-100" src={src} alt={`Slide ${index + 1}`} style={{ opacity: 5.0 }} />
+              <div className="overlay"></div>
+            </Carousel.Item>
+          ))}
+        </Carousel>
+
+        {/* ✅ Versión Escritorio - Texto y botón sobre el slide */}
+        <div className="carousel-caption d-none d-md-block">
+          <h1 className="animated-title">¡Obtén tus beneficios aquí!</h1>
+          <button className="btn btn-primary btn-lg" onClick={() => setShowRegister(true)}>¡Quiero ser suscriptor!</button>
+        </div>
+
+        {/* ✅ Versión Móvil - Texto y botón debajo del slide */}
+        <div className="d-block d-md-none text-center mt-3">
+          <h2 className="mobile-title">¡Obtén tus beneficios aquí!</h2>
+          <button className="btn btn-primary btn-lg mt-2" onClick={() => setShowRegister(true)}>¡Quiero ser suscriptor!</button>
+        </div>
+
+        {/* Imágenes de personajes */}
+        <img className="man-pointing" src="/images/hombre01.png" alt="Man Pointing" />
+        <img className="woman-pointing" src="/images/mujer01.png" alt="Woman Pointing" />
 
         </section>
       ) : (
@@ -873,7 +883,7 @@ useEffect(() => {
         }
         .man-pointing, .woman-pointing {
           position: absolute;
-          top: 69%;
+          top: 56%;
           transform: translateY(-50%);
           max-width: 20%;
           height: auto;
