@@ -79,27 +79,32 @@ export default function PerfilPage() {
 
     useEffect(() => {
       const fetchPayments = async () => {
+          if (!client?.id) return; // Evita ejecutar la petición si client.id no está definido
+  
           try {
               const token = localStorage.getItem("token");
-              const response = await fetch(`/api/payments/all`, {
+              const response = await fetch(`/api/payments/client/${client.id}`, {
                   method: "GET",
                   headers: {
                       "Content-Type": "application/json",
-                      "Authorization": token || ""
+                      "Authorization": token || "",
                   }
               });
+  
               if (response.ok) {
                   const data = await response.json();
                   setPayments(data);
               } else {
-                  console.error("Error al obtener los pagos");
+                  console.error("Error al obtener los pagos:", response.statusText);
               }
           } catch (error) {
               console.error("Error en la solicitud de pagos:", error);
           }
       };
+  
       fetchPayments();
-  }, []);
+  }, [client?.id]); // Se ejecutará cuando el ID del cliente esté disponible
+  
 
 
     const handleRenewSubscription = () => {
