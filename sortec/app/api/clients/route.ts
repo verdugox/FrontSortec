@@ -1,8 +1,6 @@
-import config from "../../../config";
-
 export async function GET() {
   try {
-    const response = await fetch(`${config.apiBaseUrl}/clients`);
+    const response = await fetch(`/api/clients`);
 
     if (!response.ok) {
       return new Response(JSON.stringify({ error: `Error al obtener clientes: ${response.statusText}` }), {
@@ -32,7 +30,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const clientData = await request.json();
-    const response = await fetch(`${config.apiBaseUrl}/clients`, {
+    const response = await fetch(`/api/clients`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(clientData),
@@ -64,7 +62,7 @@ export async function PUT(request: Request) {
   try {
     const clientData = await request.json();
     const { id } = clientData;
-    const response = await fetch(`${config.apiBaseUrl}/clients/${id}`, {
+    const response = await fetch(`/api/clients/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(clientData),
@@ -96,7 +94,7 @@ export async function DELETE(request: Request) {
   try {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();
-    const response = await fetch(`${config.apiBaseUrl}/clients/${id}`, {
+    const response = await fetch(`/api/clients/${id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
@@ -120,6 +118,4 @@ export async function DELETE(request: Request) {
       headers: { "Content-Type": "application/json" },
     });
   }
-};
-
-
+}

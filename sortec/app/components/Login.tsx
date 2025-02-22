@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ClientForm from "./ClientForm";
-import { loginUser, fetchUserProfile } from "../api/services/api";
-
 
 // Definir la interfaz Client
 interface Perfil {
@@ -44,25 +42,50 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     setError("");
 
     try {
-      // Autenticación del usuario
-      const data = await loginUser(dni, password);
+      const response = await fetch(`/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ dni, password }),
+        mode: "cors",
+        credentials: "include"
+      });
+
+      if (!response.ok) {
+        throw new Error("Credenciales incorrectas.");
+      }
+
+      const data = await response.json();
       console.log("🔹 Token recibido:", data.token);
-  
+
       if (!data.token) {
         throw new Error("Error al obtener el token de autenticación.");
       }
-  
+
       localStorage.setItem("token", `Bearer ${data.token}`);
-  
-      // Obtención del perfil del usuario autenticado
-      const perfilData = await fetchUserProfile(data.token);
+
+      const perfilResponse = await fetch(`/api/clients/perfil`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${data.token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!perfilResponse.ok) {
+        throw new Error("Error al obtener el perfil del usuario.");
+      }
+
+      const perfilData = await perfilResponse.json();
+
       localStorage.setItem("client", JSON.stringify(perfilData.perfil));
       onLoginSuccess?.(perfilData.perfil, data.token);
-  
+
       console.log("🔹 Perfil del usuario:", perfilData.perfil);
       console.log("🔹 Rol del usuario:", localStorage);
-  
-      // Redirección según el rol del usuario
+
       if (perfilData.perfil.rol === "ADMINISTRADOR") {
         router.push("/dashboard");
       } else if (perfilData.perfil.rol === "PARTICIPANTE") {
