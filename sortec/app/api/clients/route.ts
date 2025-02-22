@@ -1,6 +1,8 @@
+const API_BASE_URL = "http://48.216.202.189/api";
+
 export async function GET() {
   try {
-    const response = await fetch(`/api/clients`);
+    const response = await fetch(`${API_BASE_URL}/clients`);
 
     if (!response.ok) {
       return new Response(JSON.stringify({ error: `Error al obtener clientes: ${response.statusText}` }), {
@@ -30,7 +32,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const clientData = await request.json();
-    const response = await fetch(`/api/clients`, {
+    const response = await fetch(`${API_BASE_URL}/clients`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(clientData),
@@ -62,7 +64,7 @@ export async function PUT(request: Request) {
   try {
     const clientData = await request.json();
     const { id } = clientData;
-    const response = await fetch(`/api/clients/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/clients/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(clientData),
@@ -94,7 +96,7 @@ export async function DELETE(request: Request) {
   try {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();
-    const response = await fetch(`/api/clients/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/clients/${id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
