@@ -176,12 +176,21 @@ export default function HomePage() {
     }
     return null;
 };
-  const getLastPaymentDate = (payments: Payment[]) => {
-    if (payments.length === 0) return null;
-    const sortedPayments = payments.sort((a, b) => new Date(a.fechaPago).getTime() - new Date(b.fechaPago).getTime());
-    const lastPayment = sortedPayments[sortedPayments.length - 1];
-    return parseFechaRegistro(lastPayment.fechaPago);
-  };
+const lastPaymentDate = getLastPaymentDate(payments); // ✅ Obtener la última fecha de pago
+
+if (lastPaymentDate) {
+  const paymentDate = parseFechaRegistro(lastPaymentDate); // ✅ Convertir la fecha de pago correctamente
+  if (paymentDate) {
+    paymentDate.setMonth(paymentDate.getMonth() + 1); // ✅ Sumar 1 mes a la fecha de pago
+    
+    // ✅ Formatear correctamente la fecha en dd/mm/yyyy
+    const formattedDay = String(paymentDate.getDate()).padStart(2, "0");
+    const formattedMonth = String(paymentDate.getMonth() + 1).padStart(2, "0");
+    const formattedYear = paymentDate.getFullYear();
+    
+    subscriptionEndDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
+  }
+}
 
   useEffect(() => {
     const fetchGanadores = async () => {
