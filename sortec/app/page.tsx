@@ -146,24 +146,55 @@ export default function HomePage() {
           console.error(`Error al obtener los pagos: ${response.status} - ${response.statusText}`);
           return;
         }
-  
-        const data = await response.json();
-  
-        if (!Array.isArray(data) || data.length === 0) {
-          console.warn("⚠ No hay pagos registrados.");
-          setPayments([]);
-          return;
-        }
-  
-        setPayments(data);
-      } catch (error) {
-        console.error("❌ Error en la solicitud de pagos:", error);
+useEffect(() => {
+  const fetchPayments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // ✅ Validar que haya un cliente y un ID válido antes de hacer la petición
+      if (!token) {
+        console.warn("🔒 No se obtuvo el token, omitiendo la carga de pagos.");
+        return;
       }
-    };
-  
-    fetchPayments();
-  }, [client]); // ✅ Se ejecuta solo si `client` cambia (cuando el usuario inicia sesión)
-  
+      if (!client?.id) {
+        console.warn("⚠ No se obtuvo el ID del cliente, omitiendo la carga de pagos.");
+        return;
+      }
+
+      const response = await fetch(`/api/payments/client/${client.id}`, {
+        method: "GET",
+        headers: {
+          "Authorization": token,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 401) {
+        console.warn("🔴 Usuario no autorizado para obtener pagos. Omitting fetch.");
+        return;
+      }
+
+      if (!response.ok) {
+        console.error(`❌ Error al obtener los pagos: ${response.status} - ${response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        console.warn("⚠ No hay pagos registrados para este cliente.");
+        setPayments([]);
+        return;
+      }
+
+      setPayments(data);
+    } catch (error) {
+      console.error("❌ Error en la solicitud de pagos:", error);
+    }
+  };
+
+  fetchPayments();
+}, [client?.id]); // ✅ Se ejecutará cuando el ID del cliente esté disponible
   
   useEffect(() => {
     const fetchGanadores = async () => {
