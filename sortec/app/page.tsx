@@ -54,11 +54,11 @@ export default function HomePage() {
   const router = useRouter();
   const [payments, setPayments] = useState<Payment[]>([]);
 
-  const [miniCarouselData, setMiniCarouselData] = useState<{ img: string; description: string; fecha: string }[]>([]);
+  const [miniCarouselData, setMiniCarouselData] = useState<{ img: string; titulo: string; description: string; fecha: string }[]>([]);
   const [loadingSorteos, setLoadingSorteos] = useState(false);
 
   const [showModalViewSorteo, setShowModalViewSorteo] = useState(false);
-  const [selectedSorteo, setSelectedSorteo] = useState<{ img: string; description: string; fecha: string } | null>(null);
+  const [selectedSorteo, setSelectedSorteo] = useState<{ img: string; titulo:string; description: string; fecha: string } | null>(null);
 
   const [winnersData, setWinnersData] = useState<{ img: string; title: string }[]>([]);
 
@@ -77,7 +77,7 @@ export default function HomePage() {
     router.push("/");
   };
 
-  const handleOpenModalSorteo = (sorteo: { img: string; description: string; fecha: string }) => {
+  const handleOpenModalSorteo = (sorteo: { img: string; titulo: string; description: string; fecha: string }) => {
     setSelectedSorteo(sorteo);
     setShowModalViewSorteo(true);
 };
@@ -128,18 +128,20 @@ useEffect(() => {
         console.warn("🔒 No se obtuvo el token, omitiendo la carga de pagos.");
         return;
       }
-      if (!client?.id) {
+      if (!client?.dni) {
         console.warn("⚠ No se obtuvo el ID del cliente, omitiendo la carga de pagos.");
         return;
       }
 
-      const response = await fetch(`/api/payments/client/${client.id}`, {
+      const response = await fetch(`/api/payments/dni/${client.dni}`, {
+
         method: "GET",
         headers: {
           "Authorization": token,
           "Content-Type": "application/json",
         },
       });
+      
 
       if (response.status === 401) {
         console.warn("🔴 Usuario no autorizado para obtener pagos. Omitting fetch.");
@@ -166,7 +168,7 @@ useEffect(() => {
   };
 
   fetchPayments();
-}, [client?.id]); // ✅ Se ejecutará cuando el ID del cliente esté disponible
+}, [client?.dni]); // ✅ Se ejecutará cuando el ID del cliente esté disponible
   
   useEffect(() => {
     const fetchGanadores = async () => {
@@ -222,13 +224,15 @@ useEffect(() => {
             interface Sorteo {
                 imagenUrl: string;
                 titulo: string;
+                descripcion:string;
                 fechaSorteo: string;
             }
 
             const sorteosData = data.map((sorteo: Sorteo) => ({
                 img: sorteo.imagenUrl,
-                description: `🎁 ${sorteo.titulo} - ${sorteo.fechaSorteo}`,
-                fecha: sorteo.fechaSorteo
+                titulo: `🎁 ${sorteo.titulo} - ${sorteo.fechaSorteo}`,
+                fecha: sorteo.fechaSorteo,
+                description: sorteo.descripcion
             }));
 
             setMiniCarouselData(sorteosData);
@@ -383,67 +387,52 @@ useEffect(() => {
         <h2>Bienvenido, {client.nombres?.split(' ')[0]} {client.apellidos?.split(' ')[0]}!</h2>
           <p>Disfruta de todos tus beneficios como {client.rol}.</p>
 
-          {client.rol === "PARTICIPANTE" && (() => {
+          {(client.rol === "PARTICIPANTE" || client.rol === "ADMINISTRADOR") && (() => {
                   // ✅ Función para convertir una fecha en formato dd/mm/yyyy HH:MM:SS a un objeto Date
-const parseFechaRegistro = (fechaString: string) => {
-  if (!fechaString) return null;
-  const partes = fechaString.split(/[/ :]/); // Divide por "/", " " y ":"
-  if (partes.length >= 6) {
-    const [dia, mes, año, horas, minutos, segundos] = partes.map(Number);
-    return new Date(año, mes - 1, dia, horas, minutos, segundos);
-  }
-  return null;
-};
+                  const parseFechaRegistro = (fechaString: string) => {
+                    if (!fechaString) return null;
+                    const partes = fechaString.split(/[/ :]/); // Divide por "/", " " y ":"
+                    if (partes.length >= 6) {
+                      const [dia, mes, año, horas, minutos, segundos] = partes.map(Number);
+                      return new Date(año, mes - 1, dia, horas, minutos, segundos);
+                    }
+                    return null;
+                  };
 
-// ✅ Función para obtener la última fecha de pago del historial de pagos
-const getLastPaymentDate = (payments: { fechaPago: string }[]) => {
-  if (!payments || payments.length === 0) return null;
+                  const getLastPaymentDate = (payments: Payment[]) => {
+                    if (payments.length === 0) return null;
+                    const sortedPayments = payments.sort((a, b) => new Date(a.fechaPago).getTime() - new Date(b.fechaPago).getTime());
+                    const lastPayment = sortedPayments[sortedPayments.length - 1];
+                    return parseFechaRegistro(lastPayment.fechaPago);
+                  };
 
-  // Convertir todas las fechas a objetos Date y ordenar de más reciente a más antigua
-  const sortedPayments = payments
-    .map(payment => parseFechaRegistro(payment.fechaPago))
-    .filter(date => date !== null) // Filtrar fechas no válidas
-    .sort((a, b) => b!.getTime() - a!.getTime()); // Ordenar descendente por fecha
+                  // ✅ Obtener la fecha de registro
+                  const registrationDate = parseFechaRegistro(client.fechaRegistro);
+                  const currentDate = new Date();
 
-  return sortedPayments.length > 0 ? sortedPayments[0]?.toLocaleString("es-ES") : null;
-};
+                  // ✅ Cálculo de días transcurridos
+                  const daysDifference = registrationDate 
+                    ? Math.floor((currentDate.getTime() - registrationDate.getTime()) / (1000 * 60 * 60 * 24))
+                    : 0;
 
-// ✅ Obtener la fecha de registro
-const registrationDate = parseFechaRegistro(client.fechaRegistro);
-const currentDate = new Date();
+                  // ✅ Cálculo del nivel del suscriptor
+                  const monthsDifference = registrationDate
+                      ? (currentDate.getFullYear() - registrationDate.getFullYear()) * 12 +
+                        (currentDate.getMonth() - registrationDate.getMonth())
+                      : 0;
 
-// ✅ Cálculo de días transcurridos desde la fecha de registro
-const daysDifference = registrationDate
-  ? Math.floor((currentDate.getTime() - registrationDate.getTime()) / (1000 * 60 * 60 * 24))
-  : 0;
+                  // ✅ Ahora level se calcula correctamente
+                  const level = Math.min(1 + Math.floor(monthsDifference / 6), 10);
 
-// ✅ Cálculo del nivel del suscriptor basado en los meses desde el registro
-const monthsDifference = registrationDate
-  ? (currentDate.getFullYear() - registrationDate.getFullYear()) * 12 +
-    (currentDate.getMonth() - registrationDate.getMonth())
-  : 0;
-
-// ✅ Ahora level se calcula correctamente
-const level = Math.min(1 + Math.floor(monthsDifference / 6), 10);
-
-// ✅ Cálculo de la fecha de vencimiento basada en la última fecha de pago
-let subscriptionEndDate = "Fecha inválida";
-
-const lastPaymentDate = getLastPaymentDate(payments); // ✅ Obtener la última fecha de pago del historial
-
-if (lastPaymentDate) {
-  const paymentDate = parseFechaRegistro(lastPaymentDate); // ✅ Convertir la fecha de pago correctamente
-  if (paymentDate) {
-    paymentDate.setMonth(paymentDate.getMonth() + 1); // ✅ Sumar 1 mes a la fecha de pago
-    
-    // ✅ Formatear correctamente la fecha en dd/mm/yyyy
-    const formattedDay = String(paymentDate.getDate()).padStart(2, "0");
-    const formattedMonth = String(paymentDate.getMonth() + 1).padStart(2, "0");
-    const formattedYear = paymentDate.getFullYear();
-    
-    subscriptionEndDate = `${formattedDay}/${formattedMonth}/${formattedYear}`;
-  }
-}
+                  // ✅ Cálculo de la fecha de vencimiento sumando 1 mes
+                  let subscriptionEndDate = "Fecha inválida";
+                  
+                  const lastPaymentDate = getLastPaymentDate(payments);
+                  if (lastPaymentDate) {
+                    const endDate = new Date(lastPaymentDate);
+                    endDate.setMonth(endDate.getMonth() + 1);
+                    subscriptionEndDate = endDate.toLocaleDateString("es-ES");
+                  }
 
                   return (
                     <div className="subscription-info d-flex flex-wrap" style={{ background: "#6a0dad", borderRadius: "15px", padding: "20px", color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -572,14 +561,14 @@ if (lastPaymentDate) {
         <Modal.Body className="text-center">
             {selectedSorteo && (
                 <>
-                    <h4 className="mb-3">{selectedSorteo.description}</h4>
+                    <h4 className="mb-3">{selectedSorteo.titulo}</h4>
                     <img 
                         src={selectedSorteo.img} 
                         alt="Sorteo" 
                         className="img-fluid rounded shadow"
                         style={{ maxHeight: "300px", objectFit: "cover" }}
                     />
-                    <p className="mt-3"><strong>Fecha del Sorteo:</strong> {selectedSorteo.fecha}</p>
+                    <h4 className="mt-3"><strong>Descripcion del Sorteo:</strong> {selectedSorteo.description}</h4>
                 </>
             )}
         </Modal.Body>
@@ -653,7 +642,7 @@ if (lastPaymentDate) {
                                                 alignItems: "center",
                                                 justifyContent: "center",
                                             }}>
-                                                {item.description}
+                                                {item.titulo}
                                             </div>
                                         </div>
                                     </Col>

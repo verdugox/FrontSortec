@@ -24,6 +24,7 @@ interface MenuItem {
 interface Sorteo {
     id: string;
     titulo: string;
+    descripcion: string;
     fechaSorteo: string;
     imagenUrl: string;
     estado: string;
@@ -50,7 +51,7 @@ export default function Sorteos() {
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingSorteo, setEditingSorteo] = useState<Sorteo | null>(null);
-  const [formData, setFormData] = useState({ titulo: "", fechaSorteo: "", imagenUrl: "", estado: "" });
+  const [formData, setFormData] = useState({ titulo: "", descripcion: "", fechaSorteo: "", imagenUrl: "", estado: "" });
   const [currentPage, setCurrentPage] = useState(1);
 
   const [error, setError] = useState<string | null>(null); // Estado para manejar errores
@@ -271,6 +272,7 @@ const handleEdit = (sorteo: Sorteo) => {
   setEditingSorteo(sorteo);
   setFormData({
       titulo: sorteo.titulo || "",
+      descripcion: sorteo.descripcion || "",
       fechaSorteo: fechaISO,  // Convertir al formato compatible con el input
       imagenUrl: sorteo.imagenUrl || "",
       estado: sorteo.estado || "",
@@ -322,7 +324,7 @@ const handleDelete = async (id: string) => {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingSorteo(null);
-    setFormData({ titulo: "", fechaSorteo: "", imagenUrl: "", estado: "" });
+    setFormData({ titulo: "", descripcion: "", fechaSorteo: "", imagenUrl: "", estado: "" });
   };
 
   const handlePageChange = (page: number) => {
@@ -427,6 +429,16 @@ const handleDelete = async (id: string) => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
+                    <Form.Label>Descripción del Sorteo</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={formData.descripcion}
+                        onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                        required
+                    />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
                     <Form.Label>Fecha del Sorteo</Form.Label>
                     <Form.Control
                         type="date"
@@ -480,6 +492,7 @@ const handleDelete = async (id: string) => {
               <tr>
                 <th>#</th>
                 <th>Título</th>
+                <th>Descripción</th>
                 <th>Fecha</th>
                 <th>Imagen</th>
                 <th>Estado</th>
@@ -491,6 +504,7 @@ const handleDelete = async (id: string) => {
                 <tr key={sorteo.id}>
                   <td>{index + 1}</td>
                   <td>{sorteo.titulo}</td>
+                  <td>{sorteo.descripcion}</td>
                   <td>{sorteo.fechaSorteo}</td>
                   <td><img src={sorteo.imagenUrl} alt="Sorteo" width="50" /></td>
                   <td style={{
@@ -552,6 +566,7 @@ const handleDelete = async (id: string) => {
             {selectedSorteo && (
                 <div>
                     <p><strong>Título:</strong> {selectedSorteo.titulo}</p>
+                    <p><strong>Descripcion:</strong> {selectedSorteo.descripcion}</p>
                     <p><strong>Fecha:</strong> {selectedSorteo.fechaSorteo}</p>
                     <p><strong>Imagen:</strong></p>
                     <img src={selectedSorteo.imagenUrl} alt="Sorteo" className="img-fluid rounded shadow" />
@@ -578,6 +593,16 @@ const handleDelete = async (id: string) => {
                 type="text"
                 value={formData.titulo}
                 onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.descripcion}
+                onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                 required
               />
             </Form.Group>
