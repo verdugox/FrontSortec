@@ -118,34 +118,6 @@ export default function HomePage() {
   }, []);
 
 
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const token = localStorage.getItem("token");
-  
-        // ✅ Si no hay token (usuario no ha iniciado sesión), salir de la función
-        if (!token) {
-          console.warn("🔒 No se obtuvo el token, omitiendo la carga de pagos.");
-          return;
-        }
-  
-        const response = await fetch(`/api/payments/all`, {
-          method: "GET",
-          headers: {
-            "Authorization": token,
-            "Content-Type": "application/json",
-          },
-        });
-  
-        if (response.status === 401) {
-          console.warn("🔴 Usuario no autorizado para obtener pagos. Omitting fetch.");
-          return;
-        }
-  
-        if (!response.ok) {
-          console.error(`Error al obtener los pagos: ${response.status} - ${response.statusText}`);
-          return;
-        }
 useEffect(() => {
   const fetchPayments = async () => {
     try {
