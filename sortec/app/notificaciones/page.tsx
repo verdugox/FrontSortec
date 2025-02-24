@@ -144,52 +144,60 @@ export default function Notificacion() {
     }
   };
 
-  // Función para enviar correo masivo
   const sendMassEmail = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Debes iniciar sesión");
-      return;
+        alert("Debes iniciar sesión");
+        return;
     }
 
-    setLoading(true);
+    setLoading(true); // ✅ Muestra el spinner de carga
+
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1200000); // ⏳ 20 minutos (1,200,000 ms)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1200000); // ⏳ 20 minutos (1,200,000 ms)
 
-      const response = await fetch(`/api/clients/send-dynamic-mass-email`, {
-        method: "POST",
-        headers: {
-          "Authorization": token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          subject: massEmailFormData.subject,
-          message: massEmailFormData.message,
-          imageUrls: massEmailFormData.imagenUrl ? [massEmailFormData.imagenUrl] : [],
-        }),
-        signal: controller.signal, // ✅ Vincula el timeout al fetch
-      });
+        console.log("🚀 Iniciando envío masivo de correos...");
 
-      clearTimeout(timeoutId); // ✅ Evita que se cancele si la respuesta llega antes de los 20 minutos
+        // ✅ Usamos await para asegurar que la promesa no termine prematuramente
+        const response = await fetch(`/api/clients/send-dynamic-mass-email`, {
+            method: "POST",
+            headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                subject: massEmailFormData.subject,
+                message: massEmailFormData.message,
+                imageUrls: massEmailFormData.imagenUrl ? [massEmailFormData.imagenUrl] : [],
+            }),
+            signal: controller.signal,
+        });
 
-      if (!response.ok) throw new Error("Error al enviar correos masivos");
+        clearTimeout(timeoutId); // ✅ Evita que se cancele si la respuesta llega antes
 
-      setShowModal(true);
-      // Limpiar campos del formulario
-      setMassEmailFormData({ subject: "", message: "", imagenUrl: "" });
-      if (fileInputRefMassEmail.current) {
-        fileInputRefMassEmail.current.value = "";
-      }
+        if (!response.ok) throw new Error("Error al enviar correos masivos");
+
+        console.log("✅ Correos enviados exitosamente");
+
+        setShowModal(true);
+
+        // ✅ Limpiar campos del formulario solo después de que termine el envío
+        setMassEmailFormData({ subject: "", message: "", imagenUrl: "" });
+        if (fileInputRefMassEmail.current) {
+            fileInputRefMassEmail.current.value = "";
+        }
     } catch (error) {
-      console.error("Error al enviar correos:", error);
-      if ((error as Error).name === "AbortError") {
-        alert("El envío de correos tardó demasiado y fue cancelado después de 20 minutos. Intenta nuevamente.");
-      }
+        console.error("❌ Error al enviar correos:", error);
+        if ((error as Error).name === "AbortError") {
+            alert("El envío de correos tardó demasiado y fue cancelado después de 20 minutos. Intenta nuevamente.");
+        }
     } finally {
-      setLoading(false);
+        console.log("⌛ Finalizando proceso de envío...");
+        setTimeout(() => setLoading(false), 2000); // ✅ Retraso de 2s para evitar que React lo corte antes de tiempo
     }
 };
+
 
 
   // Función para enviar correo al ganador
