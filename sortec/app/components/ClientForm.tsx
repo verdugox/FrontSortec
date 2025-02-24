@@ -70,14 +70,18 @@ export default function RegistroClientes() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Error al registrar cliente: ${errorData.error}`);
+        throw new Error(`${errorData.error}`);
       }
 
       setSuccessMessage("🎉 Registro realizado correctamente. Ahora se ha enviado un correo al administrador para validar tu pago y en unos momentos te llegará la confirmación del registro con el detalle del sorteo. ¡Muchas gracias por participar!");
       setShowModal(true); // Mostrar el modal
       reset();
     } catch (error) {
-      setError(`Error en el proceso. ${error instanceof Error ? error.message : ""}`);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Ocurrió un error inesperado. Inténtalo nuevamente.");
+      }
     } finally {
       setLoading(false);
     }

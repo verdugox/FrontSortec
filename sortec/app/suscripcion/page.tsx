@@ -39,7 +39,7 @@ interface Perfil {
     monto: number;
 }
 
-export default function PerfilPage() {
+export default function Suscripcion() {
     const [isNavCollapsed, setIsNavCollapsed] = useState(true);
     const [client, setClient] = useState<Perfil | null>(null);
     const [showModal, setShowModal] = useState(false);
@@ -57,7 +57,56 @@ export default function PerfilPage() {
     const [showDeleteSuccessModal, setShowDeleteSuccessModal] = useState(false);
     const [showPaymentBlockingLoader, setShowPaymentBlockingLoader] = useState(false);
     const [showDeleteBlockingLoader, setShowDeleteBlockingLoader] = useState(false);
-
+    const [daysUntilRenewal, setDaysUntilRenewal] = useState<number | null>(null);
+    const [canRenew, setCanRenew] = useState(false);
+    
+    
+    // ✅ useEffect SIEMPRE se define antes de cualquier return
+    useEffect(() => {
+      if (!client || payments.length === 0) return;
+  
+      // ✅ Obtener la última fecha de pago correctamente
+      const lastPayment = getLastPaymentDate(payments);
+      if (!lastPayment) return;
+  
+      // ✅ Calcular la fecha de facturación (1 mes después del último pago)
+      const billingDate = new Date(lastPayment);
+      const billingDay = billingDate.getDate(); // Tomamos el día exacto de pago
+      billingDate.setMonth(billingDate.getMonth() + 1);
+  
+      // ⚠ Si el mes resultante tiene menos días que el día original, ajustamos la fecha
+      while (billingDate.getDate() !== billingDay) {
+          billingDate.setDate(billingDate.getDate() - 1);
+      }
+  
+      // ✅ Resetear horas, minutos y segundos para evitar errores en comparación
+      billingDate.setHours(0, 0, 0, 0);
+  
+      // ✅ Obtener la fecha actual en la zona horaria de Lima
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+  
+      // ✅ Calcular días restantes correctamente
+      const differenceInTime = billingDate.getTime() - currentDate.getTime();
+      const daysRemaining = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
+  
+      // ✅ Solo actualizar si cambia el estado (evita renders innecesarios)
+      if (daysRemaining !== daysUntilRenewal) {
+          setDaysUntilRenewal(daysRemaining);
+      }
+  
+      // ✅ Habilitar el botón si la fecha actual es IGUAL o MAYOR a la de facturación
+      if (currentDate >= billingDate) {
+          setCanRenew(true);
+      } else {
+          setCanRenew(false);
+      }
+  }, [client, payments]);
+  
+  
+    
+  
+  
 
     const handleLogout = () => {
       localStorage.removeItem("token");
@@ -263,11 +312,23 @@ export default function PerfilPage() {
       endDate.setMonth(endDate.getMonth() + 1);
       subscriptionEndDate = endDate.toLocaleDateString("es-ES");
     }
-    if(registrationDate){
-        const currentDate = new Date();
-        const diffTime = Math.abs(currentDate.getTime() - registrationDate.getTime());
-        daysRegistered = Math.floor(diffTime / (1000 * 60 * 60 * 24)).toString();
-    }
+    if (registrationDate) {
+      // ✅ Obtener la fecha actual en la zona horaria de Lima
+      const formatter = new Intl.DateTimeFormat("es-PE", {
+          timeZone: "America/Lima",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+      });
+  
+      const formattedCurrentDate = formatter.format(new Date());
+      const currentDate = new Date(formattedCurrentDate.split("/").reverse().join("-")); // Convertir formato
+  
+      // ✅ Calcular la diferencia de días correctamente
+      const diffTime = Math.abs(currentDate.getTime() - registrationDate.getTime());
+      daysRegistered = Math.floor(diffTime / (1000 * 60 * 60 * 24)).toString();
+  }
+  
 
   return (
     <div className="main-container">
@@ -444,39 +505,58 @@ export default function PerfilPage() {
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Header closeButton>
-              <Modal.Title>Renovar Suscripción</Modal.Title>
+                <Modal.Title>Renovar Suscripción</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h4>Información de Pago</h4>
-              <p>
-                Realice el pago al número <strong>977559149 - Luis Acuña</strong>, abonando solo{" "}
-                <span style={{ fontSize: "1.5em", color: "#8e44ad", fontWeight: "bold" }}>
-                  S/8 soles
-                </span>
-              </p>
-              <div className="text-center mb-3">
-                <Image src="/images/QRYapeLuis.png" alt="QR Yape" width={300} height={300} className="img-fluid" />
-              </div>
+                <h4>Información de Pago</h4>
+                <p>
+                    Realice el pago al número <strong>977559149 - Luis Acuña</strong>, abonando solo{" "}
+                    <span style={{ fontSize: "1.5em", color: "#8e44ad", fontWeight: "bold" }}>S/8 soles</span>
+                </p>
+                <div className="text-center mb-3">
+                    <Image src="/images/QRYapeLuis.png" alt="QR Yape" width={300} height={300} className="img-fluid" />
+                </div>
 
-              <Form>
-                <Form.Group className="mb-3">
-                  <Form.Label>Adjunta tu voucher de pago</Form.Label>
-                  <Form.Control type="file" onChange={handleVoucherUpload} />
-                </Form.Group>
-                {uploading && <Spinner animation="border" variant="warning" />}
-                {error && <Alert variant="danger">{error}</Alert>}
-              </Form>
+                <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Adjunta tu voucher de pago</Form.Label>
+                        <Form.Control type="file" onChange={handleVoucherUpload} />
+                    </Form.Group>
+                    {uploading && <Spinner animation="border" variant="warning" />}
+                    {error && <Alert variant="danger">{error}</Alert>}
+                </Form>
+
+                {/* ✅ Mensaje en rojo si aún faltan días */}
+                {daysUntilRenewal !== null && daysUntilRenewal > 0 && (
+                    <p style={{ color: "red", fontWeight: "bold", textAlign: "center", marginTop: "10px" }}>
+                        ⏳ Faltan {daysUntilRenewal} día(s) para que puedas renovar tu suscripción.
+                    </p>
+                )}
+
+                {/* ✅ Mensaje en amarillo si la suscripción ya venció */}
+                {daysUntilRenewal !== null && daysUntilRenewal <= 0 && (
+                    <p style={{ color: "#ffc107", fontWeight: "bold", textAlign: "center", marginTop: "10px" }}>
+                        ⚠ Tu suscripción ha vencido. Debes realizar el pago para continuar con los beneficios.
+                    </p>
+                )}
+
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={() => setShowModal(false)}>
-                Cancelar
+                  Cancelar
               </Button>
-              {/* ✅ Spinner dentro del botón "Confirmar Pago" */}
-              <Button variant="warning" disabled={loading || !voucherUrl} onClick={handleConfirmPayment}>
-                  {loading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : "Confirmar Pago"}
-              </Button>
-            </Modal.Footer>
-          </Modal>
+
+              <Button 
+                    variant="warning" 
+                    disabled={!canRenew || !voucherUrl || loading} 
+                    onClick={handleConfirmPayment}
+                >
+                    {loading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : "Confirmar Pago"}
+                </Button>
+
+          </Modal.Footer>
+        </Modal>
+
            {/* ✅ Bloqueo de pantalla con spinner mientras se registra el pago */}
             {showPaymentBlockingLoader && (
                 <div className="blocking-loader">
