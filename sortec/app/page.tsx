@@ -391,48 +391,58 @@ useEffect(() => {
                   // ✅ Función para convertir una fecha en formato dd/mm/yyyy HH:MM:SS a un objeto Date
                   const parseFechaRegistro = (fechaString: string) => {
                     if (!fechaString) return null;
-                    const partes = fechaString.split(/[/ :]/); // Divide por "/", " " y ":"
+                    const partes = fechaString.split(/[/ :]/); // Ajustado para manejo correcto
                     if (partes.length >= 6) {
-                      const [dia, mes, año, horas, minutos, segundos] = partes.map(Number);
-                      return new Date(año, mes - 1, dia, horas, minutos, segundos);
+                        const [dia, mes, anio, horas, minutos, segundos] = partes.map(Number);
+                        return new Date(anio, mes - 1, dia, horas, minutos, segundos);
                     }
                     return null;
-                  };
-
-                  const getLastPaymentDate = (payments: Payment[]) => {
-                    if (payments.length === 0) return null;
-                    const sortedPayments = payments.sort((a, b) => new Date(a.fechaPago).getTime() - new Date(b.fechaPago).getTime());
+                };
+                
+                const getLastPaymentDate = (payments: Payment[]) => {
+                    if (payments.length === 0) return null;  
+                    // ✅ Ordenamos los pagos por fecha de menor a mayor
+                    const sortedPayments = [...payments].sort((a, b) => new Date(a.fechaPago).getTime() - new Date(b.fechaPago).getTime());
+                    // ✅ Tomamos el último registro del array ordenado
                     const lastPayment = sortedPayments[sortedPayments.length - 1];
                     return parseFechaRegistro(lastPayment.fechaPago);
-                  };
-
-                  // ✅ Obtener la fecha de registro
-                  const registrationDate = parseFechaRegistro(client.fechaRegistro);
-                  const currentDate = new Date();
-
-                  // ✅ Cálculo de días transcurridos
-                  const daysDifference = registrationDate 
+                };
+                
+                // ✅ Obtener la fecha de registro
+                const registrationDate = parseFechaRegistro(client.fechaRegistro);
+                const currentDate = new Date();
+                
+                // ✅ Cálculo de días transcurridos
+                const daysDifference = registrationDate 
                     ? Math.floor((currentDate.getTime() - registrationDate.getTime()) / (1000 * 60 * 60 * 24))
                     : 0;
-
-                  // ✅ Cálculo del nivel del suscriptor
-                  const monthsDifference = registrationDate
-                      ? (currentDate.getFullYear() - registrationDate.getFullYear()) * 12 +
-                        (currentDate.getMonth() - registrationDate.getMonth())
-                      : 0;
-
-                  // ✅ Ahora level se calcula correctamente
-                  const level = Math.min(1 + Math.floor(monthsDifference / 6), 10);
-
-                  // ✅ Cálculo de la fecha de vencimiento sumando 1 mes
-                  let subscriptionEndDate = "Fecha inválida";
-                  
-                  const lastPaymentDate = getLastPaymentDate(payments);
-                  if (lastPaymentDate) {
+                
+                // ✅ Cálculo del nivel del suscriptor
+                const monthsDifference = registrationDate
+                    ? (currentDate.getFullYear() - registrationDate.getFullYear()) * 12 +
+                      (currentDate.getMonth() - registrationDate.getMonth())
+                    : 0;
+                
+                // ✅ Ahora level se calcula correctamente
+                const level = Math.min(1 + Math.floor(monthsDifference / 6), 10);
+                
+                // ✅ Cálculo de la fecha de vencimiento sumando 1 mes
+                let subscriptionEndDate = "Fecha inválida";
+                
+                const lastPaymentDate = getLastPaymentDate(payments);
+                if (lastPaymentDate) {
                     const endDate = new Date(lastPaymentDate);
+                    const originalDay = endDate.getDate(); // Tomamos el día exacto del último pago
                     endDate.setMonth(endDate.getMonth() + 1);
-                    subscriptionEndDate = endDate.toLocaleDateString("es-ES");
-                  }
+                
+                    // ✅ Si el mes siguiente no tiene el mismo día, ajustar al último día del mes
+                    if (endDate.getDate() !== originalDay) {
+                        endDate.setDate(0);
+                    }
+                
+                    subscriptionEndDate = endDate.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+                }
+                
 
                   return (
                     <div className="subscription-info d-flex flex-wrap" style={{ background: "#6a0dad", borderRadius: "15px", padding: "20px", color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>

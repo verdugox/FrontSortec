@@ -212,7 +212,6 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
               <th>Codigo</th>
               <th>Nombre</th>
               <th>Apellido</th>
-              <th>País</th>
               <th>Estado</th>
             </tr>
           </thead>
@@ -223,7 +222,6 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                 <td>{cliente.codigoSortec}</td>
                 <td>{cliente.nombres.split(" ")[0]}</td>
                 <td>{cliente.apellidos.split(" ")[0]}</td>
-                <td>{cliente.pais}</td>
                 <td style={{ color: cliente.estado === "aprobado" ? "green" : "inherit" }}>
                   {cliente.estado ? cliente.estado.charAt(0).toUpperCase() + cliente.estado.slice(1) : ""}
                 </td>

@@ -71,12 +71,12 @@ export default function Suscripcion() {
   
       // ✅ Calcular la fecha de facturación (1 mes después del último pago)
       const billingDate = new Date(lastPayment);
-      const billingDay = billingDate.getDate(); // Tomamos el día exacto de pago
+      const originalDay = billingDate.getDate(); // Tomamos el día exacto del último pago
       billingDate.setMonth(billingDate.getMonth() + 1);
   
-      // ⚠ Si el mes resultante tiene menos días que el día original, ajustamos la fecha
-      while (billingDate.getDate() !== billingDay) {
-          billingDate.setDate(billingDate.getDate() - 1);
+      // ✅ Si el día cambió tras sumar el mes, ajustar al último día del mes correcto
+      if (billingDate.getDate() !== originalDay) {
+          billingDate.setDate(0); // Esto ajusta la fecha al último día del mes
       }
   
       // ✅ Resetear horas, minutos y segundos para evitar errores en comparación
@@ -95,13 +95,11 @@ export default function Suscripcion() {
           setDaysUntilRenewal(daysRemaining);
       }
   
-      // ✅ Habilitar el botón si la fecha actual es IGUAL o MAYOR a la de facturación
-      if (currentDate >= billingDate) {
-          setCanRenew(true);
-      } else {
-          setCanRenew(false);
-      }
+      // ✅ Habilitar el botón solo si la fecha actual es IGUAL o MAYOR a la de facturación
+      setCanRenew(currentDate >= billingDate);
   }, [client, payments]);
+  
+  
   
   
     
@@ -285,34 +283,44 @@ export default function Suscripcion() {
     if (!client) return <p style={{ color: "#fff", textAlign: "center" }}>Cargando...</p>;
 
     const parseFechaRegistro = (fechaString: string) => {
-        if (!fechaString) return null;
-        const partes = fechaString.split(/[\/ :]/); // Ajustado para manejo correcto
-        if (partes.length >= 6) {
-            const [dia, mes, anio, horas, minutos, segundos] = partes.map(Number);
-            return new Date(anio, mes - 1, dia, horas, minutos, segundos);
-        }
-        return null;
-    };
-
-    const getLastPaymentDate = (payments: Payment[]) => {
+      if (!fechaString) return null;
+      const partes = fechaString.split(/[\/ :]/); // Ajustado para manejo correcto
+      if (partes.length >= 6) {
+          const [dia, mes, anio, horas, minutos, segundos] = partes.map(Number);
+          return new Date(anio, mes - 1, dia, horas, minutos, segundos);
+      }
+      return null;
+  };
+  
+  const getLastPaymentDate = (payments: Payment[]) => {
       if (payments.length === 0) return null;  
       // ✅ Ordenamos los pagos por fecha de menor a mayor
-      const sortedPayments = payments.sort((a, b) => new Date(a.fechaPago).getTime() - new Date(b.fechaPago).getTime());
+      const sortedPayments = [...payments].sort((a, b) => new Date(a.fechaPago).getTime() - new Date(b.fechaPago).getTime());
       // ✅ Tomamos el último registro del array ordenado
       const lastPayment = sortedPayments[sortedPayments.length - 1];
       return parseFechaRegistro(lastPayment.fechaPago);
-    };
-    const registrationDate = parseFechaRegistro(client.fechaRegistro);
-    const lastPaymentDate = getLastPaymentDate(payments);
-    let subscriptionEndDate = "Fecha inválida";
-    let daysRegistered = "Fecha inválida";
-
-    if (lastPaymentDate) {
+  };
+  
+  const registrationDate = parseFechaRegistro(client.fechaRegistro);
+  const lastPaymentDate = getLastPaymentDate(payments);
+  
+  let subscriptionEndDate = "Fecha inválida";
+  let daysRegistered = "Fecha inválida";
+  
+  if (lastPaymentDate) {
       const endDate = new Date(lastPaymentDate);
+      const billingDay = endDate.getDate(); // Tomamos el día exacto del último pago
       endDate.setMonth(endDate.getMonth() + 1);
-      subscriptionEndDate = endDate.toLocaleDateString("es-ES");
-    }
-    if (registrationDate) {
+  
+      // ✅ Si el mes siguiente no tiene el mismo día, ajustar al último día del mes
+      if (endDate.getDate() !== billingDay) {
+          endDate.setDate(0);
+      }
+  
+      subscriptionEndDate = endDate.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+  }
+  
+  if (registrationDate) {
       // ✅ Obtener la fecha actual en la zona horaria de Lima
       const formatter = new Intl.DateTimeFormat("es-PE", {
           timeZone: "America/Lima",
@@ -328,6 +336,7 @@ export default function Suscripcion() {
       const diffTime = Math.abs(currentDate.getTime() - registrationDate.getTime());
       daysRegistered = Math.floor(diffTime / (1000 * 60 * 60 * 24)).toString();
   }
+  
   
 
   return (
