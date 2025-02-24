@@ -320,25 +320,28 @@ export default function Suscripcion() {
       subscriptionEndDate = endDate.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
   }
   
-  if (registrationDate) {
-      // ✅ Obtener la fecha actual en la zona horaria de Lima
-      const formatter = new Intl.DateTimeFormat("es-PE", {
-          timeZone: "America/Lima",
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-      });
-  
-      const formattedCurrentDate = formatter.format(new Date());
-      const currentDate = new Date(formattedCurrentDate.split("/").reverse().join("-")); // Convertir formato
-  
-      // ✅ Calcular la diferencia de días correctamente
-      const diffTime = Math.abs(currentDate.getTime() - registrationDate.getTime());
-      daysRegistered = Math.floor(diffTime / (1000 * 60 * 60 * 24)).toString();
-  }
-  
-  
+    if (registrationDate) {
+        // ✅ Obtener la fecha actual en la zona horaria de Lima
+        const formatter = new Intl.DateTimeFormat("es-PE", {
+            timeZone: "America/Lima",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        });
 
+        const formattedCurrentDate = formatter.format(new Date());
+        const currentDate = new Date(formattedCurrentDate.split("/").reverse().join("-")); // Convertir formato
+
+        // ✅ Normalizar la fecha de registro eliminando horas, minutos y segundos
+        const normalizedRegistrationDate = new Date(registrationDate);
+        normalizedRegistrationDate.setHours(0, 0, 0, 0);
+
+        // ✅ Calcular la diferencia en días asegurando que sea exacta
+        const diffTime = Math.abs(currentDate.getTime() - normalizedRegistrationDate.getTime());
+        daysRegistered = Math.round(diffTime / (1000 * 60 * 60 * 24)).toString();
+    }
+
+  
   return (
     <div className="main-container">
       <Navbar expand="lg" className="navbar navbar-dark bg-dark fixed-top">
