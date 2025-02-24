@@ -154,6 +154,9 @@ export default function Notificacion() {
 
     setLoading(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1200000); // ⏳ 20 minutos (1,200,000 ms)
+
       const response = await fetch(`/api/clients/send-dynamic-mass-email`, {
         method: "POST",
         headers: {
@@ -165,7 +168,10 @@ export default function Notificacion() {
           message: massEmailFormData.message,
           imageUrls: massEmailFormData.imagenUrl ? [massEmailFormData.imagenUrl] : [],
         }),
+        signal: controller.signal, // ✅ Vincula el timeout al fetch
       });
+
+      clearTimeout(timeoutId); // ✅ Evita que se cancele si la respuesta llega antes de los 20 minutos
 
       if (!response.ok) throw new Error("Error al enviar correos masivos");
 
@@ -177,10 +183,14 @@ export default function Notificacion() {
       }
     } catch (error) {
       console.error("Error al enviar correos:", error);
+      if ((error as Error).name === "AbortError") {
+        alert("El envío de correos tardó demasiado y fue cancelado después de 20 minutos. Intenta nuevamente.");
+      }
     } finally {
       setLoading(false);
     }
-  };
+};
+
 
   // Función para enviar correo al ganador
   const sendWinnerEmail = async () => {
@@ -227,8 +237,7 @@ export default function Notificacion() {
     }
   };
 
-  // Función para enviar correo masivo Recordatorio Suscripcion
-  const sendMassiveSuscribReminder= async () => {
+  const sendMassiveSuscribReminder = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Debes iniciar sesión");
@@ -237,6 +246,9 @@ export default function Notificacion() {
 
     setLoading(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1200000); // ⏳ 20 minutos (1,200,000 ms)
+
       const response = await fetch(`/api/clients/send-manual-subscription-reminder`, {
         method: "POST",
         headers: {
@@ -248,22 +260,29 @@ export default function Notificacion() {
           message: massReminderSuscribFormData.message,
           imageUrls: massReminderSuscribFormData.imagenUrl ? [massReminderSuscribFormData.imagenUrl] : [],
         }),
+        signal: controller.signal, // ✅ Vincula el timeout al fetch
       });
+
+      clearTimeout(timeoutId); // ✅ Evita que se cancele si la respuesta llega antes de los 20 minutos
 
       if (!response.ok) throw new Error("Error al enviar correos masivos");
 
       setShowModal(true);
       // Limpiar campos del formulario
-      setMassEmailFormData({ subject: "", message: "", imagenUrl: "" });
+      setMassReminderSuscribFormData({ subject: "", message: "", imagenUrl: "" });
       if (fileInputRefSuscribEmail.current) {
         fileInputRefSuscribEmail.current.value = "";
       }
     } catch (error) {
       console.error("Error al enviar correos:", error);
+      if ((error as Error).name === "AbortError") {
+        alert("El envío de correos tardó demasiado y fue cancelado después de 20 minutos. Intenta nuevamente.");
+      }
     } finally {
       setLoading(false);
     }
-  };
+};
+
 
 
   // Función para cerrar el modal y limpiar los formularios
