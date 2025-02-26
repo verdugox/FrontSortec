@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://4.246.233.242/api";
+const API_BASE_URL = "https://api.sorteosc.com/api";
 
 export async function GET() {
   try {

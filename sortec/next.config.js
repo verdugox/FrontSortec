@@ -11,7 +11,7 @@ module.exports = {
     return [
       {
         source: "/api/:path*", 
-        destination: "http://4.246.233.242/api/:path*"  // ✅ Ahora redirige a HTTPS con Ingress
+        destination: "https://api.sorteosc.com/api/:path*"  // ✅ Ahora redirige a HTTPS con Ingress
       }
     ];
   }
