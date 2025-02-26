@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://48.216.202.189/api";
+const API_BASE_URL = "http://4.246.233.242/api";
 
 export async function GET() {
   try {
