@@ -412,36 +412,20 @@ useEffect(() => {
                 const registrationDate = parseFechaRegistro(client.fechaRegistro);
                 const currentDate = new Date();
 
-                // ✅ Cálculo preciso de días transcurridos
+               // ✅ Cálculo preciso de días transcurridos
                 let daysDifference = 0;
                 if (registrationDate) {
                     // ✅ Normalizar las fechas eliminando la hora, minutos y segundos
                     const normalizedRegistrationDate = new Date(registrationDate);
                     normalizedRegistrationDate.setHours(0, 0, 0, 0);
                     
-                    const normalizedCurrentDate = new Date(currentDate);
+                    const normalizedCurrentDate = new Date();
                     normalizedCurrentDate.setHours(0, 0, 0, 0);
 
-                    // ✅ Calcular la diferencia en días asegurando que es exacta
-                    const diffTime = Math.abs(normalizedCurrentDate.getTime() - normalizedRegistrationDate.getTime());
-                    daysDifference = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-                    // ✅ Ajuste en caso de meses con menos días (ejemplo: 31/01 → 28/02)
-                    const originalDay = normalizedRegistrationDate.getDate();
-                    const adjustedDate = new Date(normalizedRegistrationDate);
-                    adjustedDate.setMonth(adjustedDate.getMonth() + 1);
-
-                    if (adjustedDate.getDate() !== originalDay) {
-                        adjustedDate.setDate(0); // Ajustar al último día del mes
-                    }
-
-                    // ✅ Si la fecha ajustada ya pasó, recalcular los días exactos
-                    if (normalizedCurrentDate >= adjustedDate) {
-                        const newDiffTime = Math.abs(normalizedCurrentDate.getTime() - adjustedDate.getTime());
-                        daysDifference = Math.round(newDiffTime / (1000 * 60 * 60 * 24));
-                    }
+                    // ✅ Calcular la diferencia en días asegurando que sea exacta
+                    const diffTime = normalizedCurrentDate.getTime() - normalizedRegistrationDate.getTime();
+                    daysDifference = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 }
-
 
                 
                 // ✅ Cálculo del nivel del suscriptor
