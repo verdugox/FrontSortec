@@ -399,7 +399,7 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
                   >
                     <img src={game.img} alt={game.title} className="carousel-img" />
                     <h4>{game.title}</h4>
-                    <p>{game.description}</p>
+                    <p className="game-description">{game.description}</p>
                   </div>
                 );
               })}
@@ -411,53 +411,102 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
       )}
 
             
-            {/* Video Tutorial para instalación del aplicativo*/}
-            <div className="instruction-section">
-                <h2 className="instruction-title">📥 Cómo Descargar e Instalar el APK y los 10785 juegos en tu Android 📲</h2>
-                <ul className="instruction-list">
-                <ul className="instruction-list">
-                      <li>📥 <strong>Paso 1:</strong> Descarga el archivo <strong>APK</strong> desde el botón de descarga que está al inicio de la página.</li>
-                      <li>🎮 <strong>Paso 2:</strong> Descarga el <strong>Pack de Juegos NES</strong> desde el botón que dice <strong>“Descargar Pack Juegos NES”</strong> al inicio de la página.</li>
-                      <li>📂 <strong>Paso 3:</strong> Descarga esta aplicación para descomprimir el pack de juegos 
-                          <a 
-                            href="https://drive.google.com/uc?export=download&id=1qOopiusS_MUDuNn2pqrxaO7z8GveS23q" 
-                            style={{ color: "#007bff", textDecoration: "underline", fontWeight: "bold" }} 
-                            download
-                          >
-                            haciendo click aquí
-                          </a>.  
-                      </li>
-                      
-                      <li>⚙️ <strong>Paso 4:</strong> Ve a <strong>⚙️ Ajustes → Seguridad</strong> y activa la opción <strong>✅ “Fuentes desconocidas”</strong> para permitir la instalación de apps externas.</li>
-                      <li>📂 <strong>Paso 5:</strong> Abre la carpeta de <strong>Descargas</strong> o la ruta donde descargaste el <strong>emulador, el pack de juegos y la aplicación para descomprimir archivos.</strong></li>
-                      <li>📲 <strong>Paso 6:</strong> Instala el emulador 📦 <strong>Nostalgia.NES-Pro-NES-Emulator.apk</strong> tocando el archivo y seleccionando “Instalar”.</li>
-                      <li>⏳ <strong>Paso 7:</strong> Espera a que la instalación finalice.</li>
-                      <li>📂 <strong>Paso 8:</strong> Instala la aplicación de descompresión 📦 <strong>rar-7.00-build22.apk</strong> tocando el archivo y seleccionando “Instalar”.</li>
-                      <li>⏳ <strong>Paso 9:</strong> Espera a que la instalación finalice.</li>
-                      <li>📁 <strong>Paso 10:</strong> Ve a la carpeta donde se descargó el **Pack de Juegos NES** (archivo **.zip**) y ábrelo con la aplicación <strong>RAR 📦</strong>.</li>
-                      <li>🔓 <strong>Paso 11:</strong> Dentro de la aplicación **RAR**, toca la opción **“Descomprimir”** y deja la ruta predeterminada donde se extraerán los juegos. ⏳ **Esto tomará unos minutos**.</li>
-                      <li>🎮 <strong>Paso 12:</strong> Una vez descomprimidos los juegos, abre la app **NostalgiaPro** y toca los tres puntos **(⋮) en la esquina superior derecha**.</li>
-                      <li>🔎 <strong>Paso 13:</strong> Selecciona la opción **“Search ROMs”** y elige **“IMPORT FROM FILE” 📂** en la ventana emergente.</li>
-                      <li>📁 <strong>Paso 14:</strong> Busca y selecciona la carpeta donde se descomprimieron los juegos NES.</li>
-                      <li>✅ <strong>Paso 15:</strong> Si aparece algún mensaje de confirmación, toca **Aceptar** y espera entre **5 a 8 minutos** hasta que el emulador cargue todos los juegos.</li>
-                      <li>🚀 <strong>Paso 16:</strong> ¡Todo listo! 🎉 **Abre la app NostalgiaPro** y verás todos los juegos ya cargados en la lista. **¡Diviértete jugando! 🎮🔥**</li>
-                  </ul>
+            {/* Video Tutorial para instalación del aplicativo */}
+                <div className="instruction-section">
+                    <h2 className="instruction-title">
+                        📥 Cómo Descargar e Instalar el APK y los 10,785 juegos en tu Android 📲
+                    </h2>
 
-                </ul>
-                <h3>📱💡 Video Tutorial: 📥 Instala en tu Móvil Fácilmente! 🔧📲</h3>
-                <video 
-                    src="/video/VideoNES.mp4"
-                    controls 
-                    style={{ 
-                      width: "90%", 
-                      maxWidth: "350px", 
-                      height: "auto", 
-                      borderRadius: "50px", 
-                      border: "5px solid #000", 
-                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)"
-                    }} 
-                  />
-            </div>
+                    <ul className="instruction-list">
+                        <li>
+                            <strong>📥 Paso 1:</strong> Descarga el archivo <strong>APK</strong> 
+                            desde el botón de descarga al inicio de la página.
+                        </li>
+                        
+                        <li>
+                            <strong>🎮 Paso 2:</strong> Descarga el <strong>Pack de Juegos NES</strong> 
+                            desde el botón <strong>Descargar Pack Juegos NES</strong>.
+                        </li>
+                        
+                        <li>
+                            <strong>📂 Paso 3:</strong> Descarga la app para descomprimir el pack de juegos  
+                            <a href="https://drive.google.com/uc?export=download&id=1qOopiusS_MUDuNn2pqrxaO7z8GveS23q" 
+                                className="download-link" download>
+                                haciendo click aquí
+                            </a>.
+                        </li>
+
+                        <li>
+                            <strong>⚙️ Paso 4:</strong> Ve a <strong>⚙️ Ajustes → Seguridad</strong> 
+                            y activa la opción <strong>✅ “Fuentes desconocidas”</strong>.
+                        </li>
+
+                        <li>
+                            <strong>📂 Paso 5:</strong> Abre la carpeta de <strong>Descargas</strong> o 
+                            la ubicación donde descargaste los archivos.
+                        </li>
+
+                        <li>
+                            <strong>📲 Paso 6:</strong> Instala el emulador 📦 
+                            <strong>Nostalgia.NES-Pro-NES-Emulator.apk</strong>.
+                        </li>
+
+                        <li>
+                            <strong>⏳ Paso 7:</strong> Espera a que la instalación finalice.
+                        </li>
+
+                        <li>
+                            <strong>📂 Paso 8:</strong> Instala la aplicación 📦 <strong>rar-7.00-build22.apk</strong>.
+                        </li>
+
+                        <li>
+                            <strong>📁 Paso 9:</strong> Abre el archivo **Pack de Juegos NES.zip** con la app <strong>RAR 📦</strong>.
+                        </li>
+
+                        <li>
+                            <strong>🔓 Paso 10:</strong> En la app **RAR**, toca <strong>“Descomprimir”</strong>. 
+                            Deja la ruta predeterminada. ⏳ **Tomará unos minutos**.
+                        </li>
+
+                        <li>
+                            <strong>🎮 Paso 11:</strong> Abre la app **NostalgiaPro** y toca los **tres puntos (⋮)** 
+                            en la esquina superior derecha.
+                        </li>
+
+                        <li>
+                            <strong>🔎 Paso 12:</strong> Selecciona <strong>“Search ROMs”</strong> y luego <strong>“IMPORT FROM FILE” 📂</strong>.
+                        </li>
+
+                        <li>
+                            <strong>📁 Paso 13:</strong> Busca y selecciona la carpeta donde se descomprimieron los juegos.
+                        </li>
+
+                        <li>
+                            <strong>✅ Paso 14:</strong> Si aparece un mensaje, toca **Aceptar** y espera **5 a 8 minutos** 
+                            hasta que el emulador cargue los juegos.
+                        </li>
+
+                        <li>
+                            <strong>🚀 Paso 15:</strong> ¡Listo! 🎉 **Abre la app NostalgiaPro** y disfruta de los juegos. 🎮🔥
+                        </li>
+                    </ul>
+
+                    <h3 className="video-title">📱💡 Video Tutorial: 📥 Instala en tu Móvil Fácilmente! 🔧📲</h3>
+
+                    <video 
+                                    src="/video/VideoNES.mp4"
+                                    controls 
+                                    style={{ 
+                                      width: "90%", 
+                                      maxWidth: "350px", 
+                                      height: "auto", 
+                                      borderRadius: "50px", 
+                                      border: "5px solid #000", 
+                                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)"
+                                    }} 
+                                    className="video-tutorial"
+                                  />
+                </div>
     
       <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
         <p className="mb-2 mb-md-0">© SORTEC 2025 - Todos los derechos reservados.</p>
@@ -897,7 +946,7 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
             }
 
             .game-item {
-              width: 100%; /* Para ocupar correctamente el espacio del grid */
+              width: 90%; /* Para ocupar correctamente el espacio del grid */
               display: flex;
               justify-content: center;
             }
@@ -906,6 +955,101 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
               width: 90%; /* Ajuste para que no ocupe todo el ancho */
             }
 
+            .instruction-section {
+                  text-align: left;
+                  padding: 15px;
+                  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, #002366 100%);
+                  color: white;
+                  border-radius: 10px;
+                  margin: 10px;
+              }
+
+              .instruction-title {
+                  font-size: 1.5rem;
+                  font-weight: bold;
+                  text-align: center;
+                  margin-bottom: 10px;
+              }
+
+              .instruction-list {
+                  list-style: none;
+                  padding: 0;
+                  font-size: 0.9rem;
+                  text-align: left;
+              }
+
+              .instruction-list li {
+                  margin: 8px 0;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  line-height: 1.5;
+              }
+
+              .instruction-list strong {
+                  font-size: 1rem;
+              }
+
+              .download-link {
+                  color: #007bff;
+                  text-decoration: underline;
+                  font-weight: bold;
+              }
+
+              .video-title {
+                  font-size: 1.3rem;
+                  font-weight: bold;
+                  text-align: center;
+                  margin-top: 20px;
+              }
+
+              .video-tutorial {
+                  width: 100%;
+                  max-width: 320px;
+                  height: auto;
+                  border-radius: 15px;
+                  border: 3px solid #fff;
+                  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+                  display: block;
+                  margin: 10px auto;
+              }
+
+              /* Responsive para móviles */
+              @media (max-width: 768px) {
+                  .instruction-title {
+                      font-size: 1.3rem;
+                  }
+
+                  .instruction-list {
+                      font-size: 0.85rem;
+                  }
+
+                  .instruction-list li {
+                      font-size: 0.85rem;
+                      margin: 6px 0;
+                  }
+
+                  .video-title {
+                      font-size: 1.1rem;
+                  }
+              }
+
+              .game-description {
+                font-size: 16px;
+                color: gray;
+                text-align: center;
+                padding: 0px;
+              }
+
+              /* 🔹 Estilos para móviles */
+              @media (max-width: 768px) {
+                .game-description {
+                  font-size: 11px; /* 🔹 Texto más pequeño para móviles */
+                  line-height: 1.2; /* 🔹 Mejor distribución del texto */
+                  max-width: 100%; /* 🔹 Evita que sobresalga */
+                  margin: 0 auto; /* 🔹 Centra el texto dentro de la tarjeta */
+                }
+              }
 
 
       `}</style>
