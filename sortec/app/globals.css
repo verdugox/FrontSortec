@@ -1,5 +1,5 @@
 .container {
-  max-width: 600px;
+  max-width: 1200px;
   margin: auto;
   padding: 20px;
   background-color: #f4f4f4;
@@ -497,9 +497,9 @@
     color: #007bff !important;
     font-size: 28px !important;
     font-weight: bold !important;
-  }
-
-  
-  
-
+  }  
 }
+
+
+
+
