@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import Login from "./components/Login";
 import ClientForm from "./components/ClientForm"; // Adjust the path as necessary
 import JuegosPage from "./juegos/page";
-import './globals.css';
+
 
 
 interface Perfil {
@@ -368,7 +368,7 @@ useEffect(() => {
         <br />
         <br />
         <br />
-        <Container style={{ maxWidth: "80%" }}>
+        <Container >
         <h2>Bienvenido, {client.nombres?.split(' ')[0]} {client.apellidos?.split(' ')[0]}!</h2>
           <p>Disfruta de todos tus beneficios como {client.rol}.</p>
 
@@ -583,7 +583,7 @@ useEffect(() => {
 
 
       <section id="sorteos" className="text-center my-5">
-            <Container style={{maxWidth: "80%"}}>
+            <Container>
                 <h2 style={{ color: "#007bff", marginBottom: "20px" }}>Próximos Sorteos</h2>
 
                 <p style={{ color: "#333", fontSize: "20px", fontWeight: "bold", marginBottom: "20px" }}>
@@ -666,7 +666,7 @@ useEffect(() => {
 
 
       <section id="benefits" className="text-center my-5">
-        <Container style={{maxWidth: "80%"}}>
+        <Container>
           <Row className="align-items-center">
             <Col md={6}>
               <Row>
@@ -701,7 +701,7 @@ useEffect(() => {
       </section>
 
       <section id="store" className="text-center my-5">
-        <Container style={{maxWidth: "80%"}}>
+        <Container>
           <Row className="align-items-center">
             <Col md={6} className="p-4">
               <h2 style={{ color: "#007bff", marginBottom: "20px" }}>
@@ -721,7 +721,7 @@ useEffect(() => {
       </section>
 
       <section id="ganadores" className="text-center my-5">
-      <Container style={{maxWidth: "80%"}}>
+      <Container>
         <h2 style={{ color: "#007bff", marginBottom: "20px" }}>¡Tú podrías ser el próximo SUERTUDO!</h2>
         <div className="slider-container" style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
           <div
@@ -800,7 +800,7 @@ useEffect(() => {
       */}
 
       <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <p className="mb-2 mb-md-0">© SORTEC 2025 - Todos los derechos reservados.</p>
+      <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
 
         <div className="d-flex align-items-center social-container">
           <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">

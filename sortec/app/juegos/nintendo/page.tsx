@@ -67,8 +67,6 @@ export default function NintendoPage() {
     const router = useRouter();
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [modalBg, setModalBg] = useState("");
-
-    
     const [startX, setStartX] = useState(0);
     const [endX, setEndX] = useState(0);
     
@@ -265,7 +263,7 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
                 {/* ✅ Versión Móvil - Texto y botones debajo del slide */}
                   <div className="d-block d-md-none text-center mt-3">
                       <h2 className="animated-title" style={{ color: "white" }}>
-                          🎮 Descargar Emulador Nintendo con más de 11 mil juegos
+                          🎮 Descargar Emulador Nintendo con más de 10 mil juegos
                       </h2>
                       
                       <a 
@@ -509,7 +507,7 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
                 </div>
     
       <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <p className="mb-2 mb-md-0">© SORTEC 2025 - Todos los derechos reservados.</p>
+      <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
 
         <div className="d-flex align-items-center social-container">
           <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">

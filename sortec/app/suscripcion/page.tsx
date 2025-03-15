@@ -644,7 +644,7 @@ export default function Suscripcion() {
       </section>
 
       <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <p className="mb-2 mb-md-0">© SORTEC 2025 - Todos los derechos reservados.</p>
+        <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
 
         <div className="d-flex align-items-center social-container">
           <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">

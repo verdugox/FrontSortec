@@ -6,15 +6,15 @@ import { motion } from "framer-motion";
 
 const games = [
   { title: "Nintendo", img: "/images/nintendo.jpeg", description: "Juegos clásicos de Nintendo.", video: "/video/VideoNES.mp4", link: "/juegos/nintendo" },
-  { title: "Super Nintendo", img: "/images/super-nintendo.jpeg", description: "Revive la nostalgia con Super Nintendo.", video: "/video/VideoSNES.mp4", link: "/juegos/super-nintendo" },
+  { title: "Super Nintendo", img: "/images/super-nintendo.jpeg", description: "Revive la nostalgia con Super Nintendo.", video: "/video/VideoSNES.mp4", link: "/juegos/superNintendo" },
   { title: "Nintendo 64", img: "/images/nintendo64.jpeg", description: "Explora juegos en 3D con Nintendo 64.", video: "/video/VideoNintendo64.mp4", link: "/juegos/nintendo64" },
-  { title: "Game Boy Advance", img: "/images/gameboy-advance.jpeg", description: "Gráficos mejorados con Game Boy Advance.", video: "/video/VideoGameBoy.mp4", link: "/juegos/gameboy-advance" },
-  { title: "PlayStation 1", img: "/images/ps1.jpeg", description: "El inicio de la era PlayStation.", video: "/video/VideoOtros.mp4", link: "/juegos/ps1" },
-  { title: "PlayStation 2", img: "/images/ps2.jpeg", description: "Una consola icónica de la historia de los videojuegos.", video: "/video/VideoOtros.mp4", link: "/juegos/ps2" },
+  { title: "Game Boy Advance", img: "/images/gameboy-advance.jpeg", description: "Gráficos mejorados con Game Boy Advance.", video: "/video/VideoGameBoy.mp4", link: "/juegos/gameBoyAdvance" },
+  { title: "PlayStation 1", img: "/images/ps1.jpeg", description: "El inicio de la era PlayStation.", video: "/video/VideoOtros.mp4", link: "/juegos/playstation1" },
+  { title: "PlayStation 2", img: "/images/ps2.jpeg", description: "Una consola icónica de la historia de los videojuegos.", video: "/video/VideoOtros.mp4", link: "/juegos/playstation2" },
   { title: "PSP", img: "/images/psp.jpeg", description: "Lleva tus juegos favoritos a cualquier parte con PSP.", video: "/video/VideoOtros.mp4", link: "/juegos/psp" },
-  { title: "PSP Vita", img: "/images/pspvita.jpeg", description: "Gráficos de alta calidad en la palma de tu mano.", video: "/video/VideoOtros.mp4", link: "/juegos/pspvita" },
-  { title: "Nintendo GameCube", img: "/images/gamecube.jpeg", description: "Diversión en cubos con GameCube.", video: "/video/VideoOtros.mp4", link: "/juegos/gamecube" },
-  { title: "Juegos para Nintendo Switch", img: "/images/switch.jpeg", description: "Diversión portátil con Nintendo Switch.", video: "/video/VideoOtros.mp4", link: "/juegos/switch" }
+  { title: "PSP Vita", img: "/images/pspvita.jpeg", description: "Gráficos de alta calidad en la palma de tu mano.", video: "/video/VideoOtros.mp4", link: "/juegos/pspVita" },
+  { title: "Nintendo GameCube", img: "/images/gamecube.jpeg", description: "Diversión en cubos con GameCube.", video: "/video/VideoOtros.mp4", link: "/juegos/nintendoGameCube" },
+  { title: "Juegos para Nintendo Switch", img: "/images/switch.jpeg", description: "Diversión portátil con Nintendo Switch.", video: "/video/VideoOtros.mp4", link: "/juegos/nintendoSwitch" }
 ];
 
 export default function JuegosPage() {
@@ -32,8 +32,11 @@ export default function JuegosPage() {
     setModals(updatedModals);
   };
 
+  const client = JSON.parse(localStorage.getItem("client") || 'null');
+  
+
   return (
-    <Container style={{ color: "#007bff", marginBottom: "20px", maxWidth: "80%" }}>
+    <Container className="games" id="games"  style={{ color: "#007bff", marginBottom: "20px"}}>
       <h2 style={{ color: "#007bff", marginBottom: "20px" }}>Grandes Juegos Virtuales</h2>
       <p style={{ color: "#555", fontSize: "18px", fontStyle: "italic", marginBottom: "20px" }}>
         🎮 Pronto en SORTEC podrás disfrutar de los mejores juegos virtuales para descargar. 🚀 Sumérgete en un mundo lleno de aventuras, desafíos y diversión sin límites.
@@ -69,10 +72,10 @@ export default function JuegosPage() {
                 </strong>
                 </p>
                 <p style={{ textAlign: "center", fontSize: "18px", color: "#333", lineHeight: "1.6" }}>
-                  <strong>🎮🔥 ¡Accede a más de 11,000 juegos con tu suscripción! 🔥🎮</strong><br />
+                  <strong>🎮🔥 ¡Accede a más de 10,000 juegos con tu suscripción! 🔥🎮</strong><br />
                   🌟 <strong>¡Bienvenido al futuro del gaming!</strong> 🌟<br />
-                  Suscríbete hoy y desbloquea un catálogo de <strong>más de 11,000 juegos</strong> 🎮 disponibles para 
-                  <strong> PC, Consolas y Dispositivos Móviles</strong> 📱💻🎮.<br /><br />
+                  Suscríbete hoy y desbloquea un catálogo de <strong>más de 10,000 juegos</strong> 🎮 disponibles para 
+                  <strong> Dispositivos Móviles</strong> 📱💻🎮.<br /><br />
                 </p>
                 {/* Video con bordes ovalados simulando una pantalla de celular */}
                 <div style={{ 
@@ -103,18 +106,19 @@ export default function JuegosPage() {
                   🔑 <strong>¡No te quedes fuera!</strong> 🔑<br />
                   Inicia sesión, <strong>haz clic en el botón</strong> y <strong>descubre un universo de entretenimiento sin límites.</strong> 🚀🎮<br /><br />
 
-                  <strong style={{ fontSize: "22px", color: "#007bff" }}>🔽 ¡Únete ahora y accede al Portal de Juegos! 🔽</strong>
+                  <strong style={{ fontSize: "22px", color: "#007bff" }}>🔽 ¡Inicia Sesión y haz click en el botón para acceder al Portal de Juegos! 🔽</strong>
                 </p>
 
-                
                 {/* Botón para ingresar al portal de juegos */}
-                <Button 
-                  variant="primary" 
-                  href={game.link} 
-                  style={{ marginTop: "15px", width: "100%" }}
-                >
-                  Haz Click Aquí para Ingresar al Portal de Juegos - {game.title}
-                </Button>
+                {client ? (
+                  <Button 
+                    variant="primary" 
+                    href={game.link} 
+                    style={{ marginTop: "15px", width: "100%" }}
+                  >
+                    Haz Click Aquí para Ingresar al Portal de Juegos - {game.title}
+                  </Button>
+                ) : null}
 
               </Modal.Body>
               <Modal.Footer>
@@ -124,6 +128,55 @@ export default function JuegosPage() {
           </Col>
         ))}
       </Row>
+      <style jsx>{`
+
+
+
+        .game-img {
+          transition: all 0.4s ease-in-out;
+          box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.5);
+        }
+
+        .game-img:hover {
+          transform: scale(1.1);
+          box-shadow: 0px 0px 20px rgba(0, 123, 255, 0.8);
+        }
+
+      
+     .input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .button {
+      background-color: #0070f3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #005bb5;
+    }
+
+
+
+
+`}</style>
+
     </Container>
+
+        
+
   );
 }
