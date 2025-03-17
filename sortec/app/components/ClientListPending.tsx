@@ -114,6 +114,71 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
       return;
     }
 
+    // ✅ Definir el mensaje antes de usarlo
+    // ✅ Mensaje con efectos llamativos y estructura visual mejorada
+    const message = `
+        <div style="font-family: Arial, sans-serif; text-align: center; color: #333; padding: 20px; 
+            border: 2px solid #ddd; border-radius: 10px; background-color: #f9f9f9; max-width: 600px; 
+            margin: auto; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);">
+
+            <h1 style="color: #d9534f; text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);">
+                🎮💥 ¡${cliente.nombres}, TE EXTRAÑAMOS! 💥🎮
+            </h1>
+
+            <p style="font-size: 18px; line-height: 1.6;">
+                🌟 La familia <b>SORTEC</b> no es lo mismo sin ti. Queremos que sigas 
+                disfrutando de nuestros increíbles beneficios. 🎁🎉
+            </p>
+
+            <h2 style="color: #28a745; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
+                🎁 ¡NO TE QUEDES FUERA! 🎁
+            </h2>
+
+            <p style="font-size: 18px; text-align: left; line-height: 1.6;">
+                ✅ Sorteos de <b>componentes tecnológicos premium</b> 🖥️🎮<br>
+                ✅ Descargas de <b>videojuegos exclusivos</b> 🎮🚀<br>
+                ✅ Participación en <b>torneos con grandes premios</b> 🏆🎟️
+            </p>
+
+            <h3 style="color: #ff5733; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
+                🔄 ¿CÓMO RENOVAR TU SUSCRIPCIÓN? 🔄
+            </h3>
+
+            <p style="font-size: 18px; text-align: left; line-height: 1.6;">
+                1️⃣ **Ingresa a nuestra plataforma:** 
+                <a href="http://sortsortech.azurewebsites.net/" target="_blank"
+                    style="color: #007bff; text-decoration: none; font-weight: bold;">
+                    🔗 SORTEC
+                </a><br>
+
+                2️⃣ **Inicia sesión con tus credenciales:**<br>
+                📌 <b>Usuario:</b> Tu número de DNI con el que te registraste<br>
+                🔒 <b>Contraseña:</b> Tu código SORTEC que recibiste por correo<br>
+
+                3️⃣ **Dirígete al apartado 'Ver Suscripción' 📋**<br>
+                4️⃣ **Haz clic en 'Renovar Suscripción' 🔄**<br>
+                5️⃣ **Realiza el pago y listo 🎉🙌**
+            </p>
+
+            <h3 style="color: #ff5733;">
+                📢 ¡RENUEVA AHORA Y SIGUE DISFRUTANDO! 📢
+            </h3>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="http://sortsortech.azurewebsites.net/" target="_blank" 
+                    style="display: inline-block; padding: 12px 25px; background-color: #007bff; 
+                        color: #fff; text-decoration: none; border-radius: 8px; font-size: 18px; 
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                    🔄 RENOVAR AHORA
+                </a>
+            </div>
+
+            <p style="font-size: 18px; margin-top: 20px; color: #333;">
+                🙌 <b>Gracias por formar parte de la familia SORTEC. ¡Sigue participando y mucha suerte! 🍀🎊</b>
+            </p>
+        </div>
+    `;
+
     setLoading(true);
     try {
       const response = await fetch(`/api/clients/send-winner-notification`, {
@@ -124,9 +189,9 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
         },
         body: JSON.stringify({
           codigoSortec: cliente.codigoSortec,
-          subject: "Renovación de Subscripción",
-          message: "Renueva tu suscripción",
-          imageUrls: "",
+          subject: "📢 Renovación de Subscripción - SORTEC 📢",
+          message: message
+
         }),
       });
   
@@ -138,6 +203,8 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
     } catch (error) {
       console.error("Error al enviar correo renovación suscripción:", error);
       alert("⚠️ Error al enviar la notificación, inténtalo nuevamente.");
+    } finally {
+      setLoading(false);
     }
   };
 

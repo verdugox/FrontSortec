@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Row, Col, Modal, Button } from "react-bootstrap";
 import { motion } from "framer-motion";
 
@@ -19,8 +19,14 @@ const games = [
 
 export default function JuegosPage() {
   const [modals, setModals] = useState(Array(games.length).fill(false));
+  const [client, setClient] = useState(null);
 
-  const handleOpenModal = (index: number) => {
+
+   // Verificar `client` cada vez que se abre un modal
+   const handleOpenModal = (index: number) => {
+    if (typeof window !== "undefined") {
+      setClient(JSON.parse(localStorage.getItem("client") || "null")); // Actualiza client en tiempo real
+    }
     const updatedModals = [...modals];
     updatedModals[index] = true;
     setModals(updatedModals);
@@ -32,7 +38,12 @@ export default function JuegosPage() {
     setModals(updatedModals);
   };
 
-  const client = JSON.parse(localStorage.getItem("client") || 'null');
+  // Cargar `client` al montar el componente
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setClient(JSON.parse(localStorage.getItem("client") || "null"));
+    }
+  }, []);
   
 
   return (
@@ -111,14 +122,12 @@ export default function JuegosPage() {
 
                 {/* Botón para ingresar al portal de juegos */}
                 {client ? (
-                  <Button 
-                    variant="primary" 
-                    href={game.link} 
-                    style={{ marginTop: "15px", width: "100%" }}
-                  >
+                  <Button variant="primary" href={game.link} style={{ width: "100%" }}>
                     Haz Click Aquí para Ingresar al Portal de Juegos - {game.title}
                   </Button>
-                ) : null}
+                ) : (
+                  <p>🔐 Inicia sesión para acceder a los juegos.</p>
+                )}
 
               </Modal.Body>
               <Modal.Footer>
