@@ -397,7 +397,7 @@ useEffect(() => {
                 const registrationDate = parseFechaRegistro(client.fechaRegistro);
                 const currentDate = new Date();
 
-                // ✅ Cálculo preciso de días transcurridos
+               // ✅ Cálculo preciso de días transcurridos
                 let daysDifference = 0;
                 if (registrationDate) {
                     // ✅ Normalizar las fechas eliminando la hora, minutos y segundos
@@ -411,6 +411,7 @@ useEffect(() => {
                     const diffTime = normalizedCurrentDate.getTime() - normalizedRegistrationDate.getTime();
                     daysDifference = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 }
+
                 
                 // ✅ Cálculo del nivel del suscriptor
                 const monthsDifference = registrationDate
