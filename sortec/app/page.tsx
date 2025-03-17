@@ -10,7 +10,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/navigation";
 import Login from "./components/Login";
 import ClientForm from "./components/ClientForm"; // Adjust the path as necessary
-import { motion } from "framer-motion"; // Importamos Framer Motion
+import JuegosPage from "./juegos/page";
+
+
 
 interface Perfil {
   id: string;
@@ -265,22 +267,6 @@ useEffect(() => {
     { title: "Merchandise exclusivo", img: "/images/merch.jpeg", description: "Accede a productos únicos y personalizados." }
   ];
 
-  const games = [
-    { title: "Juegos para Celulares", img: "/images/celulares.jpeg", description: "Descubre los mejores juegos para tu celular." },
-    { title: "Juegos para PC", img: "/images/pc.jpeg", description: "Juega en grande con nuestra colección para PC." },
-    { title: "Juegos para Nintendo Switch", img: "/images/switch.jpeg", description: "Diversión portátil con Nintendo Switch." },
-    { title: "Nintendo", img: "/images/nintendo.jpeg", description: "Juegos clásicos de Nintendo." },
-    { title: "Super Nintendo", img: "/images/super-nintendo.jpeg", description: "Revive la nostalgia con Super Nintendo." },
-    { title: "Nintendo 64", img: "/images/nintendo64.jpeg", description: "Explora juegos en 3D con Nintendo 64." },
-    { title: "Game Boy", img: "/images/gameboy.jpeg", description: "Clásicos portátiles con Game Boy." },
-    { title: "Game Boy Advance", img: "/images/gameboy-advance.jpeg", description: "Gráficos mejorados con Game Boy Advance." },
-    { title: "PlayStation 1", img: "/images/ps1.jpeg", description: "El inicio de la era PlayStation." },
-    { title: "PlayStation 2", img: "/images/ps2.jpeg", description: "Una consola icónica de la historia de los videojuegos." },
-    { title: "PSP", img: "/images/psp.jpeg", description: "Lleva tus juegos favoritos a cualquier parte con PSP." },
-    { title: "PSP Vita", img: "/images/pspvita.jpeg", description: "Gráficos de alta calidad en la palma de tu mano." },
-    { title: "Nintendo GameCube", img: "/images/gamecube.jpeg", description: "Diversión en cubos con GameCube." }
-  ];
-
   {/*
   const events = [
     { title: "Sorteo de Laptop", date: "2025-02-13", description: "Participa para ganar una laptop de última generación.", src: "https://res.cloudinary.com/dizkdk1te/image/upload/v1738791941/SortecVoucher/vkzsamliggvmfcqc4jsz.jpg" },
@@ -312,7 +298,6 @@ useEffect(() => {
                   className="img-fluid"
                   style={{ 
                     maxHeight: '50px', 
-                    filter: 'drop-shadow(0px 0px 5px rgba(255,255,255,0.8)) contrast(1.2)', 
                     padding: '5px'
                   }} 
                 />
@@ -321,7 +306,7 @@ useEffect(() => {
             <Navbar.Toggle aria-controls="navbarNav" onClick={() => setIsNavCollapsed(!isNavCollapsed)} className="ms-auto" />
           </div>
           <Navbar.Collapse id="navbarNav" className={isNavCollapsed ? "collapse" : "show"}>
-            <Nav className="mx-auto">
+            <Nav className="mx-auto" id="menuPage">
               <Nav.Link href="#inicio" onClick={scrollToTop}>Inicio</Nav.Link>
               <Nav.Link href="#sorteos">Sorteos</Nav.Link>
               <Nav.Link href="#benefits">Beneficios</Nav.Link>
@@ -383,7 +368,7 @@ useEffect(() => {
         <br />
         <br />
         <br />
-        <Container>
+        <Container >
         <h2>Bienvenido, {client.nombres?.split(' ')[0]} {client.apellidos?.split(' ')[0]}!</h2>
           <p>Disfruta de todos tus beneficios como {client.rol}.</p>
 
@@ -544,7 +529,6 @@ useEffect(() => {
               className="img-fluid"
               style={{ 
                 maxHeight: '50px', 
-                filter: 'drop-shadow(0px 0px 5px rgba(255,255,255,0.8)) contrast(1.2)', 
                 padding: '5px'
               }} 
             />
@@ -734,38 +718,7 @@ useEffect(() => {
       </section>
 
       <section id="games" className="text-center my-5">
-      <Container style={{ color: "#007bff", marginBottom: "20px" }}>
-        <h2 style={{ color: "#007bff", marginBottom: "20px" }}>Grandes Juegos Virtuales</h2>
-        <p style={{ color: "#555", fontSize: "18px", fontStyle: "italic", marginBottom: "20px" }}>
-          🎮 Pronto en SORTEC podrás disfrutar de los mejores juegos virtuales para descargar. 🚀 Sumérgete en un mundo lleno de
-          aventuras, desafíos y diversión sin límites. 🌍 Desde juegos de estrategia hasta emocionantes competiciones, 
-          ¡prepárate para experimentar la emoción al máximo! 💥🔥 
-        </p>
-        <Row>
-          {games.map((game, index) => (
-            <Col md={4} key={index} className="p-3">
-              <motion.div 
-                initial={{ opacity: 0, y: 50 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <img 
-                  src={game.img} 
-                  alt={game.title} 
-                  className="img-fluid rounded-circle game-img" 
-                  style={{ width: "150px", height: "150px", cursor: "pointer" }} 
-                  onClick={() => { 
-                    setModalContent(game.description); 
-                    setShowModal(true); 
-                  }} 
-                />
-                <h5 style={{ color: "#007bff", marginBottom: "20px" }}>{game.title}</h5>
-              </motion.div>
-            </Col>
-          ))}
-        </Row>
-      </Container>
+        <JuegosPage />
       </section>
 
       <section id="ganadores" className="text-center my-5">
@@ -848,7 +801,7 @@ useEffect(() => {
       */}
 
       <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <p className="mb-2 mb-md-0">© SORTEC 2025 - Todos los derechos reservados.</p>
+      <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
 
         <div className="d-flex align-items-center social-container">
           <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">
@@ -1140,10 +1093,6 @@ useEffect(() => {
             .button:hover {
               background-color: #005bb5;
             }
-
-
-
-
       `}</style>
 
     </div>

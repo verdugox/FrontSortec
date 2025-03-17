@@ -105,7 +105,6 @@ export default function PerfilPage() {
                   className="img-fluid"
                   style={{ 
                     maxHeight: '50px', 
-                    filter: 'drop-shadow(0px 0px 5px rgba(255,255,255,0.8)) contrast(1.2)', 
                     padding: '5px'
                   }} 
                 />
@@ -315,7 +314,7 @@ export default function PerfilPage() {
      
     
       <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <p className="mb-2 mb-md-0">© SORTEC 2025 - Todos los derechos reservados.</p>
+       <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
 
         <div className="d-flex align-items-center social-container">
           <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">
