@@ -271,6 +271,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
             <tr>
               <th>#</th>
               <th>Codigo</th>
+              <th>DNI</th>
               <th>Nombre</th>
               <th>Apellido</th>
               <th>Estado</th>
@@ -282,6 +283,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
               <tr key={cliente.id}>
                 <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                 <td>{cliente.codigoSortec}</td>
+                <td>{cliente.dni}</td>
                 <td>{cliente.nombres.split(" ")[0]}</td>
                 <td>{cliente.apellidos.split(" ")[0]}</td>
                 <td style={{ color: cliente.estado === "pendiente" ? "red" : "inherit" }}>
