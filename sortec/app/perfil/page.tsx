@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Container, Nav, Navbar, Dropdown, Form, Button, Row, Col, Spinner } from "react-bootstrap";
+import Menu from "../components/Menu";
+import Footer from "../components/Footer";
+import { Container, Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/navigation";
 
@@ -24,7 +26,6 @@ interface Perfil {
   }
 
 export default function PerfilPage() {
-    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [client, setClient] = useState<Perfil | null>(null);
     const [loading, setLoading] = useState(false);
@@ -95,55 +96,47 @@ export default function PerfilPage() {
     if (!client) return <p>Cargando...</p>;
 
   return (
-    <div className="main-container">
-      <Navbar expand="lg" className="navbar navbar-dark bg-dark fixed-top">
-        <div className="container-fluid">
-          <Navbar.Brand href="#" onClick={scrollToTop} style={{ cursor: 'pointer' }}>
-          <img 
-                  src="/images/LogoSortecQueda.png" 
-                  alt="SORTEC Logo" 
-                  className="img-fluid"
-                  style={{ 
-                    maxHeight: '50px', 
-                    padding: '5px'
-                  }} 
+        <div
+          className="main-container text-white"
+          style={{
+            backgroundImage: "url('/images/image.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "100vh",
+          }}
+        >
+        <section>
+              <Menu 
+                  client={client} 
+                  onLogout={handleLogout} 
+                  scrollToTop={scrollToTop}
+                  onLoginClick={() => router.push('/login')} 
+                  setShowLogin={(show: boolean) => console.log('Set show login:', show)}
                 />
-          </Navbar.Brand>
-          <div className="d-flex align-items-center">
-            <Navbar.Toggle aria-controls="navbarNav" onClick={() => setIsNavCollapsed(!isNavCollapsed)} className="ms-auto" />
-          </div>
-          <Navbar.Collapse id="navbarNav" className={isNavCollapsed ? "collapse" : "show"}>
-            <Nav className="mx-auto">
-                    <Nav.Link onClick={() => router.push("/")}>Inicio</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Sorteos</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Beneficios</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Tienda</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Juegos</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Ganadores</Nav.Link>
-                    {/*<Nav.Link onClick={() => router.push("/")}>Historial Sorteos</Nav.Link>*/}
-            </Nav>
-            <Nav>
-                <Dropdown>
-                <Dropdown.Toggle variant="secondary">
-                    👤 {client.nombres?.split(" ")[0]} {client.apellidos?.split(" ")[0]}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => router.push('/perfil')}>Perfil</Dropdown.Item>
-                  <Dropdown.Item onClick={() => router.push('/suscripcion')}>Suscripción</Dropdown.Item>
-                  <Dropdown.Item onClick={handleLogout}>Cerrar Sesión</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </div>
-      </Navbar>
+        </section>
+            <br/>
+            <br/>
+        <section >
+        <div className="text-center py-5 bg-dark bg-opacity-75">
+              <h1 className="display-4 fw-bold text-warning mb-3 animate__animated animate__pulse animate__infinite">
+                ¡Participa y Gana con SORTEC!
+              </h1>
+              <p className="lead text-light">
+                Actualiza tu perfil y prepárate para nuestros increíbles sorteos tecnológicos 🎉
+              </p>
+              </div>
+              {/* Animación superior - cajita */}
+              <div className="premio-superior">
+                <img src="/images/premio2.png" alt="Premio Cajita" />
+              </div>
 
 
-        <section className="user-info my-5 my-4 position-relative">
-            <br />
-            <br />
-            <br />
-            <Container className="my-5">
+
+              <Container
+                className="my-5 p-4 bg-dark bg-opacity-75 rounded-4 shadow-lg"
+                style={{ backdropFilter: "blur(8px)" }}
+              >
+
                     <div className="d-flex justify-content-between align-items-center">
                         <h2>Información de Usuario</h2>
                         <Button variant="primary" onClick={() => setIsEditing(!isEditing)} className="btn-sm" style={{ boxShadow: "0 0 15px rgba(0, 0, 255, 0.8)", width: "200px" }}>
@@ -313,26 +306,13 @@ export default function PerfilPage() {
    
      
     
-      <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-       <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
-
-        <div className="d-flex align-items-center social-container">
-          <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/facebook.png" alt="Facebook" />
-          </a>
-          <a href="https://m.me/559373170586306" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/mensajero2.png" alt="Messenger" />
-          </a>
-          {/* Código QR más cerca sin romper el diseño */}
-          <img src="/images/qrcode.jpeg" alt="QR Code" className="qr-code" />
-        </div>
-      </footer>
+      <Footer />
 
       <style jsx>{`
 
         body {
             background: rgba(0, 0, 0, 0.85);
-            background-image: url('/images/fondo02.jpeg');
+            background-image: url('/images/banner1.jpeg');
             background-size: cover;
             background-attachment: fixed;
             color: #fff;
@@ -679,6 +659,95 @@ export default function PerfilPage() {
             .button:hover {
               background-color: #005bb5;
             }
+
+          .bg-dark.bg-opacity-75 {
+            background-color: rgba(0, 0, 0, 0.6) !important;
+            box-shadow: 0 0 25px #0ff, 0 0 50px #0ff, 0 0 75px #00f;
+            border-radius: 16px;
+            border: 2px solid #0ff;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            transform: perspective(1000px) rotateX(0deg);
+          }
+
+          .bg-dark.bg-opacity-75:hover {
+            transform: perspective(1000px) rotateX(3deg);
+            box-shadow: 0 0 30px #0ff, 0 0 60px #0ff;
+          }
+
+          .custom-form {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #00f;
+            border: 2px solid #0ff;
+            transform: perspective(1000px) rotateX(0deg);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+          }
+
+          .custom-form:hover {
+            transform: perspective(1000px) rotateX(4deg);
+            box-shadow: 0 0 30px #0ff, 0 0 60px #0ff, 0 0 90px #00f;
+          }
+
+          .custom-input {
+          background: #0b0f19;
+          color: white;
+          border: 1px solid #0ff;
+          box-shadow: 0 0 10px #0ff;
+          padding: 10px;
+          border-radius: 8px;
+          transition: all 0.3s ease-in-out;
+        }
+
+        .custom-input:focus {
+          box-shadow: 0 0 25px #0ff;
+          outline: none;
+        }
+
+
+
+
+          .premio-superior{
+            position: absolute;
+            left: -120px;
+            width: 200px;
+            opacity: 0.9;
+            z-index: 3;
+            pointer-events: none;
+          }
+
+          .premio-superior img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          }
+
+          /* Responsive: más pequeños aún en mobile */
+          @media (max-width: 768px) {
+            .premio-superior {
+              width: 100px;
+              opacity: 0.9;
+            }
+          }
+
+            .premio-superior {
+                top: 8%;
+                animation: animPremio 14s linear infinite;
+              }
+
+
+            @keyframes animPremio {
+              0% { left: -150px; transform: rotate(0deg); }
+              50% { transform: rotate(10deg); }
+              100% { left: 110%; transform: rotate(0deg); }
+            }
+
+            @keyframes animPremioReverse {
+              0% { left: 110%; transform: rotate(0deg); }
+              50% { transform: rotate(-10deg); }
+              100% { left: -150px; transform: rotate(0deg); }
+            }
+
 
 
 
