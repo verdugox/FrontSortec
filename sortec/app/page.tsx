@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Carousel, Modal, Button, Container, Row, Col, Nav, Navbar, Dropdown, Spinner } from "react-bootstrap";
-//import FullCalendar from '@fullcalendar/react';
-//import { EventClickArg } from '@fullcalendar/core';
-//import dayGridPlugin from '@fullcalendar/daygrid';
-//import esLocale from '@fullcalendar/core/locales/es';
+import { Carousel, Modal, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/navigation";
 import Login from "./components/Login";
 import ClientForm from "./components/ClientForm"; // Adjust the path as necessary
 import JuegosPage from "./juegos/page";
+import '../css/home/inicio.css';
+import Menu from "./components/Menu";
+import Footer from "./components/Footer";
 
 
 
@@ -45,7 +44,6 @@ export default function HomePage() {
   const [showSubscribe, setShowSubscribe] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
-  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
@@ -66,11 +64,26 @@ export default function HomePage() {
 
 
   useEffect(() => {
+    // Cargar cliente desde localStorage
     const storedClient = localStorage.getItem("client");
     if (storedClient) {
       setClient(JSON.parse(storedClient));
     }
-  }, []);
+  
+    // Hacer scroll automático si hay hash en la URL
+    if (typeof window !== "undefined") {
+      const targetId = window.location.hash;
+      if (targetId) {
+        const element = document.querySelector(targetId);
+        if (element) {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: "smooth" });
+          }, 300);
+            }
+          }
+        }
+      }, []);
+  
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -258,8 +271,7 @@ useEffect(() => {
 
     return () => clearInterval(timer);
   }, [totalSlides]);
-
-
+  
   const benefits = [
     { title: "Eventos presenciales", img: "/images/eventos.jpeg", description: "Participa en nuestros eventos exclusivos." },
     { title: "Entradas para el cine", img: "/images/cine.jpeg", description: "Disfruta de funciones de cine gratuitas." },
@@ -267,78 +279,24 @@ useEffect(() => {
     { title: "Merchandise exclusivo", img: "/images/merch.jpeg", description: "Accede a productos únicos y personalizados." }
   ];
 
-  {/*
-  const events = [
-    { title: "Sorteo de Laptop", date: "2025-02-13", description: "Participa para ganar una laptop de última generación.", src: "https://res.cloudinary.com/dizkdk1te/image/upload/v1738791941/SortecVoucher/vkzsamliggvmfcqc4jsz.jpg" },
-    { title: "Sorteo de Smartphone", date: "2025-02-13", description: "¡Gana un smartphone de alta gama!", src: "https://res.cloudinary.com/dizkdk1te/image/upload/v1738369048/SortecVoucher/btbemydt5yrmwhuvbxty.jpg" }
-  ];
-  const handleEventClick = (info: EventClickArg) => {
-    const event = events.find(e => e.title === info.event.title);
-    if (event) {
-      setModalContent(`
-        <div style="text-align: center;">
-          <h3 style="color: #007bff;">${event.title}</h3>
-          <p>${event.description}</p>
-          <img src="${event.src}" alt="${event.title}" class="img-fluid rounded shadow" style="max-width: 100%; height: auto;" />
-        </div>
-      `);
-      setShowModal(true);
-    }
-  };
-  */}
-
   return (
+    
     <div className="main-container">
-      <Navbar expand="lg" className="navbar navbar-dark bg-dark fixed-top">
-        <div className="container-fluid">
-          <Navbar.Brand href="#" onClick={scrollToTop} style={{ cursor: 'pointer' }}>
-            <img 
-                  src="/images/LogoSortecQueda.png" 
-                  alt="SORTEC Logo" 
-                  className="img-fluid"
-                  style={{ 
-                    maxHeight: '50px', 
-                    padding: '5px'
-                  }} 
-                />
-          </Navbar.Brand>
-          <div className="d-flex align-items-center">
-            <Navbar.Toggle aria-controls="navbarNav" onClick={() => setIsNavCollapsed(!isNavCollapsed)} className="ms-auto" />
-          </div>
-          <Navbar.Collapse id="navbarNav" className={isNavCollapsed ? "collapse" : "show"}>
-            <Nav className="mx-auto" id="menuPage">
-              <Nav.Link href="#inicio" onClick={scrollToTop}>Inicio</Nav.Link>
-              <Nav.Link href="#sorteos">Sorteos</Nav.Link>
-              <Nav.Link href="#benefits">Beneficios</Nav.Link>
-              <Nav.Link href="#store">Tienda</Nav.Link>
-              <Nav.Link href="#games">Juegos</Nav.Link>
-              <Nav.Link href="#ganadores">Ganadores</Nav.Link>
-              {/* <Nav.Link href="#historial">Historial Sorteos</Nav.Link> */}
-            </Nav>
-            <Nav>
-              {!client ? (
-                <Nav.Link onClick={() => setShowLogin(true)}>Iniciar Sesión</Nav.Link>
-              ) : (
-                <Dropdown>
-                  <Dropdown.Toggle variant="secondary">
-                    👤 {client.nombres?.split(" ")[0]} {client.apellidos?.split(" ")[0]}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => router.push('/perfil')}>Perfil</Dropdown.Item>
-                    <Dropdown.Item onClick={() => router.push('/suscripcion')}>Suscripción</Dropdown.Item>
-                    <Dropdown.Item onClick={handleLogout}>Cerrar Sesión</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </div>
-      </Navbar>
-
+      <section>
+      <Menu 
+          client={client} 
+          onLogout={handleLogout} 
+          onLoginClick={() => setShowLogin(true)} 
+          scrollToTop={scrollToTop}
+          setShowLogin={setShowLogin}
+       />
+      </section>
+      
       {!client ? (
-        <section id="carousel" className="my-4 position-relative">
+        <section id="carousel" className="mt-4 pt-5 position-relative">
+
          <Carousel>
-          {["/images/banner1.jpeg", "/images/banner2.png", "/images/SORTEC.jpg"].map((src, index) => (
+          {["/images/5.png","/images/4.png","/images/3.png","/images/2.png","/images/1.png" ].map((src, index) => (
             <Carousel.Item key={index} style={{ maxHeight: "800px" }}>
               <img className="d-block w-100" src={src} alt={`Slide ${index + 1}`} style={{ opacity: 5.0 }} />
               <div className="overlay"></div>
@@ -354,23 +312,47 @@ useEffect(() => {
 
         {/* ✅ Versión Móvil - Texto y botón debajo del slide */}
         <div className="d-block d-md-none text-center mt-3">
-          <h2 className="mobile-title">¡Obtén tus beneficios aquí!</h2>
-          <button className="btn btn-primary btn-lg mt-2" onClick={() => setShowRegister(true)}>¡Quiero ser suscriptor!</button>
+          <h2 style={{color: '#007bff'}} className="mobile-title">¡Obtén tus beneficios aquí!</h2>
+          <button style={{color: '#ffffff'}} className="btn btn-primary btn-lg mt-2" onClick={() => setShowRegister(true)}>¡Quiero ser suscriptor!</button>
         </div>
 
         {/* Imágenes de personajes */}
-        <img className="man-pointing" src="/images/hombre01.png" alt="Man Pointing" />
-        <img className="woman-pointing" src="/images/mujer01.png" alt="Woman Pointing" />
+        {/*<img className="man-pointing" src="/images/hombre01.png" alt="Man Pointing" />
+        <img className="woman-pointing" src="/images/mujer01.png" alt="Woman Pointing" />*/}
 
         </section>
+
       ) : (
         <section className="user-info my-5 my-4 position-relative">
         <br />
         <br />
         <br />
         <Container >
-        <h2>Bienvenido, {client.nombres?.split(' ')[0]} {client.apellidos?.split(' ')[0]}!</h2>
-          <p>Disfruta de todos tus beneficios como {client.rol}.</p>
+          
+        <div className="animated-welcome-container">
+        <div className="scroll-wrapper">
+          <div className="scroll-track">
+            <div className="scroll-content">
+              <h2>🎉 Bienvenido, {client.nombres?.split(' ')[0]} {client.apellidos?.split(' ')[0]}!</h2>
+              <p style={{ color: "#ffffff" }}>
+                🌟 Disfruta de todos tus beneficios como <span className="highlighted-role">{client.rol}</span> | 
+                🔍 Explora <strong>sorteos</strong> 🎁 | descubre <strong>juegos</strong> 🎮 | revisa a los <strong>ganadores</strong> 🏆 | nuevos <strong>premios</strong> 💥 en <strong>SORTEC</strong> 🚀
+              </p>
+            </div>
+            <div className="scroll-content"> {/* ⬅ segunda copia */}
+              <h2>🎉 Bienvenido, {client.nombres?.split(' ')[0]} {client.apellidos?.split(' ')[0]}!</h2>
+              <p style={{ color: "#ffffff" }}>
+                🌟 Disfruta de todos tus beneficios como <span className="highlighted-role">{client.rol}</span> | 
+                🔍 Explora <strong>sorteos</strong> 🎁 | descubre <strong>juegos</strong> 🎮 | revisa a los <strong>ganadores</strong> 🏆 | nuevos <strong>premios</strong> 💥 en <strong>SORTEC</strong> 🚀
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
 
           {(client.rol === "PARTICIPANTE" || client.rol === "ADMINISTRADOR") && (() => {
                   // ✅ Función para convertir una fecha en formato dd/mm/yyyy HH:MM:SS a un objeto Date
@@ -455,7 +437,8 @@ useEffect(() => {
                               className="profile-image"
                           />
                       </div>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
+                      <div className="subscription-info-text" style={{ display: "flex", flexDirection: "column" }}>
+
                           <p><strong>Estado:</strong> <span style={{ backgroundColor: "#4CAF50", color: "#fff", padding: "2px 8px", borderRadius: "5px" }}>{client.estado}</span></p>
                           <p><strong>Codigo Subscriptor:</strong> {client.codigoSortec}</p>
 
@@ -468,7 +451,7 @@ useEffect(() => {
                           <p><strong>Ubicación:</strong> {client.provincia}, {client.pais}</p>
                         </div>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "1 1 40%", justifyContent: "center" }}>
+                      <div className="subscription-info-text" style={{ display: "flex", alignItems: "center", gap: "10px", flex: "1 1 40%", justifyContent: "center" }}>
                         <img 
                           src={`/images/Level${level}.jpeg`} 
                           alt={`Suscriptor Nivel ${level}`} 
@@ -524,12 +507,12 @@ useEffect(() => {
         <Modal.Header closeButton style={{ backgroundColor: '#000', borderBottom: 'none' }}>
           <Modal.Title>
             <img 
-              src="/images/LogoSortecQueda.png" 
+              src="/images/LogoSortecQueda2.png" 
               alt="SORTEC Logo" 
               className="img-fluid"
               style={{ 
                 maxHeight: '50px', 
-                padding: '5px'
+                padding: '0px'
               }} 
             />
           </Modal.Title>
@@ -583,7 +566,7 @@ useEffect(() => {
     </Modal>
 
 
-      <section id="sorteos" className="text-center my-5">
+      <section id="sorteos" className="text-center my-5" style={{ maxHeight: "50%" }}>
             <Container>
                 <h2 style={{ color: "#007bff", marginBottom: "20px" }}>Próximos Sorteos</h2>
 
@@ -616,7 +599,7 @@ useEffect(() => {
                                                 border: "2px solid #000",
                                                 borderRadius: "10px",
                                                 overflow: "hidden",
-                                                height: "250px",
+                                                height: "320px",
                                                 cursor: "pointer"
                                             }}
                                             onClick={() => handleOpenModalSorteo(item)}
@@ -625,7 +608,7 @@ useEffect(() => {
                                                 className="d-block w-100 img-fluid"
                                                 src={item.img}
                                                 alt={`Premio ${idx + 1}`}
-                                                style={{ height: "200px", objectFit: "cover" }}
+                                                style={{ height: "280px", objectFit: "cover" }}
                                             />
                                             <div style={{
                                                 position: "absolute",
@@ -659,7 +642,7 @@ useEffect(() => {
                     </Carousel>
                 )}
 
-                <Button variant="warning" className="mt-4" style={{ fontWeight: "bold", borderRadius: "25px", padding: "10px 20px", width: "100%" }}>
+                <Button variant="warning" className="mt-4" style={{ fontWeight: "bold", borderRadius: "25px", padding: "10px 20px" }}>
                     Pronto podrás ver todos los premios
                 </Button>
             </Container>
@@ -763,60 +746,7 @@ useEffect(() => {
       </Container>
     </section>
 
-    {/*
-    <section id="historial" className="text-center my-5">
-          <Container style={{ color: "#000000", marginBottom: "20px" }}>
-          <h2 style={{ color: "#007bff", marginBottom: "20px" }}>Historial Sorteos</h2>
-            <p style={{ color: "#555", fontSize: "18px", fontStyle: "italic", marginBottom: "20px" }}>
-              🎉 ¡Prepárate para emocionantes sorpresas! En SORTEC te traemos los sorteos más esperados donde podrás ganar
-              premios increíbles. 🚀 Explora el calendario y descubre cuándo se realizarán estos sorteos que podrían cambiar
-              tu vida. 📅 ¡No te pierdas ninguna oportunidad! Participa, gana y comparte la emoción con nosotros. 🌟
-            </p>
-          </Container>
-
-          <Container id="calendar-section" style={{ backgroundColor: "#f4b400", borderRadius: "15px", padding: "15px" }}>
-            <FullCalendar
-              plugins={[dayGridPlugin]}
-              initialView="dayGridMonth"
-              events={events}
-              eventClick={handleEventClick}
-              height="auto"
-              eventBackgroundColor="#2c3e50"
-              eventTextColor="#fff"
-              eventDisplay="block"
-              locale={esLocale}
-              headerToolbar={{
-                left: "prev,next",
-                center: "title",
-                right: ""
-              }}
-              dayMaxEventRows={true}
-              dayHeaderContent={(args) => (
-                <span style={{ color: "#fff", fontWeight: "bold" }}>{args.text}</span>
-              )}
-            />
-          </Container>
-
-      </section>
-      */}
-
-      <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-      <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
-
-        <div className="d-flex align-items-center social-container">
-          <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/facebook.png" alt="Facebook" />
-          </a>
-          <a href="https://m.me/559373170586306" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/mensajero2.png" alt="Messenger" />
-          </a>
-          {/* Código QR más cerca sin romper el diseño */}
-          <img src="/images/qrcode.jpeg" alt="QR Code" className="qr-code" />
-        </div>
-      </footer>
-
-
-
+    <Footer />
 
       <Modal show={showSubscribe} onHide={() => setShowSubscribe(false)}>
         <Modal.Header closeButton>
@@ -828,273 +758,6 @@ useEffect(() => {
           <Button variant="/components/ClientForm.tsx">Suscribirme</Button>
         </Modal.Footer>
       </Modal>
-
-      <style jsx>{`
-
-        body {
-            background: rgba(0, 0, 0, 0.85);
-            background-image: url('/images/fondo02.jpeg');
-            background-size: cover;
-            background-attachment: fixed;
-            color: #fff;
-          }
-        .carousel-caption {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          z-index: 10;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
-        .animated-title {
-          color: #FFD700;
-          font-size: 3rem;
-          animation: pulse 2s infinite;
-        }
-        .man-pointing, .woman-pointing {
-          position: absolute;
-          top: 56%;
-          transform: translateY(-50%);
-          max-width: 20%;
-          height: auto;
-          animation: bounce 2s infinite;
-        }
-        .man-pointing { left: 2%; }
-        .woman-pointing { right: 2%; }
-
-        @media (max-width: 768px) {
-          .carousel-caption {
-            top: 40%;
-          }
-          .animated-title {
-            font-size: 2rem;
-          }
-          .btn-lg {
-            font-size: 1rem;
-          }
-          .man-pointing, .woman-pointing {
-            max-width: 15%;
-          }
-        }
-
-        @keyframes bounce {
-          0%, 100% { transform: translateY(-50%) translateX(0); }
-          50% { transform: translateY(-50%) translateX(-10px); }
-        }
-
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-        
-          .carousel-indicators [data-bs-target] {
-            background-color: #007bff;
-          }
-          .carousel-control-prev-icon,
-          .carousel-control-next-icon {
-            background-color: #007bff;
-          }
-          .carousel-item {
-            transition: transform 0.8s ease-in-out;
-          }
-
-          /*estilos para el calendario*/
-           @media (max-width: 768px) {
-              .fc-toolbar {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 5px;
-              }
-
-              .fc-toolbar-chunk {
-                display: flex;
-                justify-content: center;
-                gap: 5px;
-                flex-wrap: wrap;
-              }
-
-              .fc .fc-toolbar-title {
-                color: #000000 !important;
-                font-size: 1.2rem !important;
-              }
-
-              .fc-button {
-                font-size: 0.8rem !important;
-                padding: 4px 8px !important;
-                background-color: #f4b400 !important;
-                color: #000 !important;
-                border: none !important;
-                border-radius: 8px !important;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-              }
-
-              .fc-toolbar-chunk .fc-button {
-                background-color: #f4b400 !important;
-                color: #000 !important;
-                border: none !important;
-              }
-
-              .fc-daygrid-day-number, .fc-daygrid-day {
-                color: #000000 !important;
-                font-weight: bold !important;
-              }
-
-              .fc-toolbar-title {
-                color: #000000 !important;
-              }
-            }
-
-            @media (min-width: 769px) {
-              .fc-toolbar-title {
-                color: #000000 !important;
-              }
-              .fc-daygrid-day-number, .fc-daygrid-day {
-                color: #000000 !important;
-                font-weight: bold !important;
-              }
-            }
-
-            /*ESTILOS PARA EL PERFIL*/
-            .subscription-info p {
-              margin: 5px 0;
-              font-size: 1rem;
-            }
-            .subscription-info img:hover {
-              cursor: pointer;
-            }
-
-            @media (max-width: 768px) {
-              .subscription-info {
-                flex-direction: column;
-                text-align: center;
-              }
-              .subscription-info img {
-                margin-bottom: 10px;
-              }
-              .subscription-info div {
-                margin: 0 auto;
-              }
-            }
-              .profile-image-container {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin-bottom: 20px;
-                }
-
-                .profile-image {
-                    width: 100px;
-                    height: 100px;
-                    border-radius: 50%;
-                    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-                    transition: transform 0.3s ease, box-shadow 0.3s ease;
-                }
-
-                .profile-image:hover {
-                    transform: scale(1.1);
-                    box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
-                }
-
-                .game-img {
-                  transition: all 0.4s ease-in-out;
-                  box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.5);
-                }
-
-                .game-img:hover {
-                  transform: scale(1.1);
-                  box-shadow: 0px 0px 20px rgba(0, 123, 255, 0.8);
-                }
-
-                /* Contenedor de iconos y QR */
-              .social-container {
-                display: flex;
-                align-items: center;
-                gap: 10px; /* Espaciado entre los iconos */
-                margin-left: auto; /* Mueve los iconos más a la izquierda en desktop */
-                margin-right: 50px; /* Los aleja un poco del borde derecho */
-              }
-
-              /* Estilos para los iconos de redes sociales */
-              .social-icon img {
-                width: 35px;
-                height: 35px;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                filter: drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.5));
-              }
-
-              .social-icon img:hover {
-                transform: scale(1.1);
-                box-shadow: 0 0 12px rgba(0, 123, 255, 0.8);
-              }
-
-              /* Estilo para el QR Code */
-              .qr-code {
-                width: 40px;
-                height: 40px;
-                margin-left: 5px; /* Más cerca de los iconos */
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                filter: drop-shadow(0px 0px 4px rgba(255, 215, 0, 0.8));
-              }
-
-              .qr-code:hover {
-                transform: scale(1.05);
-                box-shadow: 0 0 12px rgba(255, 215, 0, 1);
-              }
-
-              /* Responsive para móviles */
-              @media (max-width: 768px) {
-                footer {
-                  flex-direction: column;
-                  text-align: center;
-                }
-
-                .social-container {
-                  margin-top: 10px;
-                  justify-content: center;
-                  margin-left: 0;
-                  margin-right: 0;
-                }
-
-                .social-icon img {
-                  width: 30px;
-                  height: 30px;
-                }
-
-                .qr-code {
-                  width: 35px;
-                  height: 35px;
-                  margin-left: 3px;
-                }
-              }
-
-             .input, button {
-              width: 100%;
-              padding: 10px;
-              margin: 8px 0;
-              border: 1px solid #ddd;
-              border-radius: 4px;
-            }
-            .button {
-              width: 100%;
-              padding: 10px;
-              margin: 8px 0;
-              border: 1px solid #ddd;
-              border-radius: 4px;
-            }
-
-            .button {
-              background-color: #0070f3;
-              color: white;
-              border: none;
-              cursor: pointer;
-            }
-
-            .button:hover {
-              background-color: #005bb5;
-            }
-      `}</style>
-
     </div>
   );
 }

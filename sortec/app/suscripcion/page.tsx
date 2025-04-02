@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import { FaDownload } from "react-icons/fa";
 import generateInvoicePDF from "../components/GenerateInvoice"; // Ajusta la ruta según tu proyecto
+import Menu from "../components/Menu";
+import Footer from "../components/Footer";
 
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dizkdk1te";
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "Sortecfiles";
@@ -393,11 +395,20 @@ export default function Suscripcion() {
             <br />
             <br />
             <Container style={{ color: "#fff" }}>
+            <section>
+                  <Menu 
+                      client={client} 
+                      onLogout={handleLogout} 
+                      scrollToTop={scrollToTop}
+                      onLoginClick={() => router.push('/login')} 
+                      setShowLogin={(show: boolean) => console.log('Set show login:', show)}
+                    />
+            </section>
             <Card style={{ background: "#0b0f19", borderRadius: "15px", padding: "20px" }}>
                 <h3 style={{ color: "#fff", textShadow: "0 0 10px #ffffff" }}>Mi suscripción</h3>
                 <Row>
                     <Col md={6}>
-                        <Card style={{ background: "#151a30", padding: "15px", borderRadius: "10px", color: "#fff", textShadow: "0 0 10px #ffffff" }}>
+                        <Card className="subscription-info-text" style={{ background: "#151a30", padding: "15px", borderRadius: "10px", color: "#fff", textShadow: "0 0 10px #ffffff" }}>
                             <p><strong>Suscriptor desde:</strong> {registrationDate ? registrationDate.toLocaleDateString("es-ES") : "Fecha inválida"}</p>
                             <p><strong>Fecha de facturación:</strong> {subscriptionEndDate}</p>
                             <p><strong>Monto de facturación:</strong> S/ 8.00</p>
@@ -643,20 +654,7 @@ export default function Suscripcion() {
         </Container>
       </section>
 
-      <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
-
-        <div className="d-flex align-items-center social-container">
-          <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/facebook.png" alt="Facebook" />
-          </a>
-          <a href="https://m.me/559373170586306" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/mensajero2.png" alt="Messenger" />
-          </a>
-          {/* Código QR más cerca sin romper el diseño */}
-          <img src="/images/qrcode.jpeg" alt="QR Code" className="qr-code" />
-        </div>
-      </footer>
+      <Footer />
 
 
       <style jsx>{`
@@ -1003,71 +1001,7 @@ export default function Suscripcion() {
           background: #45a049;
           color: white;
       }
-
-        /* Contenedor de iconos y QR */
-              .social-container {
-                display: flex;
-                align-items: center;
-                gap: 10px; /* Espaciado entre los iconos */
-                margin-left: auto; /* Mueve los iconos más a la izquierda en desktop */
-                margin-right: 50px; /* Los aleja un poco del borde derecho */
-              }
-
-              /* Estilos para los iconos de redes sociales */
-              .social-icon img {
-                width: 35px;
-                height: 35px;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                filter: drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.5));
-              }
-
-              .social-icon img:hover {
-                transform: scale(1.1);
-                box-shadow: 0 0 12px rgba(0, 123, 255, 0.8);
-              }
-
-              /* Estilo para el QR Code */
-              .qr-code {
-                width: 40px;
-                height: 40px;
-                margin-left: 5px; /* Más cerca de los iconos */
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                filter: drop-shadow(0px 0px 4px rgba(255, 215, 0, 0.8));
-              }
-
-              .qr-code:hover {
-                transform: scale(1.05);
-                box-shadow: 0 0 12px rgba(255, 215, 0, 1);
-              }
-
-              /* Responsive para móviles */
-              @media (max-width: 768px) {
-                footer {
-                  flex-direction: column;
-                  text-align: center;
-                }
-
-                .social-container {
-                  margin-top: 10px;
-                  justify-content: center;
-                  margin-left: 0;
-                  margin-right: 0;
-                }
-
-                .social-icon img {
-                  width: 30px;
-                  height: 30px;
-                }
-
-                .qr-code {
-                  width: 35px;
-                  height: 35px;
-                  margin-left: 3px;
-                }
-              }
-
-
-            
+     
       `}</style>
 
     </div>
