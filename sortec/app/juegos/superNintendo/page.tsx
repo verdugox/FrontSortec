@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { motion } from "framer-motion";
 import { GiGamepad } from "react-icons/gi";
+import Menu from "../../components/Menu";
+import Footer from "../../components/Footer";
 
 interface Perfil {
   id: string;
@@ -27,7 +28,6 @@ interface Perfil {
 
 export default function SuperNintendoPage() {
   const [client, setClient] = useState<Perfil | null>(null);
-  const [isNavCollapsed, setIsNavCollapsed] = useState(true); 
   const router = useRouter();
 
   useEffect(() => {
@@ -55,47 +55,15 @@ export default function SuperNintendoPage() {
     <div className="main-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Navbar */}
       <div className="main-container">
-      <Navbar expand="lg" className="navbar navbar-dark bg-dark fixed-top">
-        <div className="container-fluid">
-          <Navbar.Brand href="#" onClick={scrollToTop} style={{ cursor: 'pointer' }}>
-          <img 
-                  src="/images/LogoSortecQueda.png" 
-                  alt="SORTEC Logo" 
-                  className="img-fluid"
-                  style={{ 
-                    maxHeight: '50px',
-                    padding: '5px'
-                  }} 
-                />
-          </Navbar.Brand>
-          <div className="d-flex align-items-center">
-            <Navbar.Toggle aria-controls="navbarNav" onClick={() => setIsNavCollapsed(!isNavCollapsed)} className="ms-auto" />
-          </div>
-          <Navbar.Collapse id="navbarNav" className={isNavCollapsed ? "collapse" : "show"}>
-            <Nav className="mx-auto">
-                    <Nav.Link onClick={() => router.push("/")}>Inicio</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Sorteos</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Beneficios</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Tienda</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Juegos</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Ganadores</Nav.Link>
-                    {/*<Nav.Link onClick={() => router.push("/")}>Historial Sorteos</Nav.Link>*/}
-            </Nav>
-            <Nav>
-                <Dropdown>
-                <Dropdown.Toggle variant="secondary">
-                    👤 {client.nombres?.split(" ")[0]} {client.apellidos?.split(" ")[0]}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => router.push('/perfil')}>Perfil</Dropdown.Item>
-                  <Dropdown.Item onClick={() => router.push('/suscripcion')}>Suscripción</Dropdown.Item>
-                  <Dropdown.Item onClick={handleLogout}>Cerrar Sesión</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </div>
-      </Navbar>
+             <section>
+                  <Menu 
+                      client={client} 
+                      onLogout={handleLogout} 
+                      scrollToTop={scrollToTop}
+                      onLoginClick={() => router.push('/login')} 
+                      setShowLogin={(show: boolean) => console.log('Set show login:', show)}
+                    />
+            </section>
       </div>
 
 
@@ -130,20 +98,7 @@ export default function SuperNintendoPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
-
-        <div className="d-flex align-items-center social-container">
-          <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/facebook.png" alt="Facebook" />
-          </a>
-          <a href="https://m.me/559373170586306" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/mensajero2.png" alt="Messenger" />
-          </a>
-          {/* Código QR más cerca sin romper el diseño */}
-          <img src="/images/qrcode.jpeg" alt="QR Code" className="qr-code" />
-        </div>
-      </footer>
+      <Footer />
 
       <style jsx>{`
                   /* Contenedor de iconos y QR */
