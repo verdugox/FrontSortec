@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Nav, Navbar, Dropdown, Carousel, Container } from "react-bootstrap";
+import { Carousel, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Menu from "../../components/Menu";
+import Footer from "../../components/Footer";
 
 
 interface Perfil {
@@ -62,7 +64,6 @@ interface Perfil {
 
   
 export default function NintendoPage() {
-    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
     const [client, setClient] = useState<Perfil | null>(null); 
     const router = useRouter();
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -148,51 +149,20 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
 
   return (
     <div className="main-container">
-      <Navbar expand="lg" className="navbar navbar-dark bg-dark fixed-top">
-        <div className="container-fluid">
-          <Navbar.Brand href="#" onClick={scrollToTop} style={{ cursor: 'pointer' }}>
-          <img 
-                  src="/images/LogoSortecQueda.png" 
-                  alt="SORTEC Logo" 
-                  className="img-fluid"
-                  style={{ 
-                    maxHeight: '50px',
-                    padding: '5px'
-                  }} 
+        <section>
+              <Menu 
+                  client={client} 
+                  onLogout={handleLogout} 
+                  scrollToTop={scrollToTop}
+                  onLoginClick={() => router.push('/login')} 
+                  setShowLogin={(show: boolean) => console.log('Set show login:', show)}
                 />
-          </Navbar.Brand>
-          <div className="d-flex align-items-center">
-            <Navbar.Toggle aria-controls="navbarNav" onClick={() => setIsNavCollapsed(!isNavCollapsed)} className="ms-auto" />
-          </div>
-          <Navbar.Collapse id="navbarNav" className={isNavCollapsed ? "collapse" : "show"}>
-            <Nav className="mx-auto">
-                    <Nav.Link onClick={() => router.push("/")}>Inicio</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Sorteos</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Beneficios</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Tienda</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Juegos</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Ganadores</Nav.Link>
-                    {/*<Nav.Link onClick={() => router.push("/")}>Historial Sorteos</Nav.Link>*/}
-            </Nav>
-            <Nav>
-                <Dropdown>
-                <Dropdown.Toggle variant="secondary">
-                    👤 {client.nombres?.split(" ")[0]} {client.apellidos?.split(" ")[0]}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => router.push('/perfil')}>Perfil</Dropdown.Item>
-                  <Dropdown.Item onClick={() => router.push('/suscripcion')}>Suscripción</Dropdown.Item>
-                  <Dropdown.Item onClick={handleLogout}>Cerrar Sesión</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </div>
-      </Navbar>
+        </section>
 
 
-      <Container fluid className="p-0">
-            <div className="position-relative main-container">
+        <Container fluid className="p-0">
+                <div className="position-relative main-container">
+
                 <Carousel>
                     {["/images/SliderNES1.jpeg", "/images/SliderNES2.jpeg", "/images/SliderNES3.jpeg", "/images/SliderNES4.jpeg", "/images/SliderNES5.jpeg"].map((src, index) => (
                         <Carousel.Item key={index} style={{ maxHeight: "800px" }}>
@@ -506,20 +476,7 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
                                   />
                 </div>
     
-      <footer className="bg-dark text-light text-center py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-      <p className="mb-2 mb-md-0" style={{color:"#ffffff"}}>© SORTEC 2025 - Todos los derechos reservados.</p>
-
-        <div className="d-flex align-items-center social-container">
-          <a href="https://www.facebook.com/profile.php?id=61571509086893" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/facebook.png" alt="Facebook" />
-          </a>
-          <a href="https://m.me/559373170586306" target="_blank" rel="noopener noreferrer" className="social-icon">
-            <img src="/images/mensajero2.png" alt="Messenger" />
-          </a>
-          {/* Código QR más cerca sin romper el diseño */}
-          <img src="/images/qrcode.jpeg" alt="QR Code" className="qr-code" />
-        </div>
-      </footer>
+      <Footer />
 
       <style jsx>{`
 
@@ -627,8 +584,10 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
                 width: 100%;
                 overflow-x: hidden;
                 background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), #111, #002366);
-                transition: background 1s ease-in-out; /* 🔹 Efecto de transición de color */
+                transition: background 1s ease-in-out;
+                padding-top: 40px; /* ✅ Este espacio separará el slider del menú */
               }
+
 
               /* Fondo del slider extendido con fusión */
               .slider-container {
@@ -1048,6 +1007,8 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
                   margin: 0 auto; /* 🔹 Centra el texto dentro de la tarjeta */
                 }
               }
+
+
 
 
       `}</style>

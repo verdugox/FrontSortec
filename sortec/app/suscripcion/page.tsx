@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Container, Nav, Navbar, Dropdown, Button, Row, Col, Card, Table, Badge, Modal, Form, Alert, Spinner } from "react-bootstrap";
+import { Container, Button, Row, Col, Card, Table, Badge, Modal, Form, Alert, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
@@ -42,7 +42,6 @@ interface Perfil {
 }
 
 export default function Suscripcion() {
-    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
     const [client, setClient] = useState<Perfil | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [subscriptionAmount] = useState(8.00);
@@ -346,50 +345,7 @@ export default function Suscripcion() {
   
   return (
     <div className="main-container">
-      <Navbar expand="lg" className="navbar navbar-dark bg-dark fixed-top">
-        <div className="container-fluid">
-          <Navbar.Brand href="#" onClick={scrollToTop} style={{ cursor: 'pointer' }}>
-          <img 
-                  src="/images/LogoSortecQueda.png" 
-                  alt="SORTEC Logo" 
-                  className="img-fluid"
-                  style={{ 
-                    maxHeight: '50px', 
-                    filter: 'drop-shadow(0px 0px 5px rgba(255,255,255,0.8)) contrast(1.2)', 
-                    padding: '5px'
-                  }} 
-                />
-          </Navbar.Brand>
-          <div className="d-flex align-items-center">
-            <Navbar.Toggle aria-controls="navbarNav" onClick={() => setIsNavCollapsed(!isNavCollapsed)} className="ms-auto" />
-          </div>
-          <Navbar.Collapse id="navbarNav" className={isNavCollapsed ? "collapse" : "show"}>
-            <Nav className="mx-auto">
-                    <Nav.Link onClick={() => router.push("/")}>Inicio</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Sorteos</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Beneficios</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Tienda</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Juegos</Nav.Link>
-                    <Nav.Link onClick={() => router.push("/")}>Ganadores</Nav.Link>
-                    {/*<Nav.Link onClick={() => router.push("/")}>Historial Sorteos</Nav.Link>*/}
-            </Nav>
-            <Nav>
-                <Dropdown>
-                <Dropdown.Toggle variant="secondary">
-                    👤 {client.nombres?.split(" ")[0]} {client.apellidos?.split(" ")[0]}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => router.push('/perfil')}>Perfil</Dropdown.Item>
-                    <Dropdown.Item onClick={() => router.push('/suscripcion')}>Suscripción</Dropdown.Item>
-                    <Dropdown.Item onClick={handleLogout}>Cerrar Sesión</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </div>
-      </Navbar>
-
-
+      
         <section className="user-info my-5 my-4 position-relative">
             <br />
             <br />

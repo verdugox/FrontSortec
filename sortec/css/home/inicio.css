@@ -226,31 +226,19 @@ body::before {
     color: black;
 }
 
-
-
-
-
-
-
-
 #carousel {
   position: relative;
   overflow: hidden;
 }
 
 #carousel img {
-  filter: brightness(0.8) contrast(1.2);
+
   transition: transform 0.5s ease;
 }
 
 #carousel img:hover {
   transform: scale(1.02);
 }
-
-
-
-
-
 
 @media (max-width: 768px) {
   #carousel {
@@ -345,4 +333,12 @@ body::before {
   100% {
     transform: translateX(-50%);
   }
+}
+
+
+/* 🔹 Fusión del fondo con el slider y cambio dinámico */
+.main-container {
+  width: 100%;
+  overflow-x: hidden;
+  transition: background 1s ease-in-out;
 }
