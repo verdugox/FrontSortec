@@ -296,7 +296,12 @@ useEffect(() => {
         <section id="carousel" className="mt-4 pt-5 position-relative">
 
          <Carousel>
-          {["/images/5.png","/images/4.png","/images/3.png","/images/2.png","/images/1.png" ].map((src, index) => (
+          {[  "https://res.cloudinary.com/dizkdk1te/image/upload/v1746045542/SortecVoucher/Banner/aux6vh02cjypzjlkchga.jpg",
+              "https://res.cloudinary.com/dizkdk1te/image/upload/v1746045542/SortecVoucher/Banner/hqbc9pqcyjypwswpf5x7.jpg",
+              "https://res.cloudinary.com/dizkdk1te/image/upload/v1746045542/SortecVoucher/Banner/zvxhvbkhmco19bntr8p3.jpg",
+              "https://res.cloudinary.com/dizkdk1te/image/upload/v1746045542/SortecVoucher/Banner/jdf9gda9ppefwjvwvk7w.jpg",
+              "https://res.cloudinary.com/dizkdk1te/image/upload/v1746045542/SortecVoucher/Banner/letxyf6uos73izazeis9.jpg" 
+          ].map((src, index) => (
             <Carousel.Item key={index} style={{ maxHeight: "800px" }}>
               <img className="d-block w-100" src={src} alt={`Slide ${index + 1}`} style={{ opacity: 5.0 }} />
               <div className="overlay"></div>
