@@ -78,16 +78,17 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   };
 
   const filterClientes = () => {
-    const filtered = clientes
-      .filter((cliente) =>
-        cliente.estado === "pendiente" &&
-        Object.values(cliente).some((value) =>
-          String(value).toLowerCase().includes(searchTerm.toLowerCase())
-        )
+  const filtered = clientes
+    .filter((cliente) =>
+      (cliente.estado === "pendiente" || cliente.estado === "inactivo") &&
+      Object.values(cliente).some((value) =>
+        String(value).toLowerCase().includes(searchTerm.toLowerCase())
       )
-      .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
-    setFilteredClientes(filtered);
+    )
+    .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+  setFilteredClientes(filtered);
   };
+
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -290,9 +291,9 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                   style={{
                     color:
                       cliente.estado === "pendiente"
-                        ? "red"
+                        ? "green"
                         : cliente.estado === "inactivo"
-                        ? "#ff6600" // 🔶 Naranja oscuro para inactivos
+                        ? "red" // 🔶 Naranja oscuro para inactivos
                         : "inherit",
                     fontWeight:
                       cliente.estado === "pendiente" || cliente.estado === "inactivo"

@@ -32,9 +32,10 @@ export default function Chat({ tipo, setStats }) {
             approved++;
           } else if (participant.estado === "pendiente") {
             pending++;
-          } else if (participant.estado === "denegado") {
+          } else if (participant.estado === "inactivo") {
             denied++;
           }
+
 
           countsByDate.push(date);
         });
@@ -45,8 +46,8 @@ export default function Chat({ tipo, setStats }) {
 
         const labels = [];
         const counts = [];
-        const startDate = new Date("2025-01-29");
-        const endDate = new Date("2025-02-14");
+        const startDate = new Date("2025-04-20");
+        const endDate = new Date("2025-05-25");
         for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
           const dateStr = new Intl.DateTimeFormat("es-ES", {
             year: "numeric",
@@ -72,7 +73,7 @@ export default function Chat({ tipo, setStats }) {
         });
 
         setDoughnutChartData({
-          labels: ["Aprobados", "Pendientes", "Denegados"],
+          labels: ["Aprobados", "Pendientes", "Inactivos"],
           datasets: [
             {
               data: [approved, pending, denied],
