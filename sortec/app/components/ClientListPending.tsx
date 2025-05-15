@@ -286,9 +286,25 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                 <td>{cliente.dni}</td>
                 <td>{cliente.nombres.split(" ")[0]}</td>
                 <td>{cliente.apellidos.split(" ")[0]}</td>
-                <td style={{ color: cliente.estado === "pendiente" ? "red" : "inherit" }}>
-                  {cliente.estado ? cliente.estado.charAt(0).toUpperCase() + cliente.estado.slice(1) : ""}
+                <td
+                  style={{
+                    color:
+                      cliente.estado === "pendiente"
+                        ? "red"
+                        : cliente.estado === "inactivo"
+                        ? "#ff6600" // 🔶 Naranja oscuro para inactivos
+                        : "inherit",
+                    fontWeight:
+                      cliente.estado === "pendiente" || cliente.estado === "inactivo"
+                        ? "bold"
+                        : "normal"
+                  }}
+                >
+                  {cliente.estado
+                    ? cliente.estado.charAt(0).toUpperCase() + cliente.estado.slice(1)
+                    : ""}
                 </td>
+
                 <td className="text-center">
                   {/* Botón de Ver */}
                   <button
