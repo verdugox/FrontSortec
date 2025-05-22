@@ -167,12 +167,12 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                   </a><br><br>
 
                   2️⃣ <strong>Inicia sesión con tus credenciales:</strong><br>
-                  📌 <b>Usuario:</b> <span style="background-color:rgb(20, 34, 235); padding: 4px 8px; border-radius: 5px; box-shadow: 0 0 6px rgb(8, 136, 240);">
+                  📌 <b>Usuario:</b> <span style="background-color: #ffcc80; padding: 4px 8px; border-radius: 5px; box-shadow: 0 0 6px #ff9800;">
                     ${cliente.dni}
                   </span><br>
                   🔒 <b>Contraseña:</b> <span style="background-color: #ffcc80; padding: 4px 8px; border-radius: 5px; box-shadow: 0 0 6px #ff9800;">
                     ${cliente.codigoSortec}
-                  </span><br><br>
+          </span><br><br>
 
                   3️⃣ Dirígete al apartado <b>'Ver Suscripción'</b> 📋<br>
                   4️⃣ Haz clic en <b>'Renovar Suscripción'</b> 🔄<br>
@@ -328,10 +328,14 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                       cliente.estado === "pendiente"
                         ? "green"
                         : cliente.estado === "inactivo"
-                        ? "red" // 🔶 Naranja oscuro para inactivos
+                        ? "red"
+                        : cliente.estado === "aprobado"
+                        ? "#ff8c42" // 🎨 Naranja mate para Aprobado
                         : "inherit",
                     fontWeight:
-                      cliente.estado === "pendiente" || cliente.estado === "inactivo"
+                      cliente.estado === "pendiente" ||
+                      cliente.estado === "inactivo" ||
+                      cliente.estado === "aprobado"
                         ? "bold"
                         : "normal"
                   }}
@@ -340,6 +344,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                     ? cliente.estado.charAt(0).toUpperCase() + cliente.estado.slice(1)
                     : ""}
                 </td>
+
 
                 <td className="text-center">
                   {/* Botón de Ver */}
