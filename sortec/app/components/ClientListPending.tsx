@@ -115,6 +115,8 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
       return;
     }
 
+    const bannerUrl = process.env.NEXT_PUBLIC_BANNER_RENOVACION;
+
     // ✅ Definir el mensaje antes de usarlo
     // ✅ Mensaje con efectos llamativos y estructura visual mejorada
     const message = `
@@ -141,6 +143,8 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                 ✅ Participación en <b>torneos con grandes premios</b> 🏆🎟️
             </p>
 
+            <img src="${bannerUrl}" alt="Banner Renovación" style="width: 100%; border-radius: 10px; margin-bottom: 20px;" />
+
             <h3 style="color: #ff5733; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
                 🔄 ¿CÓMO RENOVAR TU SUSCRIPCIÓN? 🔄
             </h3>
@@ -153,8 +157,8 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                 </a><br>
 
                 2️⃣ **Inicia sesión con tus credenciales:**<br>
-                📌 <b>Usuario:</b> Tu número de DNI con el que te registraste<br>
-                🔒 <b>Contraseña:</b> Tu código SORTEC que recibiste por correo<br>
+                📌 <b>Usuario:</b> Tu número de DNI : ${cliente.dni}<br>
+                🔒 <b>Contraseña:</b> Tu código SORTEC: ${cliente.codigoSortec}br>
 
                 3️⃣ **Dirígete al apartado 'Ver Suscripción' 📋**<br>
                 4️⃣ **Haz clic en 'Renovar Suscripción' 🔄**<br>
