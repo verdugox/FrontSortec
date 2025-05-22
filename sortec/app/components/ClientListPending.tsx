@@ -294,7 +294,8 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
           }}
         >
           <option value="todos">🔎 Mostrar Todos</option>
-          <option value="pendiente">🟢 Pendientes</option>
+          <option value="aprobado">🟢 Aprobados</option>
+          <option value="pendiente">🟡 Pendientes</option>
           <option value="inactivo">🔴 Inactivos</option>
         </select>
       </div>
@@ -324,21 +325,22 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
                 <td>{cliente.apellidos.split(" ")[0]}</td>
                 <td
                   style={{
-                    color:
-                      cliente.estado === "pendiente"
-                        ? "green"
-                        : cliente.estado === "inactivo"
-                        ? "red"
-                        : cliente.estado === "aprobado"
-                        ? "#ff8c42" // 🎨 Naranja mate para Aprobado
-                        : "inherit",
-                    fontWeight:
-                      cliente.estado === "pendiente" ||
-                      cliente.estado === "inactivo" ||
-                      cliente.estado === "aprobado"
-                        ? "bold"
-                        : "normal"
-                  }}
+                      color:
+                        cliente.estado === "pendiente"
+                          ? "#ffc107" // 🎨 Amarillo mate para Pendiente
+                          : cliente.estado === "inactivo"
+                          ? "red"
+                          : cliente.estado === "aprobado"
+                          ? "#28a745" // ✅ Verde para Aprobado
+                          : "inherit",
+                      fontWeight:
+                        cliente.estado === "pendiente" ||
+                        cliente.estado === "inactivo" ||
+                        cliente.estado === "aprobado"
+                          ? "bold"
+                          : "normal"
+                    }}
+
                 >
                   {cliente.estado
                     ? cliente.estado.charAt(0).toUpperCase() + cliente.estado.slice(1)
