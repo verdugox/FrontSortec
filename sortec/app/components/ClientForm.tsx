@@ -236,6 +236,34 @@ export default function RegistroClientes() {
           {errors.voucher && <div className="invalid-feedback">{errors.voucher.message}</div>}
         </div>
 
+        <div
+          style={{
+            border: "2px solid #dc3545",
+            backgroundColor: "#f8d7da",
+            color: "#721c24",
+            padding: "15px",
+            borderRadius: "8px",
+            fontWeight: "bold",
+            fontSize: "16px",
+            marginTop: "15px",
+            boxShadow: "0 0 8px rgba(220, 53, 69, 0.4)",
+            textAlign: "justify"  // ✅ Justificación agregada
+          }}
+        >
+          🔔 <span style={{ textDecoration: "underline" }}>Importante: Verificación de Voucher de Pago</span>
+          <br />
+          Para completar tu registro, el archivo adjunto debe ser un <strong>voucher de pago auténtico y válido</strong>.
+          <br /><br />
+          🧠 Nuestro sistema utiliza tecnología de <strong>Inteligencia Artificial</strong> para validar los comprobantes de manera automática.
+          <br /><br />
+          🔍 Te recomendamos revisar bien la imagen antes de enviarla. En caso se detecte un archivo no válido, duplicado o manipulado, <u>el registro podría ser descartado automáticamente</u>.
+          <br /><br />
+          🙏 Agradecemos tu comprensión y tu compromiso con un proceso justo y transparente.
+        </div>
+
+
+        
+
         <button type="submit" className="btn btn-success w-100" disabled={loading}>
           {loading ? "Registrando..." : "Registrar Participante"}
         </button>

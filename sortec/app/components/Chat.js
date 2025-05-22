@@ -97,7 +97,7 @@ export default function Chat({ tipo, setStats }) {
   }, []);
 
   const now = DateTime.now().setZone("America/Lima");
-  const drawDate = DateTime.fromISO("2025-02-13T00:00:00", { zone: "America/Lima" });
+  const drawDate = DateTime.fromISO("2025-05-23T00:00:00", { zone: "America/Lima" });
   const daysUntilDraw = Math.max(0, Math.ceil(drawDate.diff(now, "days").days));
 
   return (
