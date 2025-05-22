@@ -37,6 +37,8 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // 🔹 Estado de carga
+  const [estadoFiltro, setEstadoFiltro] = useState<string>("todos");
+
 
   useEffect(() => {
     if (reloadTrigger > 0) {
@@ -45,8 +47,9 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   }, [reloadTrigger]); // 🔹 Agregar reloadTrigger como dependencia
 
   useEffect(() => {
-    filterClientes();
-  }, [searchTerm, clientes, rowsPerPage, currentPage]);
+  filterClientes();
+}, [searchTerm, clientes, rowsPerPage, currentPage, estadoFiltro]);
+
 
   const fetchClientes = async () => {
     setLoading(true);
@@ -77,17 +80,23 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
     saveAs(excelFile, "Lista_Participantes_2025.xlsx");
   };
 
-  const filterClientes = () => {
-  const filtered = clientes
-    .filter((cliente) =>
-      (cliente.estado === "pendiente" || cliente.estado === "inactivo") &&
-      Object.values(cliente).some((value) =>
-        String(value).toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    )
-    .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
-  setFilteredClientes(filtered);
+    const filterClientes = () => {
+    const filtered = clientes
+      .filter((cliente) => {
+        const coincideEstado =
+          estadoFiltro === "todos" || cliente.estado === estadoFiltro;
+
+        const coincideBusqueda = Object.values(cliente).some((value) =>
+          String(value).toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        return coincideEstado && coincideBusqueda;
+      })
+      .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+    setFilteredClientes(filtered);
   };
+
 
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,74 +124,80 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
       return;
     }
 
-    const bannerUrl = process.env.NEXT_PUBLIC_BANNER_RENOVACION;
+    const bannerUrl = "https://res.cloudinary.com/dizkdk1te/image/upload/v1747926941/PublicidadSortecMayo_bakhlq.jpg";
+    
 
     // ✅ Definir el mensaje antes de usarlo
     // ✅ Mensaje con efectos llamativos y estructura visual mejorada
     const message = `
-        <div style="font-family: Arial, sans-serif; text-align: center; color: #333; padding: 20px; 
-            border: 2px solid #ddd; border-radius: 10px; background-color: #f9f9f9; max-width: 600px; 
-            margin: auto; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);">
+          <div style="font-family: Arial, sans-serif; text-align: justify; color: #333; padding: 20px; 
+              border: 2px solid #ddd; border-radius: 10px; background-color: #f9f9f9; max-width: 600px; 
+              margin: auto; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);">
 
-            <h1 style="color: #d9534f; text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);">
-                🎮💥 ¡${cliente.nombres}, TE EXTRAÑAMOS! 💥🎮
-            </h1>
+              <h1 style="color: #d9534f; text-align: center; text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);">
+                  🎮💥 ¡${cliente.nombres}, TE EXTRAÑAMOS! 💥🎮
+              </h1>
 
-            <p style="font-size: 18px; line-height: 1.6;">
-                🌟 La familia <b>SORTEC</b> no es lo mismo sin ti. Queremos que sigas 
-                disfrutando de nuestros increíbles beneficios. 🎁🎉
-            </p>
+              <p style="font-size: 18px; line-height: 1.6;">
+                  🌟 La familia <b>SORTEC</b> no es lo mismo sin ti. Queremos que sigas 
+                  disfrutando de nuestros increíbles beneficios. 🎁🎉
+              </p>
 
-            <h2 style="color: #28a745; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
-                🎁 ¡NO TE QUEDES FUERA! 🎁
-            </h2>
+              <h2 style="color: #28a745; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
+                  🎁 ¡NO TE QUEDES FUERA! 🎁
+              </h2>
 
-            <p style="font-size: 18px; text-align: left; line-height: 1.6;">
-                ✅ Sorteos de <b>componentes tecnológicos premium</b> 🖥️🎮<br>
-                ✅ Descargas de <b>videojuegos exclusivos</b> 🎮🚀<br>
-                ✅ Participación en <b>torneos con grandes premios</b> 🏆🎟️
-            </p>
+              <p style="font-size: 18px; line-height: 1.6;">
+                  ✅ Sorteos de <b>componentes tecnológicos premium</b> 🖥️🎮<br>
+                  ✅ Descargas de <b>videojuegos exclusivos</b> 🎮🚀<br>
+                  ✅ Participación en <b>torneos con grandes premios</b> 🏆🎟️
+              </p>
 
-            <img src="${bannerUrl}" alt="Banner Renovación" style="width: 100%; border-radius: 10px; margin-bottom: 20px;" />
+              <img src="${bannerUrl}" alt="Banner Renovación" style="width: 100%; border-radius: 10px; margin: 20px 0;" />
 
-            <h3 style="color: #ff5733; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
-                🔄 ¿CÓMO RENOVAR TU SUSCRIPCIÓN? 🔄
-            </h3>
+              <h3 style="color: #ff5733; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
+                  🔄 ¿CÓMO RENOVAR TU SUSCRIPCIÓN? 🔄
+              </h3>
 
-            <p style="font-size: 18px; text-align: left; line-height: 1.6;">
-                1️⃣ **Ingresa a nuestra plataforma:** 
-                <a href="http://sortsortech.azurewebsites.net/" target="_blank"
-                    style="color: #007bff; text-decoration: none; font-weight: bold;">
-                    🔗 SORTEC
-                </a><br>
+              <p style="font-size: 18px; line-height: 1.6;">
+                  1️⃣ <strong>Ingresa a nuestra plataforma:</strong> 
+                  <a href="http://sortsortech.azurewebsites.net/" target="_blank"
+                      style="color: #007bff; text-decoration: none; font-weight: bold;">
+                      🔗 sortsortech.azurewebsites.net
+                  </a><br><br>
 
-                2️⃣ **Inicia sesión con tus credenciales:**<br>
-                📌 <b>Usuario:</b> Tu número de DNI : ${cliente.dni}<br>
-                🔒 <b>Contraseña:</b> Tu código SORTEC: ${cliente.codigoSortec}br>
+                  2️⃣ <strong>Inicia sesión con tus credenciales:</strong><br>
+                  📌 <b>Usuario:</b> <span style="background-color:rgb(20, 34, 235); padding: 4px 8px; border-radius: 5px; box-shadow: 0 0 6px rgb(8, 136, 240);">
+                    ${cliente.dni}
+                  </span><br>
+                  🔒 <b>Contraseña:</b> <span style="background-color: #ffcc80; padding: 4px 8px; border-radius: 5px; box-shadow: 0 0 6px #ff9800;">
+                    ${cliente.codigoSortec}
+                  </span><br><br>
 
-                3️⃣ **Dirígete al apartado 'Ver Suscripción' 📋**<br>
-                4️⃣ **Haz clic en 'Renovar Suscripción' 🔄**<br>
-                5️⃣ **Realiza el pago y listo 🎉🙌**
-            </p>
+                  3️⃣ Dirígete al apartado <b>'Ver Suscripción'</b> 📋<br>
+                  4️⃣ Haz clic en <b>'Renovar Suscripción'</b> 🔄<br>
+                  5️⃣ Realiza el pago y listo 🎉🙌
+              </p>
 
-            <h3 style="color: #ff5733;">
-                📢 ¡RENUEVA AHORA Y SIGUE DISFRUTANDO! 📢
-            </h3>
+              <h3 style="color: #ff5733; text-align: center;">
+                  📢 ¡RENUEVA AHORA Y SIGUE DISFRUTANDO! 📢
+              </h3>
 
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="http://sortsortech.azurewebsites.net/" target="_blank" 
-                    style="display: inline-block; padding: 12px 25px; background-color: #007bff; 
-                        color: #fff; text-decoration: none; border-radius: 8px; font-size: 18px; 
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                    🔄 RENOVAR AHORA
-                </a>
-            </div>
+              <div style="text-align: center; margin-top: 20px;">
+                  <a href="http://sortsortech.azurewebsites.net/" target="_blank" 
+                      style="display: inline-block; padding: 12px 25px; background-color: #007bff; 
+                          color: #fff; text-decoration: none; border-radius: 8px; font-size: 18px; 
+                          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                      🔄 RENOVAR AHORA
+                  </a>
+              </div>
 
-            <p style="font-size: 18px; margin-top: 20px; color: #333;">
-                🙌 <b>Gracias por formar parte de la familia SORTEC. ¡Sigue participando y mucha suerte! 🍀🎊</b>
-            </p>
-        </div>
-    `;
+              <p style="font-size: 18px; margin-top: 20px;">
+                  🙌 <b>Gracias por formar parte de la familia SORTEC. ¡Sigue participando y mucha suerte! 🍀🎊</b>
+              </p>
+          </div>
+        `;
+
 
     setLoading(true);
     try {
@@ -268,6 +283,22 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
           </div>
         </div>
       </div>
+
+      <div className="col-md-3">
+        <select
+          className="form-control"
+          value={estadoFiltro}
+          onChange={(e) => {
+            setEstadoFiltro(e.target.value);
+            setCurrentPage(1); // Reinicia a la primera página al cambiar filtro
+          }}
+        >
+          <option value="todos">🔎 Mostrar Todos</option>
+          <option value="pendiente">🟢 Pendientes</option>
+          <option value="inactivo">🔴 Inactivos</option>
+        </select>
+      </div>
+
 
       {/* Tabla de clientes */}
       <div className="table-responsive">
