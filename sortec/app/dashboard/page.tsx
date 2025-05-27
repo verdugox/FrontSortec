@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [menuOpen, setMenuOpen] = useState(true);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const router = useRouter();
+  const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -36,7 +37,7 @@ export default function Dashboard() {
       return;
     }
 
-    fetch(`/api/clients/perfil`, {
+    fetch(`${URL_MICRO_BACKEND}/clients/perfil`, {
       method: "GET",
       headers: { 
         "Authorization": token,

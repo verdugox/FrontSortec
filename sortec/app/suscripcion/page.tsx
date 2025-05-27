@@ -14,6 +14,8 @@ const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "Sortecfiles";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
+const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
+
 
 interface Perfil {
     id: string;
@@ -131,7 +133,7 @@ export default function Suscripcion() {
   
           try {
               const token = localStorage.getItem("token");
-              const response = await fetch(`/api/payments/client/${client.id}`, {
+              const response = await fetch(`${URL_MICRO_BACKEND}/payments/client/${client.id}`, {
                   method: "GET",
                   headers: {
                       "Content-Type": "application/json",
@@ -199,7 +201,7 @@ export default function Suscripcion() {
 
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`/api/clients/${client?.id}`, {
+        const response = await fetch(`${URL_MICRO_BACKEND}/clients/${client?.id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": token || "",
@@ -245,7 +247,7 @@ export default function Suscripcion() {
 
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`/api/payments/register-payment`, {
+        const response = await fetch(`${URL_MICRO_BACKEND}/payments/register-payment`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Container, Dropdown, Modal, Button, Table, Form, Spinner, Pagination  } from "react-bootstrap";
 import { FaUserCircle, FaSignOutAlt, FaTachometerAlt, FaUsers, FaShoppingCart, FaCog, FaChartLine, FaBars, FaEdit, FaTrash, FaEye} from "react-icons/fa";
-
-const API_URL = `/api/ganadores`;
+const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
+const API_URL = `${URL_MICRO_BACKEND}/ganadores`;
 
 interface Perfil {
   dni: string;

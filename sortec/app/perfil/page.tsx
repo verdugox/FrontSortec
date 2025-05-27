@@ -33,6 +33,7 @@ export default function PerfilPage() {
     const [genero, setGenero] = useState(client?.sexo || "Masculino");
     const [showProfileBlockingLoader, setShowProfileBlockingLoader] = useState(false);
     const [showProfileSuccessModal, setShowProfileSuccessModal] = useState(false);
+    const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
 
     const handleLogout = () => {
       localStorage.removeItem("token");
@@ -65,7 +66,7 @@ export default function PerfilPage() {
               const token = localStorage.getItem("token");
               const updatedClient = { ...client, sexo: genero }; // ✅ Incluir género en los datos
   
-              const response = await fetch(`/api/clients/${client.id}`, {
+              const response = await fetch(`${URL_MICRO_BACKEND}/clients/${client.id}`, {
                   method: "PUT",
                   headers: {
                       "Content-Type": "application/json",

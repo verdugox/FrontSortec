@@ -24,6 +24,7 @@ interface MenuItem {
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dizkdk1te";
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "Sortecfiles";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
 
 export default function Notificacion() {
   const [perfil, setPerfil] = useState<Perfil | null>(null);
@@ -63,7 +64,7 @@ export default function Notificacion() {
       return;
     }
     
-    fetch(`/api/clients/perfil`, {
+    fetch(`${URL_MICRO_BACKEND}/clients/perfil`, {
       method: "GET",
       headers: {
         "Authorization": token,
@@ -160,7 +161,7 @@ export default function Notificacion() {
         console.log("🚀 Iniciando envío masivo de correos...");
 
         // ✅ Usamos await para asegurar que la promesa no termine prematuramente
-        const response = await fetch(`/api/clients/send-dynamic-mass-email`, {
+        const response = await fetch(`${URL_MICRO_BACKEND}/clients/send-dynamic-mass-email`, {
             method: "POST",
             headers: {
                 "Authorization": token,
@@ -215,7 +216,7 @@ export default function Notificacion() {
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/clients/send-winner-notification`, {
+      const response = await fetch(`${URL_MICRO_BACKEND}/clients/send-winner-notification`, {
         method: "POST",
         headers: {
           "Authorization": token,
@@ -257,7 +258,7 @@ export default function Notificacion() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 1200000); // ⏳ 20 minutos (1,200,000 ms)
 
-      const response = await fetch(`/api/clients/send-manual-subscription-reminder`, {
+      const response = await fetch(`${URL_MICRO_BACKEND}/clients/send-manual-subscription-reminder`, {
         method: "POST",
         headers: {
           "Authorization": token,

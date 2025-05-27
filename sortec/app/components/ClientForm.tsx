@@ -25,6 +25,8 @@ const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "Sortecfiles";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
+const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
+
 export default function RegistroClientes() {
   const { register, handleSubmit, setValue, reset, formState: { errors }, trigger } = useForm<Cliente>({
     mode: "onChange" // Permite validaciones en tiempo real
@@ -62,7 +64,7 @@ export default function RegistroClientes() {
       const imageUrl = uploadedImageData.secure_url;
       setValue("voucherUrl", imageUrl);
 
-      const response = await fetch("/api/clients", {
+      const response = await fetch(URL_MICRO_BACKEND+"/clients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, voucherUrl: imageUrl }),

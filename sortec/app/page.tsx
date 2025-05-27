@@ -62,6 +62,7 @@ export default function HomePage() {
 
   const [winnersData, setWinnersData] = useState<{ img: string; title: string }[]>([]);
 
+  const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
 
   useEffect(() => {
     // Cargar cliente desde localStorage
@@ -148,7 +149,7 @@ useEffect(() => {
         return;
       }
 
-      const response = await fetch(`/api/payments/dni/${client.dni}`, {
+      const response = await fetch(`${URL_MICRO_BACKEND}/payments/dni/${client.dni}`, {
 
         method: "GET",
         headers: {
@@ -188,7 +189,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchGanadores = async () => {
       try {
-        const response = await fetch(`/api/ganadores`, {
+        const response = await fetch(`${URL_MICRO_BACKEND}/ganadores`, {
           method: "GET",
           headers: { "Content-Type": "application/json" }
         });
@@ -226,7 +227,7 @@ useEffect(() => {
     const fetchSorteos = async () => {
         setLoadingSorteos(true);
         try {
-            const response = await fetch(`/api/sorteos`, {
+            const response = await fetch(`${URL_MICRO_BACKEND}/sorteos`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"

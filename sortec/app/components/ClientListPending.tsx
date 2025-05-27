@@ -38,6 +38,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // 🔹 Estado de carga
   const [estadoFiltro, setEstadoFiltro] = useState<string>("todos");
+  const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
 
 
   useEffect(() => {
@@ -54,7 +55,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const fetchClientes = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/clients");
+      const response = await fetch(URL_MICRO_BACKEND+"/clients");
       if (!response.ok) {
         throw new Error("Error al obtener clientes.");
       }
@@ -201,7 +202,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/clients/send-winner-notification`, {
+      const response = await fetch(`${URL_MICRO_BACKEND}/clients/send-winner-notification`, {
         method: "POST",
         headers: {
           Authorization: token,

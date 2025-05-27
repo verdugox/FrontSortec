@@ -37,6 +37,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // 🔹 Estado de carga
+  const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
 
   useEffect(() => {
     if (reloadTrigger > 0) {
@@ -51,7 +52,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
   const fetchClientes = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/clients");
+      const response = await fetch(URL_MICRO_BACKEND+"/clients");
       if (!response.ok) {
         throw new Error("Error al obtener clientes.");
       }
@@ -104,7 +105,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
     if (!confirm("¿Estás seguro de eliminar este participante?")) return;
 
     try {
-      const response = await fetch(`/api/clients/${id}`, { 
+      const response = await fetch(`${URL_MICRO_BACKEND}/clients/${id}`, { 
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });
@@ -126,7 +127,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
 
   const handleEdit = async (cliente: Cliente) => {
     try {
-      const response = await fetch(`/api/clients/${cliente.id}`, {
+      const response = await fetch(`${URL_MICRO_BACKEND}/clients/${cliente.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cliente),

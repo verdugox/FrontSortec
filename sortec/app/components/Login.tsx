@@ -36,13 +36,14 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   const [error, setError] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const router = useRouter();
+  const URL_MICRO_BACKEND = 'https://api.sorteosc.com/api';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch(`/api/auth/login`, {
+      const response = await fetch(`${URL_MICRO_BACKEND}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +67,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
       localStorage.setItem("token", `Bearer ${data.token}`);
 
-      const perfilResponse = await fetch(`/api/clients/perfil`, {
+      const perfilResponse = await fetch(`${URL_MICRO_BACKEND}/clients/perfil`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${data.token}`,

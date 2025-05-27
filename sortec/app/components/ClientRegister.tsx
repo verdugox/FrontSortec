@@ -9,6 +9,7 @@ import Image from "next/image";
 export default function Home() {
   const [showClients, setShowClients] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
+  
 
   const handleShowClients = () => {
     setShowClients(true);
