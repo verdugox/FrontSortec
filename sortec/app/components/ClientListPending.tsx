@@ -125,7 +125,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
       return;
     }
 
-    const bannerUrl = "https://res.cloudinary.com/dizkdk1te/image/upload/v1747926941/PublicidadSortecMayo_bakhlq.jpg";
+    const bannerUrl = "https://res.cloudinary.com/dizkdk1te/image/upload/v1748877287/SorteoSortecJunio062025_cmpwk3.jpg";
     
 
     // ✅ Definir el mensaje antes de usarlo
