@@ -150,8 +150,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
-      <Head>
-        {/* ✅ Agregamos metaetiquetas manualmente */}
+      <head>
+        {/* ✅ Metaetiquetas SEO y sociales */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charSet="UTF-8" />
         <meta name="theme-color" content="#007bff" />
@@ -159,7 +159,7 @@ export default function RootLayout({
         <meta property="og:description" content="Tu mejor plataforma de sorteos tecnológicos" />
         <meta property="og:url" content="https://sortsortech.azurewebsites.net/" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="images/ImagenSortec.png" />
+        <meta property="og:image" content="/images/ImagenSortec.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="Imagen de Mi Aplicación || SORTEC" />
@@ -167,7 +167,15 @@ export default function RootLayout({
         <meta name="twitter:title" content="Mi Aplicación | SORTEC" />
         <meta name="twitter:description" content="Tu mejor plataforma de sorteos tecnológicos" />
         <meta name="twitter:image" content="/images/ImagenSortec.png" />
-      </Head>
+
+        {/* ✅ Script de Cloudflare Web Analytics */}
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "0695065947cf43c588ff5e641727fba2"}'>
+        </script>
+      </head>
+
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
