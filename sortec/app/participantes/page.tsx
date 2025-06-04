@@ -31,6 +31,7 @@ export default function ParticipantesPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log("Token:", token);
 
     if (!token) {
       router.push("/");
@@ -40,7 +41,7 @@ export default function ParticipantesPage() {
     fetch(`${URL_MICRO_BACKEND}/clients/perfil`, {
       method: "GET",
       headers: { 
-        "Authorization": token,
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     })
