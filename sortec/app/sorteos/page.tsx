@@ -77,7 +77,7 @@ export default function Sorteos() {
       return;
     }
 
-    fetch(`/api/clients/perfil`, {
+    fetch(`${URL_MICRO_BACKEND}/clients/perfil`, {
       method: "GET",
       headers: { 
         "Authorization": `Bearer ${token}`,
