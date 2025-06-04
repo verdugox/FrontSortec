@@ -205,7 +205,7 @@ export default function ListaClientes({ reloadTrigger }: ClientListProps) {
       const response = await fetch(`${URL_MICRO_BACKEND}/clients/send-winner-notification`, {
         method: "POST",
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

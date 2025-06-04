@@ -67,7 +67,7 @@ export default function Notificacion() {
     fetch(`${URL_MICRO_BACKEND}/clients/perfil`, {
       method: "GET",
       headers: {
-        "Authorization": token,
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     })
@@ -164,7 +164,7 @@ export default function Notificacion() {
         const response = await fetch(`${URL_MICRO_BACKEND}/clients/send-dynamic-mass-email`, {
             method: "POST",
             headers: {
-                "Authorization": token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -219,7 +219,7 @@ export default function Notificacion() {
       const response = await fetch(`${URL_MICRO_BACKEND}/clients/send-winner-notification`, {
         method: "POST",
         headers: {
-          "Authorization": token,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -261,7 +261,7 @@ export default function Notificacion() {
       const response = await fetch(`${URL_MICRO_BACKEND}/clients/send-manual-subscription-reminder`, {
         method: "POST",
         headers: {
-          "Authorization": token,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

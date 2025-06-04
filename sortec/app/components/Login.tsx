@@ -65,7 +65,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
         throw new Error("Error al obtener el token de autenticación.");
       }
 
-      localStorage.setItem("token", `Bearer ${data.token}`);
+      localStorage.setItem("token", `${data.token}`);
 
       const perfilResponse = await fetch(`${URL_MICRO_BACKEND}/clients/perfil`, {
         method: "GET",

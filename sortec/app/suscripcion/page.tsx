@@ -137,7 +137,7 @@ export default function Suscripcion() {
                   method: "GET",
                   headers: {
                       "Content-Type": "application/json",
-                      "Authorization": token || "",
+                      "Authorization": `Bearer ${token}` || "",
                   }
               });
   
@@ -204,7 +204,7 @@ export default function Suscripcion() {
         const response = await fetch(`${URL_MICRO_BACKEND}/clients/${client?.id}`, {
             method: "DELETE",
             headers: {
-                "Authorization": token || "",
+                "Authorization": `Bearer ${token}` || "",
             },
         });
 
@@ -251,7 +251,7 @@ export default function Suscripcion() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": token || ""
+                "Authorization": `Bearer ${token}` || ""
             },
             body: JSON.stringify(paymentData)
         });

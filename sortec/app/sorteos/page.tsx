@@ -80,9 +80,8 @@ export default function Sorteos() {
     fetch(`/api/clients/perfil`, {
       method: "GET",
       headers: { 
-        "Authorization": token,
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
-        "x-sortec-web-key": "WEB_APP_KEY_456"
       }
     })
     .then((res) => {
