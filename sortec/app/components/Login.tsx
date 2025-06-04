@@ -84,9 +84,6 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       localStorage.setItem("client", JSON.stringify(perfilData.perfil));
       onLoginSuccess?.(perfilData.perfil, data.token);
 
-      console.log("🔹 Perfil del usuario:", perfilData.perfil);
-      console.log("🔹 Rol del usuario:", localStorage);
-
       if (perfilData.perfil.rol === "ADMINISTRADOR") {
         router.push("/dashboard");
       } else if (perfilData.perfil.rol === "PARTICIPANTE") {
