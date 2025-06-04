@@ -59,7 +59,6 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       }
 
       const data = await response.json();
-      console.log("🔹 Token recibido:", data.token);
 
       if (!data.token) {
         throw new Error("Error al obtener el token de autenticación.");
