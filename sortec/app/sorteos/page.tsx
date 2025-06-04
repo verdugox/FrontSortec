@@ -150,7 +150,7 @@ export default function Sorteos() {
         const response = await fetch(API_URL, {
             method: "GET",
             headers: {
-                "Authorization": token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
                 "x-sortec-web-key": "WEB_APP_KEY_456"
             },
@@ -236,7 +236,7 @@ const handleSave = async () => {
       const response = await fetch(url, {
           method,
           headers: {
-              "Authorization": token,
+              "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
               "x-sortec-web-key": "WEB_APP_KEY_456"
           },
@@ -299,7 +299,7 @@ const handleDelete = async (id: string) => {
       const response = await fetch(`${API_URL}/${id}`, {
           method: "DELETE",
           headers: {
-              "Authorization": token,
+              "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
               "x-sortec-web-key": "WEB_APP_KEY_456"
           },
