@@ -16,7 +16,7 @@ export default function Chat({ tipo, setStats }) {
   useEffect(() => {
     const fetchParticipantData = async () => {
       try {
-        const response = await fetch("/api/clients");
+        const response = await fetch("https://api.sorteosc.com/api/clients");
         if (!response.ok) {
           throw new Error("Error al obtener la cantidad de participantes registrados.");
         }
@@ -46,8 +46,8 @@ export default function Chat({ tipo, setStats }) {
 
         const labels = [];
         const counts = [];
-        const startDate = new Date("2025-04-20");
-        const endDate = new Date("2025-05-25");
+        const startDate = new Date("2025-06-02");
+        const endDate = new Date("2025-06-29");
         for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
           const dateStr = new Intl.DateTimeFormat("es-ES", {
             year: "numeric",
@@ -97,7 +97,7 @@ export default function Chat({ tipo, setStats }) {
   }, []);
 
   const now = DateTime.now().setZone("America/Lima");
-  const drawDate = DateTime.fromISO("2025-05-23T00:00:00", { zone: "America/Lima" });
+  const drawDate = DateTime.fromISO("2025-06-27T00:00:00", { zone: "America/Lima" });
   const daysUntilDraw = Math.max(0, Math.ceil(drawDate.diff(now, "days").days));
 
   return (

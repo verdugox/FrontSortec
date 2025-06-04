@@ -41,7 +41,8 @@ export default function Dashboard() {
       method: "GET",
       headers: { 
         "Authorization": token,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-sortec-web-key": "WEB_APP_KEY_456"
       }
     })
     .then((res) => {

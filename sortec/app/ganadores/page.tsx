@@ -79,7 +79,8 @@ export default function Ganadores() {
       method: "GET",
       headers: { 
         "Authorization": token,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-sortec-web-key": "WEB_APP_KEY_456"
       }
     })
     .then((res) => {
@@ -150,6 +151,7 @@ export default function Ganadores() {
             headers: {
                 "Authorization": token,
                 "Content-Type": "application/json",
+                "x-sortec-web-key": "WEB_APP_KEY_456"
             },
         });
 
@@ -235,6 +237,7 @@ const handleSave = async () => {
           headers: {
               "Authorization": token,
               "Content-Type": "application/json",
+              "x-sortec-web-key": "WEB_APP_KEY_456"
           },
           body: JSON.stringify(dataToSend),
       });
@@ -299,6 +302,7 @@ const handleDelete = async (id: string) => {
           headers: {
               "Authorization": token,
               "Content-Type": "application/json",
+              "x-sortec-web-key": "WEB_APP_KEY_456"
           },
       });
 

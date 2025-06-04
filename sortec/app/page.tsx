@@ -191,7 +191,7 @@ useEffect(() => {
       try {
         const response = await fetch(`${URL_MICRO_BACKEND}/ganadores`, {
           method: "GET",
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json", "x-sortec-web-key": "WEB_APP_KEY_456" }
         });
   
         if (!response.ok) throw new Error("Error al obtener los ganadores");
@@ -230,7 +230,8 @@ useEffect(() => {
             const response = await fetch(`${URL_MICRO_BACKEND}/sorteos`, {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-sortec-web-key": "WEB_APP_KEY_456"
                 }
             });
 
