@@ -100,7 +100,7 @@ export default function HomePage() {
 
 
   const handleLoginSuccess = (clientData: Perfil, token: string) => {
-    localStorage.setItem("token", `Bearer ${token}`);
+    localStorage.setItem("token", `${token}`);
     localStorage.setItem("client", JSON.stringify(clientData));
     setClient(clientData);
 
